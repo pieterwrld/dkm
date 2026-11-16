@@ -7,6 +7,22 @@
 
 defined('ABSPATH') || exit;
 
+add_filter('wp_resource_hints', 'dkm_resource_hints', 10, 2);
+
+function dkm_resource_hints(array $urls, string $relation_type): array {
+    if ($relation_type === 'preconnect') {
+        $urls[] = [
+            'href'        => 'https://fonts.googleapis.com',
+            'crossorigin' => '',
+        ];
+        $urls[] = [
+            'href'        => 'https://fonts.gstatic.com',
+            'crossorigin' => 'anonymous',
+        ];
+    }
+    return $urls;
+}
+
 add_action('wp_enqueue_scripts', 'dkm_enqueue_styles', 10);
 
 function dkm_enqueue_styles(): void {
@@ -67,9 +83,4 @@ function dkm_dequeue_defaults(): void {
     wp_dequeue_style('woocommerce-general');
     wp_dequeue_style('woocommerce-layout');
     wp_dequeue_style('woocommerce-smallscreen');
-    wp_dequeue_style('wp-block-library');
-    wp_dequeue_style('wp-block-library-theme');
-    wp_dequeue_style('wc-blocks-style');
-    wp_dequeue_style('classic-theme-styles');
-    wp_dequeue_style('global-styles');
 }

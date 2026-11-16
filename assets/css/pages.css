@@ -980,6 +980,7 @@
 }
 
 /* --- Comments --- */
+.comments-area,
 .comments-section {
   margin-top: var(--space-3xl);
   padding-top: var(--space-2xl);
@@ -1008,28 +1009,65 @@
   border-bottom: none;
 }
 
+.comment__header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  margin-bottom: var(--space-md);
+}
+
+.comment__avatar {
+  border-radius: var(--radius-full);
+  flex-shrink: 0;
+}
+
+.comment__author,
 .comment-author {
   font-weight: 600;
   color: var(--dkm-text);
   font-size: 15px;
+  display: block;
 }
 
+.comment__date {
+  font-size: 13px;
+  color: var(--dkm-text-muted);
+  display: block;
+}
+
+.comment__meta,
 .comment-meta {
   font-size: 13px;
   color: var(--dkm-text-muted);
   margin-bottom: var(--space-md);
 }
 
+.comment__content p,
 .comment-body p {
   color: var(--dkm-text-secondary);
   font-size: 15px;
   line-height: 1.7;
 }
 
+.comment__moderation {
+  font-size: 13px;
+  color: var(--dkm-gold);
+  font-style: italic;
+  margin-bottom: var(--space-md);
+}
+
+.comment__reply a,
 .comment-reply-link {
   font-size: 13px;
   color: var(--dkm-gold);
   font-weight: 500;
+}
+
+.children {
+  list-style: none;
+  padding-left: var(--space-2xl);
+  border-left: 2px solid var(--dkm-border);
+  margin-left: var(--space-lg);
 }
 
 .comment-respond {
