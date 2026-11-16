@@ -95,6 +95,43 @@ function dkm_get_trust_badges(): array {
     ];
 }
 
+function dkm_footer_shop_fallback(): void {
+    $shop_url = function_exists('wc_get_page_id') ? get_permalink(wc_get_page_id('shop')) : home_url('/winkel/');
+    echo '<ul class="footer-links">';
+    echo '<li><a href="' . esc_url($shop_url) . '">Alle horloges</a></li>';
+    echo '<li><a href="' . esc_url(home_url('/product-categorie/superclone/')) . '">Superclone</a></li>';
+    echo '<li><a href="' . esc_url(home_url('/product-categorie/bp-swiss-made/')) . '">BP Swiss Made</a></li>';
+    echo '<li><a href="' . esc_url(home_url('/product-categorie/aaa/')) . '">AAA+</a></li>';
+    echo '</ul>';
+}
+
+function dkm_footer_links_fallback(): void {
+    echo '<ul class="footer-links">';
+    echo '<li><a href="' . esc_url(home_url('/informatie/')) . '">Over ons</a></li>';
+    echo '<li><a href="' . esc_url(home_url('/verzending-retourneren/')) . '">Verzending & retourneren</a></li>';
+    echo '<li><a href="' . esc_url(home_url('/contact/')) . '">Contact</a></li>';
+    echo '</ul>';
+}
+
+function dkm_footer_shop_fallback(): void {
+    echo '<ul class="footer-links">';
+    echo '<li><a href="' . esc_url( get_permalink( wc_get_page_id( 'shop' ) ) ) . '">Alle horloges</a></li>';
+    echo '<li><a href="' . esc_url( home_url( '/product-categorie/superclone/' ) ) . '">Superclone</a></li>';
+    echo '<li><a href="' . esc_url( home_url( '/product-categorie/bp-swiss-made/' ) ) . '">BP Swiss Made</a></li>';
+    echo '<li><a href="' . esc_url( home_url( '/product-categorie/aaa/' ) ) . '">AAA+</a></li>';
+    echo '</ul>';
+}
+
+function dkm_footer_links_fallback(): void {
+    echo '<ul class="footer-links">';
+    echo '<li><a href="' . esc_url( home_url( '/over-ons/' ) ) . '">Over ons</a></li>';
+    echo '<li><a href="' . esc_url( home_url( '/veelgestelde-vragen/' ) ) . '">Veelgestelde vragen</a></li>';
+    echo '<li><a href="' . esc_url( home_url( '/verzending-retourneren/' ) ) . '">Verzending &amp; retourneren</a></li>';
+    echo '<li><a href="' . esc_url( home_url( '/privacybeleid/' ) ) . '">Privacybeleid</a></li>';
+    echo '<li><a href="' . esc_url( home_url( '/algemene-voorwaarden/' ) ) . '">Algemene voorwaarden</a></li>';
+    echo '</ul>';
+}
+
 function dkm_svg_icon(string $name): string {
     $icons = [
         'search' => '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>',

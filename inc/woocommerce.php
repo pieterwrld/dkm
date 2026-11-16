@@ -190,6 +190,12 @@ function dkm_product_card_close(): void {
     echo '</div>'; // product-card
 }
 
+// Remove hooks that our custom single-product template handles directly
+remove_action('woocommerce_single_product_summary', 'woocommerce_template_single_title', 5);
+remove_action('woocommerce_single_product_summary', 'woocommerce_template_single_price', 10);
+remove_action('woocommerce_single_product_summary', 'woocommerce_template_single_excerpt', 20);
+remove_action('woocommerce_single_product_summary', 'woocommerce_template_single_meta', 40);
+
 // Related products
 add_filter('woocommerce_output_related_products_args', function (array $args): array {
     $args['posts_per_page'] = 4;

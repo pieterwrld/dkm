@@ -39,7 +39,7 @@ get_header();
 
         if ( $products->have_posts() ) :
         ?>
-            <div class="product-grid">
+            <div class="products-grid">
                 <?php
                 while ( $products->have_posts() ) :
                     $products->the_post();

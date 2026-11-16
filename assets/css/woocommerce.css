@@ -202,6 +202,188 @@
   color: var(--dkm-gold);
 }
 
+/* --- DKM Product Card (WC loop output) --- */
+.dkm-product-card {
+  background: var(--dkm-surface);
+  border: 1px solid var(--dkm-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  transition: all var(--transition-base);
+}
+
+.dkm-product-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+  border-color: rgba(201, 169, 110, 0.2);
+}
+
+.dkm-product-card--sold-out {
+  opacity: 0.75;
+}
+
+.dkm-product-card--sold-out:hover {
+  transform: none;
+  box-shadow: none;
+}
+
+.dkm-product-card__image-link {
+  display: block;
+}
+
+.dkm-product-card__image-wrap {
+  position: relative;
+  aspect-ratio: 1;
+  overflow: hidden;
+  background: var(--dkm-surface-2);
+}
+
+.dkm-product-card__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform var(--transition-slow);
+}
+
+.dkm-product-card__img--hover {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity var(--transition-base);
+}
+
+.dkm-product-card:hover .dkm-product-card__img--primary {
+  transform: scale(1.05);
+}
+
+.dkm-product-card:hover .dkm-product-card__img--hover {
+  opacity: 1;
+}
+
+.dkm-product-card__badges {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  display: flex;
+  gap: 6px;
+  z-index: 2;
+}
+
+.dkm-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  line-height: 1;
+  border-radius: var(--radius-sm);
+}
+
+.dkm-badge--sold-out {
+  background: rgba(220, 38, 38, 0.9);
+  color: #ffffff;
+}
+
+.dkm-badge--sale {
+  background: var(--dkm-sale);
+  color: #ffffff;
+}
+
+.dkm-badge--tier {
+  background: rgba(0, 0, 0, 0.7);
+  color: var(--tier-color, var(--dkm-gold));
+  border: 1px solid var(--tier-color, var(--dkm-gold));
+  backdrop-filter: blur(4px);
+}
+
+.dkm-product-card__info {
+  padding: var(--space-md);
+}
+
+.dkm-product-card__title-link {
+  color: var(--dkm-text);
+}
+
+.dkm-product-card__title {
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--dkm-text);
+  margin-bottom: var(--space-sm);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  line-height: 1.4;
+}
+
+.dkm-product-card__price {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--dkm-gold);
+  margin-bottom: var(--space-md);
+}
+
+.dkm-product-card__price--regular {
+  text-decoration: line-through;
+  color: var(--dkm-text-muted);
+  font-size: 13px;
+  font-weight: 400;
+  margin-right: var(--space-sm);
+}
+
+.dkm-product-card__price--sale {
+  color: var(--dkm-gold);
+}
+
+.dkm-product-card__atc {
+  display: block;
+  text-align: center;
+  padding: 10px 16px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  background: var(--dkm-gold);
+  color: var(--dkm-bg);
+  border-radius: var(--radius-sm);
+  transition: all var(--transition-base);
+}
+
+.dkm-product-card__atc:hover {
+  background: var(--dkm-gold-hover);
+  color: var(--dkm-bg);
+}
+
+.dkm-product-card__atc--options {
+  background: transparent;
+  border: 1px solid var(--dkm-gold);
+  color: var(--dkm-gold);
+}
+
+.dkm-product-card__atc--options:hover {
+  background: var(--dkm-gold);
+  color: var(--dkm-bg);
+}
+
+.dkm-product-card__atc--disabled {
+  background: var(--dkm-surface-2);
+  color: var(--dkm-text-muted);
+  cursor: not-allowed;
+}
+
+.dkm-product-card__atc.loading {
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+.dkm-product-card__atc.added {
+  background: var(--dkm-success);
+  border-color: var(--dkm-success);
+  color: var(--dkm-bg);
+}
+
 /* --- Product Grid (Archive) --- */
 .woocommerce ul.products {
   display: grid;
@@ -786,6 +968,113 @@
 .woocommerce .price ins {
   text-decoration: none;
   font-weight: 600;
+}
+
+/* --- My Account --- */
+.woocommerce-account .woocommerce-MyAccount-navigation {
+  background: var(--dkm-surface);
+  border: 1px solid var(--dkm-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-md) 0;
+  margin-bottom: var(--space-xl);
+}
+
+.woocommerce-account .woocommerce-MyAccount-navigation ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0;
+}
+
+.woocommerce-account .woocommerce-MyAccount-navigation li {
+  flex: 1;
+  min-width: 0;
+}
+
+.woocommerce-account .woocommerce-MyAccount-navigation li a {
+  display: block;
+  padding: var(--space-md) var(--space-lg);
+  font-size: 13px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  text-align: center;
+  color: var(--dkm-text-secondary);
+  transition: all var(--transition-fast);
+  white-space: nowrap;
+}
+
+.woocommerce-account .woocommerce-MyAccount-navigation li a:hover {
+  color: var(--dkm-text);
+  background: var(--dkm-surface-2);
+}
+
+.woocommerce-account .woocommerce-MyAccount-navigation li.is-active a {
+  color: var(--dkm-gold);
+  border-bottom: 2px solid var(--dkm-gold);
+}
+
+.woocommerce-account .woocommerce-MyAccount-content {
+  background: var(--dkm-surface);
+  border: 1px solid var(--dkm-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-xl);
+}
+
+.woocommerce-account .woocommerce-MyAccount-content p {
+  color: var(--dkm-text-secondary);
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+.woocommerce-account table.shop_table {
+  background: transparent;
+  border: none;
+}
+
+.woocommerce-account table.shop_table th {
+  background: var(--dkm-surface-2);
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--dkm-text-secondary);
+  padding: var(--space-md) var(--space-lg);
+  border-bottom: 1px solid var(--dkm-border);
+}
+
+.woocommerce-account table.shop_table td {
+  padding: var(--space-md) var(--space-lg);
+  border-bottom: 1px solid var(--dkm-border);
+  color: var(--dkm-text-secondary);
+  font-size: 14px;
+}
+
+@media (max-width: 768px) {
+  .woocommerce-account .woocommerce-MyAccount-navigation ul {
+    flex-direction: column;
+  }
+
+  .woocommerce-account .woocommerce-MyAccount-navigation li a {
+    text-align: left;
+  }
+}
+
+/* --- Login / Register Forms --- */
+.woocommerce-account .woocommerce form.login,
+.woocommerce-account .woocommerce form.register {
+  background: var(--dkm-surface);
+  border: 1px solid var(--dkm-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-xl);
+}
+
+/* --- Order Received / Thank You --- */
+.woocommerce-order-received .woocommerce-thankyou-order-received {
+  color: var(--dkm-success);
+  font-size: 18px;
+  font-weight: 500;
+  text-align: center;
+  padding: var(--space-xl);
 }
 
 /* --- Hide default WC styles we override --- */

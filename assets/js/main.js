@@ -1,10 +1,6 @@
 (function () {
   'use strict';
 
-  /* ============================================================
-     DKM Main JavaScript — De Klokjesman
-     ============================================================ */
-
   // === HEADER SCROLL ===
   function initHeaderScroll() {
     var header = document.querySelector('.site-header');
@@ -15,9 +11,7 @@
     var scrolled = false;
 
     function onScroll() {
-      var y = window.scrollY;
-      var shouldBeScrolled = y > announcementHeight;
-
+      var shouldBeScrolled = window.scrollY > announcementHeight;
       if (shouldBeScrolled !== scrolled) {
         scrolled = shouldBeScrolled;
         header.classList.toggle('site-header--scrolled', scrolled);
@@ -38,11 +32,15 @@
     function open() {
       menu.classList.add('mobile-menu--open');
       document.body.classList.add('menu-open');
+      openBtn.setAttribute('aria-expanded', 'true');
+      menu.setAttribute('aria-hidden', 'false');
     }
 
     function close() {
       menu.classList.remove('mobile-menu--open');
       document.body.classList.remove('menu-open');
+      openBtn.setAttribute('aria-expanded', 'false');
+      menu.setAttribute('aria-hidden', 'true');
     }
 
     openBtn.addEventListener('click', open);
@@ -65,6 +63,7 @@
 
     function open() {
       overlay.classList.add('search-overlay--open');
+      overlay.setAttribute('aria-hidden', 'false');
       document.body.classList.add('search-open');
       if (input) {
         setTimeout(function () { input.focus(); }, 100);
@@ -73,6 +72,7 @@
 
     function close() {
       overlay.classList.remove('search-overlay--open');
+      overlay.setAttribute('aria-hidden', 'true');
       document.body.classList.remove('search-open');
     }
 
@@ -82,6 +82,14 @@
     overlay.addEventListener('click', function (e) {
       if (e.target === overlay) close();
     });
+
+    if (input) {
+      input.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' && input.value.trim()) {
+          window.location.href = '/?s=' + encodeURIComponent(input.value.trim()) + '&post_type=product';
+        }
+      });
+    }
 
     document.addEventListener('keydown', function (e) {
       if (e.key === 'Escape' && overlay.classList.contains('search-overlay--open')) {
@@ -120,7 +128,6 @@
       }
     });
 
-    // Listen for WooCommerce AJAX cart updates to refresh fragments
     document.body.addEventListener('added_to_cart', function () {
       open();
     });
@@ -160,15 +167,15 @@
 
     var cards = document.querySelectorAll('.product-card');
     cards.forEach(function (card) {
-      var secondary = card.querySelector('.product-card__image-secondary img');
-      if (!secondary) return;
+      var hoverImg = card.querySelector('.product-card__img--hover');
+      if (!hoverImg) return;
 
       card.addEventListener('mouseenter', function () {
-        secondary.style.opacity = '1';
+        hoverImg.style.opacity = '1';
       });
 
       card.addEventListener('mouseleave', function () {
-        secondary.style.opacity = '0';
+        hoverImg.style.opacity = '0';
       });
     });
   }
@@ -176,11 +183,11 @@
   // === REVIEWS CAROUSEL ===
   function initReviewsCarousel() {
     var carousel = document.querySelector('.reviews-carousel');
-    var prevBtn = document.querySelector('.reviews-nav [data-direction="prev"]');
-    var nextBtn = document.querySelector('.reviews-nav [data-direction="next"]');
+    var prevBtn = document.querySelector('.reviews-nav button[data-dir="prev"]');
+    var nextBtn = document.querySelector('.reviews-nav button[data-dir="next"]');
     if (!carousel) return;
 
-    var scrollAmount = 300;
+    var scrollAmount = 320;
 
     if (prevBtn) {
       prevBtn.addEventListener('click', function () {
@@ -194,7 +201,6 @@
       });
     }
 
-    // Touch/drag scroll
     var isDragging = false;
     var startX = 0;
     var scrollLeft = 0;
@@ -212,8 +218,7 @@
       if (!isDragging) return;
       e.preventDefault();
       var x = e.pageX - carousel.offsetLeft;
-      var walk = (x - startX) * 1.5;
-      carousel.scrollLeft = scrollLeft - walk;
+      carousel.scrollLeft = scrollLeft - (x - startX) * 1.5;
     });
 
     carousel.addEventListener('pointerup', function () {
@@ -237,8 +242,10 @@
       var target = document.querySelector(hash);
       if (!target) return;
       e.preventDefault();
-      var offsetTop = target.getBoundingClientRect().top + window.scrollY - 100;
-      window.scrollTo({ top: offsetTop, behavior: 'smooth' });
+      window.scrollTo({
+        top: target.getBoundingClientRect().top + window.scrollY - 100,
+        behavior: 'smooth'
+      });
     });
   }
 
@@ -318,7 +325,7 @@
   // === AJAX ADD TO CART ===
   function initAjaxAddToCart() {
     document.addEventListener('click', function (e) {
-      var btn = e.target.closest('.product-card__actions .ajax_add_to_cart, .add_to_cart_button.ajax_add_to_cart');
+      var btn = e.target.closest('.ajax_add_to_cart, .add_to_cart_button.ajax_add_to_cart');
       if (!btn) return;
       if (btn.classList.contains('loading')) return;
 
@@ -356,7 +363,6 @@
               btn.classList.remove('added');
             }, 2000);
 
-            // Refresh cart fragments
             if (data.fragments) {
               Object.keys(data.fragments).forEach(function (key) {
                 var el = document.querySelector(key);
@@ -364,14 +370,12 @@
               });
             }
 
-            // Update cart count
-            if (data.cart_hash !== undefined) {
-              var counts = document.querySelectorAll('.header-action-btn__count');
-              counts.forEach(function (count) {
-                var current = parseInt(count.textContent, 10) || 0;
-                count.textContent = current + parseInt(quantity, 10);
-              });
-            }
+            var counts = document.querySelectorAll('.header-action-btn__count');
+            counts.forEach(function (count) {
+              var current = parseInt(count.textContent, 10) || 0;
+              count.textContent = current + parseInt(quantity, 10);
+              count.classList.remove('hidden');
+            });
 
             document.body.dispatchEvent(new Event('added_to_cart'));
           }

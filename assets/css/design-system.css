@@ -289,6 +289,10 @@ html {
   -webkit-text-fill-color: transparent;
 }
 
+.hidden {
+  display: none !important;
+}
+
 .sr-only,
 .visually-hidden {
   position: absolute;
@@ -300,4 +304,8 @@ html {
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
   border: 0;
+}
+
+.hidden {
+  display: none !important;
 }

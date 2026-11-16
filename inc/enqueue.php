@@ -61,13 +61,6 @@ function dkm_defer_scripts(string $tag, string $handle, string $src): string {
     return $tag;
 }
 
-add_action('wp_head', 'dkm_preconnect_fonts', 1);
-
-function dkm_preconnect_fonts(): void {
-    echo '<link rel="preconnect" href="https://fonts.googleapis.com">' . "\n";
-    echo '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>' . "\n";
-}
-
 add_action('wp_enqueue_scripts', 'dkm_dequeue_defaults', 99);
 
 function dkm_dequeue_defaults(): void {

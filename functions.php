@@ -13,6 +13,7 @@ define('DKM_DIR', get_template_directory());
 define('DKM_URI', get_template_directory_uri());
 
 require_once DKM_DIR . '/inc/helpers.php';
+require_once DKM_DIR . '/inc/walker.php';
 require_once DKM_DIR . '/inc/setup.php';
 require_once DKM_DIR . '/inc/enqueue.php';
 require_once DKM_DIR . '/inc/woocommerce.php';
