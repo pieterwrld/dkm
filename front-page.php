@@ -12,7 +12,7 @@ get_header();
 
 <?php get_template_part( 'template-parts/quality-tiers' ); ?>
 
-<section class="section section--featured-products">
+<section class="featured-section">
     <div class="container">
         <div class="section-header">
             <span class="section-label">NIEUW BINNEN</span>

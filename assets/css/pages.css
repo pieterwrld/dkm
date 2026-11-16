@@ -978,3 +978,126 @@
   color: var(--dkm-text);
   font-weight: 500;
 }
+
+/* --- Comments --- */
+.comments-section {
+  margin-top: var(--space-3xl);
+  padding-top: var(--space-2xl);
+  border-top: 1px solid var(--dkm-border);
+}
+
+.comments-title {
+  font-family: var(--font-heading);
+  font-size: 24px;
+  font-weight: 400;
+  color: var(--dkm-text);
+  margin-bottom: var(--space-xl);
+}
+
+.comment-list {
+  list-style: none;
+  padding: 0;
+}
+
+.comment {
+  padding: var(--space-lg) 0;
+  border-bottom: 1px solid var(--dkm-border);
+}
+
+.comment:last-child {
+  border-bottom: none;
+}
+
+.comment-author {
+  font-weight: 600;
+  color: var(--dkm-text);
+  font-size: 15px;
+}
+
+.comment-meta {
+  font-size: 13px;
+  color: var(--dkm-text-muted);
+  margin-bottom: var(--space-md);
+}
+
+.comment-body p {
+  color: var(--dkm-text-secondary);
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+.comment-reply-link {
+  font-size: 13px;
+  color: var(--dkm-gold);
+  font-weight: 500;
+}
+
+.comment-respond {
+  margin-top: var(--space-2xl);
+}
+
+.comment-form label {
+  display: block;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--dkm-text);
+  margin-bottom: 6px;
+}
+
+.comment-form input[type="text"],
+.comment-form input[type="email"],
+.comment-form input[type="url"],
+.comment-form textarea {
+  width: 100%;
+  background: var(--dkm-surface-2);
+  border: 1px solid var(--dkm-border);
+  border-radius: var(--radius-md);
+  padding: 14px 16px;
+  color: var(--dkm-text);
+  font-family: var(--font-body);
+  font-size: 14px;
+  transition: border-color var(--transition-fast);
+}
+
+.comment-form input:focus,
+.comment-form textarea:focus {
+  border-color: var(--dkm-gold);
+  outline: none;
+}
+
+.comment-form textarea {
+  min-height: 150px;
+  resize: vertical;
+}
+
+.comment-form .form-submit input {
+  background: var(--dkm-gold);
+  color: var(--dkm-bg);
+  border: 1px solid var(--dkm-gold);
+  border-radius: var(--radius-sm);
+  padding: 14px 32px;
+  font-size: 14px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  cursor: pointer;
+  transition: all var(--transition-base);
+}
+
+.comment-form .form-submit input:hover {
+  background: var(--dkm-gold-hover);
+  border-color: var(--dkm-gold-hover);
+}
+
+.comment-form .comment-form-cookies-consent {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-lg);
+}
+
+.comment-form .comment-form-cookies-consent label {
+  font-size: 13px;
+  color: var(--dkm-text-secondary);
+  margin-bottom: 0;
+}

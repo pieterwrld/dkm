@@ -10,7 +10,7 @@ if (function_exists('dkm_get_review_images')) {
     $review_images = dkm_get_review_images();
 }
 ?>
-<section class="section section--reviews reviews-section">
+<section class="reviews-section">
     <div class="container">
         <div class="section-header">
             <span class="section-label">KLANTERVARINGEN</span>

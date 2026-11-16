@@ -16,4 +16,5 @@ require_once DKM_DIR . '/inc/helpers.php';
 require_once DKM_DIR . '/inc/walker.php';
 require_once DKM_DIR . '/inc/setup.php';
 require_once DKM_DIR . '/inc/enqueue.php';
+require_once DKM_DIR . '/inc/customizer.php';
 require_once DKM_DIR . '/inc/woocommerce.php';

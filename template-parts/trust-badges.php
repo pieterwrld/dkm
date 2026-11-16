@@ -23,7 +23,7 @@ $badges = array(
     ),
 );
 ?>
-<section class="section section--trust">
+<section class="trust-section">
     <div class="container">
         <div class="trust-grid">
             <?php foreach ( $badges as $badge ) : ?>
@@ -32,7 +32,7 @@ $badges = array(
                         <?php echo $badge['icon']; ?>
                     </div>
                     <h3 class="trust-badge__title"><?php echo wp_kses_post( $badge['title'] ); ?></h3>
-                    <p class="trust-badge__description"><?php echo esc_html( $badge['description'] ); ?></p>
+                    <p class="trust-badge__text"><?php echo esc_html( $badge['description'] ); ?></p>
                 </div>
             <?php endforeach; ?>
         </div>

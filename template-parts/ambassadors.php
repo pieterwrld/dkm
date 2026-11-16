@@ -27,7 +27,7 @@ if ( function_exists( 'dkm_get_ambassadors' ) ) {
     $ambassadors = dkm_get_ambassadors();
 }
 ?>
-<section class="section section--ambassadors">
+<section class="ambassadors-section">
     <div class="container">
         <div class="section-header">
             <span class="section-label">AMBASSADORS</span>
