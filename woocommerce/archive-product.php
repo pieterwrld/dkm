@@ -1,124 +1,247 @@
 <?php
 /**
- * DKM Custom WooCommerce Shop / Category Archive
+ * Collection: the shop root and every product category archive
+ *
+ * @package DKM
  */
 
-defined('ABSPATH') || exit;
+defined( 'ABSPATH' ) || exit;
 
-get_header('shop');
+get_header( 'shop' );
 
-$is_category = is_product_category();
-$current_cat  = $is_category ? get_queried_object() : null;
+$term      = dkm_current_product_cat();
+$cat_slug  = $term instanceof WP_Term ? $term->slug : '';
+$term_tier = $term instanceof WP_Term ? dkm_get_tier( $term->slug ) : null;
+
+$filters = array(
+	'cat'      => $cat_slug,
+	'tier'     => array(),
+	'model'    => array(),
+	'maat'     => array(),
+	'max'      => 0,
+	'sort'     => 'rec',
+	'page'     => 1,
+	'per_page' => DKM_PER_PAGE,
+);
+
+$facets = dkm_facets( $filters );
+$bounds = dkm_price_bounds( $filters );
+$total  = (int) ( $GLOBALS['wp_query']->found_posts ?? 0 );
+$pages  = (int) ( $GLOBALS['wp_query']->max_num_pages ?? 1 );
+
+$heading = $term instanceof WP_Term ? $term->name : __( 'Alle horloges', 'dkm' );
+if ( $term_tier ) {
+	$heading = $term_tier['name'];
+}
+
+$intro = $term instanceof WP_Term ? wp_strip_all_tags( (string) term_description( $term ) ) : '';
+if ( '' === $intro ) {
+	$intro = $term_tier
+		? $term_tier['claim']
+		: __( 'Ontdek het volledige assortiment, van betaalbaar instapmodel tot superclone.', 'dkm' );
+}
+
+do_action( 'woocommerce_before_main_content' );
 ?>
 
-<?php if ($is_category && $current_cat) : ?>
-  <section class="shop-header">
-    <div class="container">
-      <h1 class="shop-header__title"><?php echo esc_html($current_cat->name); ?></h1>
-      <?php if ($current_cat->description) : ?>
-        <p class="shop-header__description"><?php echo wp_kses_post($current_cat->description); ?></p>
-      <?php endif; ?>
-    </div>
-  </section>
-<?php else : ?>
-  <section class="shop-header">
-    <div class="container">
-      <h1 class="shop-header__title">Onze Collectie</h1>
-      <p class="shop-header__description">Ontdek luxe horloges van de beste kwaliteit, zorgvuldig geselecteerd voor de echte liefhebber.</p>
-    </div>
-  </section>
-<?php endif; ?>
-
-<section class="dkm-shop-content">
-  <div class="container">
-
-    <?php
-    $categories = get_terms(array(
-      'taxonomy'   => 'product_cat',
-      'hide_empty' => true,
-      'parent'     => 0,
-      'exclude'    => array(get_option('default_product_cat')),
-    ));
-
-    if (!is_wp_error($categories) && !empty($categories)) :
-    ?>
-      <div class="category-cards scroll-reveal">
-        <?php foreach ($categories as $cat) :
-          $thumb_id  = get_term_meta($cat->term_id, 'thumbnail_id', true);
-          $thumb_url = $thumb_id ? wp_get_attachment_image_url($thumb_id, 'thumbnail') : '';
-          $cat_link  = get_term_link($cat);
-        ?>
-          <a href="<?php echo esc_url($cat_link); ?>" class="category-card">
-            <div class="category-card__image">
-              <?php if ($thumb_url) : ?>
-                <img src="<?php echo esc_url($thumb_url); ?>"
-                     alt="<?php echo esc_attr($cat->name); ?>"
-                     loading="lazy" width="80" height="80">
-              <?php endif; ?>
-            </div>
-            <span class="category-card__name"><?php echo esc_html($cat->name); ?></span>
-          </a>
-        <?php endforeach; ?>
-      </div>
-    <?php endif; ?>
-
-    <?php if (woocommerce_product_loop()) : ?>
-
-      <div class="filter-bar scroll-reveal">
-        <div class="filter-bar__count">
-          <?php woocommerce_result_count(); ?>
-        </div>
-        <div class="filter-bar__sort">
-          <?php woocommerce_catalog_ordering(); ?>
-        </div>
-      </div>
-
-      <?php woocommerce_product_loop_start(); ?>
-
-        <?php while (have_posts()) : the_post();
-          wc_get_template_part('content', 'product');
-        endwhile; ?>
-
-      <?php woocommerce_product_loop_end(); ?>
-
-      <?php woocommerce_pagination(); ?>
-
-    <?php else : ?>
-      <div class="woocommerce-info scroll-reveal">
-        <p>Er zijn momenteel geen producten beschikbaar in deze categorie.</p>
-      </div>
-    <?php endif; ?>
-
-  </div>
+<section class="colhead">
+	<div class="wrap">
+		<span class="eyebrow"><?php esc_html_e( 'Collectie', 'dkm' ); ?></span>
+		<h1 class="h-l colhead__t"><?php echo esc_html( $heading ); ?></h1>
+		<p class="lead colhead__p"><?php echo esc_html( $intro ); ?></p>
+	</div>
 </section>
 
-<section class="trust-section">
-  <div class="container">
-    <div class="trust-grid scroll-reveal">
-      <div class="trust-badge">
-        <div class="trust-badge__icon">
-          <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-        </div>
-        <h3 class="trust-badge__title">Kwaliteitsgarantie</h3>
-        <p class="trust-badge__text">Onze horloges worden met de grootste zorg vervaardigd en gecontroleerd.</p>
-      </div>
-      <div class="trust-badge">
-        <div class="trust-badge__icon">
-          <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
-        </div>
-        <h3 class="trust-badge__title">Exclusieve Modellen</h3>
-        <p class="trust-badge__text">Unieke modellen die nergens anders van deze kwaliteit te vinden zijn.</p>
-      </div>
-      <div class="trust-badge">
-        <div class="trust-badge__icon">
-          <svg viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-        </div>
-        <h3 class="trust-badge__title">Snel &amp; Veilig</h3>
-        <p class="trust-badge__text">Eenvoudig bestellen met veilige betaling en snelle verzending binnen 1-2 dagen.</p>
-      </div>
-    </div>
-  </div>
-</section>
+<div class="wrap colnav">
+	<?php get_template_part( 'template-parts/quality-cards', null, array( 'current' => $cat_slug ) ); ?>
+
+	<?php
+	$pills = array(
+		'dames'       => __( 'Dames', 'dkm' ),
+		'rolex-dozen' => __( 'Dozen', 'dkm' ),
+		'brillen'     => __( 'Brillen', 'dkm' ),
+		'2e-hands'    => __( '2e hands', 'dkm' ),
+		'sale'        => __( 'Sale', 'dkm' ),
+	);
+	?>
+	<nav class="fsmall colnav__pills" aria-label="<?php esc_attr_e( 'Andere collecties', 'dkm' ); ?>">
+		<a class="chs<?php echo '' === $cat_slug ? ' is-on' : ''; ?>" href="<?php echo esc_url( dkm_shop_url() ); ?>">
+			<?php esc_html_e( 'Alle horloges', 'dkm' ); ?>
+		</a>
+		<?php
+		foreach ( $pills as $slug => $label ) :
+			$pill_term = get_term_by( 'slug', $slug, 'product_cat' );
+			if ( ! $pill_term || is_wp_error( $pill_term ) ) {
+				continue;
+			}
+			?>
+			<a class="chs<?php echo $cat_slug === $slug ? ' is-on' : ''; ?>"
+				href="<?php echo esc_url( (string) get_term_link( $pill_term ) ); ?>">
+				<?php echo esc_html( $label ); ?>
+			</a>
+		<?php endforeach; ?>
+	</nav>
+</div>
+
+<div data-dkm-facets data-dkm-cat="<?php echo esc_attr( $cat_slug ); ?>">
+
+	<div class="fbar">
+		<div class="wrap">
+			<?php if ( $term_tier ) : ?>
+				<?php /* On a tier archive the tiers are separate pages, so these link rather than filter. */ ?>
+				<nav class="fchips" aria-label="<?php esc_attr_e( 'Kwaliteit', 'dkm' ); ?>">
+					<a class="ch" href="<?php echo esc_url( dkm_shop_url() ); ?>"><?php esc_html_e( 'Alles', 'dkm' ); ?></a>
+					<?php foreach ( dkm_tiers() as $slug => $tier ) : ?>
+						<?php
+						$tier_term = get_term_by( 'slug', $slug, 'product_cat' );
+						if ( ! $tier_term || is_wp_error( $tier_term ) ) {
+							continue;
+						}
+						?>
+						<a class="ch<?php echo $cat_slug === $slug ? ' is-on' : ''; ?>"
+							href="<?php echo esc_url( (string) get_term_link( $tier_term ) ); ?>">
+							<?php echo esc_html( $tier['name'] ); ?>
+							<b><?php echo esc_html( (string) $tier_term->count ); ?></b>
+						</a>
+					<?php endforeach; ?>
+				</nav>
+			<?php else : ?>
+				<div class="fchips" role="group" aria-label="<?php esc_attr_e( 'Filter op kwaliteit', 'dkm' ); ?>">
+					<?php foreach ( $facets['tier'] as $option ) : ?>
+						<button type="button"
+							class="ch"
+							data-dkm-facet="tier"
+							data-value="<?php echo esc_attr( $option['slug'] ); ?>">
+							<?php echo esc_html( $option['label'] ); ?>
+							<b><?php echo esc_html( (string) $option['count'] ); ?></b>
+						</button>
+					<?php endforeach; ?>
+				</div>
+			<?php endif; ?>
+
+			<div class="tools">
+				<div class="tools__l">
+					<button type="button"
+						class="fbtn"
+						data-dkm-filter-toggle
+						aria-expanded="false"
+						aria-controls="dkm-filter-panel">
+						<?php dkm_the_icon( 'filter' ); ?>
+						<?php esc_html_e( 'Filters', 'dkm' ); ?>
+						<b data-dkm-active-count hidden>0</b>
+					</button>
+
+					<span class="cnt">
+						<b data-dkm-count-total><?php echo esc_html( (string) $total ); ?></b>
+						<?php esc_html_e( 'producten', 'dkm' ); ?>
+					</span>
+				</div>
+
+				<label class="tools__sort">
+					<span class="screen-reader-text"><?php esc_html_e( 'Sorteren', 'dkm' ); ?></span>
+					<select class="sel" data-dkm-sort>
+						<option value="rec"><?php esc_html_e( 'Aanbevolen', 'dkm' ); ?></option>
+						<option value="asc"><?php esc_html_e( 'Prijs laag naar hoog', 'dkm' ); ?></option>
+						<option value="desc"><?php esc_html_e( 'Prijs hoog naar laag', 'dkm' ); ?></option>
+						<option value="az"><?php esc_html_e( 'Naam A tot Z', 'dkm' ); ?></option>
+						<option value="new"><?php esc_html_e( 'Nieuwste eerst', 'dkm' ); ?></option>
+					</select>
+				</label>
+			</div>
+
+			<div class="drawer" id="dkm-filter-panel" data-dkm-filter-panel>
+				<div class="drawer__in">
+					<div class="fgrp">
+						<h2 class="fgrp__h"><?php esc_html_e( 'Modelnaam', 'dkm' ); ?></h2>
+						<div class="fopts">
+							<?php if ( $facets['model'] ) : ?>
+								<?php foreach ( $facets['model'] as $option ) : ?>
+									<button type="button"
+										class="chs"
+										data-dkm-facet="model"
+										data-value="<?php echo esc_attr( $option['slug'] ); ?>">
+										<?php echo esc_html( $option['label'] ); ?>
+										<b><?php echo esc_html( (string) $option['count'] ); ?></b>
+									</button>
+								<?php endforeach; ?>
+							<?php else : ?>
+								<span class="fopts__none"><?php esc_html_e( 'Niet beschikbaar', 'dkm' ); ?></span>
+							<?php endif; ?>
+						</div>
+					</div>
+
+					<div class="fgrp">
+						<h2 class="fgrp__h"><?php esc_html_e( 'Millimeter', 'dkm' ); ?></h2>
+						<div class="fopts">
+							<?php if ( $facets['maat'] ) : ?>
+								<?php foreach ( $facets['maat'] as $option ) : ?>
+									<button type="button"
+										class="chs"
+										data-dkm-facet="maat"
+										data-value="<?php echo esc_attr( $option['slug'] ); ?>">
+										<?php echo esc_html( $option['label'] ); ?>
+										<b><?php echo esc_html( (string) $option['count'] ); ?></b>
+									</button>
+								<?php endforeach; ?>
+							<?php else : ?>
+								<span class="fopts__none"><?php esc_html_e( 'Niet beschikbaar', 'dkm' ); ?></span>
+							<?php endif; ?>
+						</div>
+					</div>
+
+					<div class="fgrp">
+						<h2 class="fgrp__h"><?php esc_html_e( 'Prijs', 'dkm' ); ?></h2>
+						<?php if ( $bounds['max'] > $bounds['min'] ) : ?>
+							<div class="rng">
+								<label class="screen-reader-text" for="dkm-price"><?php esc_html_e( 'Maximumprijs', 'dkm' ); ?></label>
+								<input type="range"
+									id="dkm-price"
+									data-dkm-price
+									min="<?php echo esc_attr( (string) $bounds['min'] ); ?>"
+									max="<?php echo esc_attr( (string) $bounds['max'] ); ?>"
+									step="5"
+									value="<?php echo esc_attr( (string) $bounds['max'] ); ?>">
+							</div>
+							<div class="rng__out">
+								<span class="rng__v rng__v--min"><?php echo esc_html( dkm_price( $bounds['min'] ) ); ?></span>
+								<span class="rng__v" data-dkm-price-value><?php echo esc_html( dkm_price( $bounds['max'] ) ); ?></span>
+							</div>
+						<?php endif; ?>
+						<button type="button" class="chs drawer__clear" data-dkm-clear>
+							<?php esc_html_e( 'Wis filters', 'dkm' ); ?>
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="wrap colgrid">
+		<?php get_template_part( 'template-parts/collection-banner', null, array( 'term' => $term ) ); ?>
+
+		<div class="grid grid--c3" id="dkm-grid" data-dkm-grid>
+			<?php
+			if ( woocommerce_product_loop() && have_posts() ) {
+				while ( have_posts() ) {
+					the_post();
+					wc_get_template_part( 'content', 'product' );
+				}
+			} else {
+				echo '<p class="empty">' . esc_html__( 'Geen horloges gevonden met deze filters.', 'dkm' ) . '</p>';
+			}
+			wp_reset_postdata();
+			?>
+		</div>
+
+		<div class="more">
+			<button type="button" class="btn btn--o" data-dkm-more<?php echo $pages > 1 ? '' : ' hidden'; ?>>
+				<?php esc_html_e( 'Meer laden', 'dkm' ); ?>
+			</button>
+		</div>
+	</div>
+</div>
 
 <?php
-get_footer('shop');
+do_action( 'woocommerce_after_main_content' );
+
+get_footer( 'shop' );

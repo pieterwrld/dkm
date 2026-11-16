@@ -1,78 +1,103 @@
 <?php
 /**
- * DKM Performance Optimizations
+ * Performance and head cleanup
  *
  * @package DKM
  */
 
-defined('ABSPATH') || exit;
+defined( 'ABSPATH' ) || exit;
 
-add_action('wp_enqueue_scripts', 'dkm_disable_block_editor_assets', 100);
+add_action( 'init', 'dkm_clean_head' );
 
-function dkm_disable_block_editor_assets(): void {
-    wp_dequeue_style('wp-block-library');
-    wp_dequeue_style('wp-block-library-theme');
-    wp_dequeue_style('wc-blocks-style');
-    wp_dequeue_style('classic-theme-styles');
-    wp_dequeue_style('global-styles');
+function dkm_clean_head(): void {
+	remove_action( 'wp_head', 'rsd_link' );
+	remove_action( 'wp_head', 'wp_generator' );
+	remove_action( 'wp_head', 'wlwmanifest_link' );
+	remove_action( 'wp_head', 'wp_shortlink_wp_head' );
+	remove_action( 'wp_head', 'adjacent_posts_rel_link_wp_head', 10 );
 
-    if (!is_admin()) {
-        wp_deregister_script('jquery-migrate');
-    }
+	if ( ! is_admin() ) {
+		remove_action( 'wp_head', 'wp_oembed_add_host_js' );
+		wp_deregister_script( 'wp-embed' );
+	}
 }
 
-add_action('wp_enqueue_scripts', 'dkm_conditional_wc_scripts', 99);
+/**
+ * Drops jquery-migrate without deregistering it, because jquery itself lists it
+ * as a dependency and a missing handle makes WordPress complain on every load.
+ */
+add_action( 'wp_default_scripts', 'dkm_drop_jquery_migrate' );
 
-function dkm_conditional_wc_scripts(): void {
-    if (!is_woocommerce() && !is_cart() && !is_checkout() && !is_account_page()) {
-        wp_dequeue_script('wc-cart-fragments');
-        wp_dequeue_script('woocommerce');
-        wp_dequeue_script('wc-add-to-cart');
-    }
+function dkm_drop_jquery_migrate( WP_Scripts $scripts ): void {
+	if ( is_admin() || empty( $scripts->registered['jquery'] ) ) {
+		return;
+	}
+	$scripts->registered['jquery']->deps = array_diff(
+		$scripts->registered['jquery']->deps,
+		array( 'jquery-migrate' )
+	);
 }
 
-add_filter('woocommerce_enqueue_styles', '__return_empty_array');
+/**
+ * WooCommerce ships cart fragments and add-to-cart handlers on every page. The
+ * theme does its own, so they only load where WooCommerce itself needs them.
+ */
+add_action( 'wp_enqueue_scripts', 'dkm_trim_wc_scripts', 99 );
 
-add_action('wp_head', 'dkm_critical_preloads', 1);
-
-function dkm_critical_preloads(): void {
-    if (is_front_page()) {
-        echo '<link rel="preload" as="style" href="' . esc_url(DKM_URI . '/assets/css/design-system.css') . '">' . "\n";
-    }
+function dkm_trim_wc_scripts(): void {
+	if ( ! function_exists( 'is_woocommerce' ) ) {
+		return;
+	}
+	if ( is_cart() || is_checkout() || is_account_page() ) {
+		return;
+	}
+	wp_dequeue_script( 'wc-cart-fragments' );
+	wp_dequeue_script( 'wc-password-strength-meter' );
+	wp_dequeue_script( 'selectWoo' );
+	wp_dequeue_style( 'select2' );
 }
 
-add_filter('wp_lazy_loading_enabled', function (bool $default, string $tag_name): bool {
-    if ($tag_name === 'img' && is_front_page()) {
-        return true;
-    }
-    return $default;
-}, 10, 2);
+/**
+ * The hero image is the largest paint on the homepage, so it is fetched early
+ * and never lazy loaded.
+ */
+add_filter( 'wp_get_attachment_image_attributes', 'dkm_eager_hero', 10, 2 );
 
-add_filter('big_image_size_threshold', function (): int {
-    return 2560;
-});
+function dkm_eager_hero( array $attr, $attachment ): array {
+	if ( ! empty( $attr['class'] ) && str_contains( (string) $attr['class'], 'dkm-eager' ) ) {
+		$attr['loading']       = 'eager';
+		$attr['fetchpriority'] = 'high';
+		$attr['decoding']      = 'sync';
+	}
+	return $attr;
+}
 
-add_filter('jpeg_quality', function (): int {
-    return 82;
-});
+add_filter( 'jpeg_quality', fn() => 82 );
+add_filter( 'wp_editor_set_quality', fn() => 82 );
+add_filter( 'big_image_size_threshold', fn() => 2560 );
 
-add_filter('wp_editor_set_quality', function (): int {
-    return 82;
-});
+add_action( 'send_headers', 'dkm_security_headers' );
 
-add_action('init', function (): void {
-    if (!is_admin()) {
-        remove_action('wp_head', 'wp_oembed_add_host_js');
-        wp_deregister_script('wp-embed');
-    }
-});
+function dkm_security_headers(): void {
+	if ( is_admin() ) {
+		return;
+	}
+	header( 'X-Content-Type-Options: nosniff' );
+	header( 'Referrer-Policy: strict-origin-when-cross-origin' );
+	header( 'X-Frame-Options: SAMEORIGIN' );
+}
 
-add_filter('woocommerce_resize_images', '__return_true');
+/**
+ * Keeps the product query light: the cards only need what they render.
+ */
+add_action( 'pre_get_posts', 'dkm_tune_product_query' );
 
-add_action('send_headers', function (): void {
-    if (!is_admin()) {
-        header('X-Content-Type-Options: nosniff');
-        header('X-Frame-Options: SAMEORIGIN');
-        header('Referrer-Policy: strict-origin-when-cross-origin');
-    }
-});
+function dkm_tune_product_query( WP_Query $query ): void {
+	if ( is_admin() || ! $query->is_main_query() ) {
+		return;
+	}
+	if ( function_exists( 'is_shop' ) && ( is_shop() || is_product_taxonomy() ) ) {
+		$query->set( 'update_post_term_cache', true );
+		$query->set( 'update_post_meta_cache', true );
+	}
+}

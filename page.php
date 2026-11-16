@@ -1,31 +1,28 @@
 <?php
 /**
- * Standard page template
+ * Page template
  *
  * @package DKM
  */
 
+defined( 'ABSPATH' ) || exit;
+
 get_header();
-?>
 
-<section class="section section--page">
-    <div class="container container--narrow">
-        <?php
-        while ( have_posts() ) :
-            the_post();
-        ?>
-            <article id="page-<?php the_ID(); ?>" <?php post_class( 'page-content' ); ?>>
-                <header class="page-header">
-                    <h1 class="page-title"><?php the_title(); ?></h1>
-                </header>
+while ( have_posts() ) :
+	the_post();
+	?>
+	<article class="sec">
+		<div class="wrap">
+			<div class="sec-hd">
+				<h1 class="h-l"><?php the_title(); ?></h1>
+			</div>
+			<div class="prose">
+				<?php the_content(); ?>
+			</div>
+		</div>
+	</article>
+	<?php
+endwhile;
 
-                <div class="entry-content">
-                    <?php the_content(); ?>
-                </div>
-            </article>
-        <?php endwhile; ?>
-    </div>
-</section>
-
-<?php
 get_footer();

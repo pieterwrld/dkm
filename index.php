@@ -1,64 +1,74 @@
 <?php
 /**
- * Default template fallback
+ * Fallback template: blog and archive listings
  *
  * @package DKM
  */
 
+defined( 'ABSPATH' ) || exit;
+
 get_header();
 ?>
 
-<section class="page-content" style="padding-top: calc(var(--header-height) + var(--announcement-height) + var(--space-3xl));">
-    <div class="container">
+<section class="sec">
+	<div class="wrap">
+		<div class="sec-hd">
+			<span class="eyebrow"><?php esc_html_e( 'De Klokjesman', 'dkm' ); ?></span>
+			<h1 class="h-l">
+				<?php
+				if ( is_search() ) {
+					/* translators: %s is the search term. */
+					printf( esc_html__( 'Resultaten voor %s', 'dkm' ), '<span class="em gr-txt">' . esc_html( get_search_query() ) . '</span>' );
+				} elseif ( is_archive() ) {
+					the_archive_title();
+				} else {
+					esc_html_e( 'Laatste berichten', 'dkm' );
+				}
+				?>
+			</h1>
+			<?php if ( is_archive() ) : ?>
+				<?php the_archive_description( '<p class="lead">', '</p>' ); ?>
+			<?php endif; ?>
+		</div>
 
-        <?php if ( have_posts() ) : ?>
+		<?php if ( have_posts() ) : ?>
+			<div class="grid grid--c3">
+				<?php
+				while ( have_posts() ) :
+					the_post();
+					?>
+					<article class="pc rv">
+						<a class="pc__link" href="<?php the_permalink(); ?>">
+							<?php if ( has_post_thumbnail() ) : ?>
+								<div class="pc__img"><?php the_post_thumbnail( 'dkm-card', array( 'loading' => 'lazy' ) ); ?></div>
+							<?php endif; ?>
+							<div class="pc__b">
+								<span class="pc__m"><?php echo esc_html( get_the_date() ); ?></span>
+								<h2 class="pc__n"><?php the_title(); ?></h2>
+							</div>
+						</a>
+					</article>
+				<?php endwhile; ?>
+			</div>
 
-            <?php if ( is_home() && ! is_front_page() ) : ?>
-                <header class="page-header">
-                    <h1 class="page-header__title"><?php single_post_title(); ?></h1>
-                </header>
-            <?php endif; ?>
-
-            <div class="posts-grid">
-                <?php
-                while ( have_posts() ) :
-                    the_post();
-                ?>
-                    <article id="post-<?php the_ID(); ?>" <?php post_class( 'post-card' ); ?>>
-                        <?php if ( has_post_thumbnail() ) : ?>
-                            <a href="<?php the_permalink(); ?>" class="post-card__image">
-                                <?php the_post_thumbnail( 'medium_large' ); ?>
-                            </a>
-                        <?php endif; ?>
-                        <div class="post-card__content">
-                            <h2 class="post-card__title">
-                                <a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
-                            </h2>
-                            <div class="post-card__excerpt">
-                                <?php the_excerpt(); ?>
-                            </div>
-                            <a href="<?php the_permalink(); ?>" class="btn btn--ghost">Lees meer</a>
-                        </div>
-                    </article>
-                <?php endwhile; ?>
-            </div>
-
-            <?php
-            the_posts_pagination( array(
-                'prev_text' => '&laquo;',
-                'next_text' => '&raquo;',
-            ) );
-            ?>
-
-        <?php else : ?>
-            <div class="no-results">
-                <h1>Niets gevonden</h1>
-                <p>Probeer een andere zoekterm.</p>
-                <?php get_search_form(); ?>
-            </div>
-        <?php endif; ?>
-
-    </div>
+			<div class="more">
+				<?php
+				the_posts_pagination(
+					array(
+						'mid_size'  => 1,
+						'prev_text' => esc_html__( 'Vorige', 'dkm' ),
+						'next_text' => esc_html__( 'Volgende', 'dkm' ),
+					)
+				);
+				?>
+			</div>
+		<?php else : ?>
+			<p class="empty"><?php esc_html_e( 'Niets gevonden. Probeer een andere zoekterm.', 'dkm' ); ?></p>
+			<div class="more">
+				<a class="btn btn--g" href="<?php echo esc_url( dkm_shop_url() ); ?>"><?php esc_html_e( 'Bekijk de collectie', 'dkm' ); ?></a>
+			</div>
+		<?php endif; ?>
+	</div>
 </section>
 
 <?php

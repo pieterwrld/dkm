@@ -1,0 +1,291 @@
+/* ==========================================================================
+   Quality information page: tier cards, comparison table, premium features
+   ========================================================================== */
+
+.info-head {
+	padding-block: clamp(28px, 4vw, 56px) clamp(18px, 2.6vw, 30px);
+	background: linear-gradient(180deg, var(--chbg), var(--bg));
+}
+
+.info-head__title {
+	margin: 9px 0 8px;
+}
+
+.info-head__lead {
+	max-width: 60ch;
+}
+
+.info-head__lead p + p {
+	margin-top: 10px;
+}
+
+/* ---- breadcrumb ---- */
+
+
+.info-head .crumb {
+	padding-top: 0;
+}
+
+
+
+/* ==========================================================================
+   The three tier cards
+   ========================================================================== */
+
+.qpick {
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	gap: 12px;
+}
+
+@media (max-width: 820px) {
+	.qpick {
+		grid-template-columns: 1fr;
+	}
+}
+
+.qpick-c {
+	border: 1px solid var(--line);
+	border-radius: var(--r3);
+	overflow: hidden;
+	background: var(--bg);
+	cursor: pointer;
+	transition: transform 0.35s var(--e), border-color 0.35s var(--e), box-shadow 0.35s var(--e);
+	display: flex;
+	flex-direction: column;
+	text-align: left;
+	min-width: 0;
+	padding: 0;
+}
+
+.qpick-c:hover,
+.qpick-c:focus-visible {
+	transform: translateY(-3px);
+	border-color: var(--qc);
+	box-shadow: var(--sh-card);
+}
+
+.qpick-c__img {
+	display: block;
+	width: 100%;
+	aspect-ratio: 16 / 10;
+	overflow: hidden;
+	background: var(--surf);
+}
+
+.qpick-c__img img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	transition: transform 0.7s var(--e);
+}
+
+.qpick-c:hover .qpick-c__img img {
+	transform: scale(1.05);
+}
+
+.qpick-b {
+	padding: 16px 17px 18px;
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+	flex: 1;
+	min-width: 0;
+}
+
+.qpick-b__h {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+
+.qpick-b__ico {
+	font-size: 18px;
+	color: var(--qc);
+}
+
+.qpick-b__h b {
+	font-size: 1.15rem;
+	font-weight: 700;
+	letter-spacing: -0.035em;
+	line-height: 1.1;
+}
+
+.qpick-b__pr {
+	font-size: 11px;
+	font-weight: 800;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+	color: var(--qc);
+}
+
+.qpick-b__claim {
+	font-size: 12px;
+	color: var(--ink2);
+	line-height: 1.55;
+}
+
+.qpick-b__go {
+	margin-top: auto;
+	padding-top: 10px;
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	font-size: 11.5px;
+	font-weight: 800;
+	color: var(--qc);
+}
+
+.qpick-b__go .ico {
+	font-size: 14px;
+	transition: transform 0.3s var(--e);
+}
+
+.qpick-c:hover .qpick-b__go .ico {
+	transform: translateX(4px);
+}
+
+/* ---- what the tier modal shows ---- */
+
+.info-modal__claim {
+	font-size: 13px;
+	color: var(--ink2);
+	line-height: 1.7;
+	margin-bottom: 16px;
+}
+
+.info-modal__spec {
+	margin-bottom: 18px;
+}
+
+.info-modal__who {
+	font-size: 12.5px;
+	color: var(--ink2);
+	line-height: 1.6;
+	margin-bottom: 18px;
+}
+
+.info-modal__who b {
+	color: var(--ink);
+}
+
+/* ==========================================================================
+   Comparison table
+   ========================================================================== */
+
+.tblwrap {
+	overflow-x: auto;
+	scrollbar-width: thin;
+	/* Headroom so a tooltip opening upward is not clipped by the scroll box. */
+	padding-top: 130px;
+	margin-top: -130px;
+}
+
+.tblwrap:focus-visible {
+	outline: 2px solid var(--ch1);
+	outline-offset: -2px;
+}
+
+.cmp-tbl {
+	width: 100%;
+	min-width: 620px;
+	border-collapse: separate;
+	border-spacing: 0;
+	font-size: 12.8px;
+	border: 1px solid var(--line);
+	border-radius: 16px;
+	overflow: hidden;
+	background: var(--bg);
+}
+
+.cmp-tbl th,
+.cmp-tbl td {
+	padding: 12px 14px;
+	text-align: left;
+	border-bottom: 1px solid var(--line);
+}
+
+.cmp-tbl thead th {
+	background: var(--surf);
+	font-size: 10.5px;
+	font-weight: 900;
+	letter-spacing: 0.13em;
+	text-transform: uppercase;
+	color: var(--ink2);
+}
+
+.cmp-tbl tbody tr:last-child th,
+.cmp-tbl tbody tr:last-child td {
+	border-bottom: none;
+}
+
+.cmp-tbl thead th:not(:first-child),
+.cmp-tbl tbody td {
+	text-align: center;
+	width: 17%;
+}
+
+.cmp-tbl tbody th {
+	font-weight: 600;
+	color: var(--ink);
+}
+
+.cmp-tbl__label {
+	vertical-align: middle;
+}
+
+/* The i sits on the same line as the label, so it cannot be a block grid. */
+.cmp-tbl .inf {
+	display: inline-grid;
+	vertical-align: middle;
+	margin-left: 5px;
+}
+
+.cmp-tbl .mk {
+	margin: 0 auto;
+}
+
+/* ==========================================================================
+   Premium features
+   ========================================================================== */
+
+.qx-g {
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	gap: 12px;
+	margin-top: 20px;
+}
+
+@media (max-width: 820px) {
+	.qx-g {
+		grid-template-columns: 1fr;
+	}
+}
+
+.qx-i {
+	background: var(--bg);
+	border: 1px solid var(--line);
+	border-radius: 14px;
+	padding: 16px;
+	min-width: 0;
+}
+
+.qx-i .ico {
+	font-size: 22px;
+	color: var(--ch4);
+	margin-bottom: 9px;
+}
+
+.qx-i b {
+	display: block;
+	font-size: 13.5px;
+	font-weight: 700;
+	letter-spacing: -0.02em;
+	margin-bottom: 5px;
+}
+
+.qx-i p {
+	font-size: 12px;
+	color: var(--ink2);
+	line-height: 1.6;
+}

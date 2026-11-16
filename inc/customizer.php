@@ -1,143 +1,208 @@
 <?php
 /**
- * DKM Theme Customizer
+ * Customizer: the handful of settings that are not content
  *
  * @package DKM
  */
 
-defined('ABSPATH') || exit;
+defined( 'ABSPATH' ) || exit;
 
-add_action('customize_register', 'dkm_customize_register');
+add_action( 'customize_register', 'dkm_customize_register' );
 
-function dkm_customize_register(WP_Customize_Manager $wp_customize): void {
+function dkm_customize_register( WP_Customize_Manager $wp_customize ): void {
+	$wp_customize->add_panel(
+		'dkm',
+		array(
+			'title'       => __( 'De Klokjesman', 'dkm' ),
+			'description' => __( 'Instellingen voor de actiebalk, contactgegevens en social media.', 'dkm' ),
+			'priority'    => 20,
+		)
+	);
 
-    $wp_customize->add_panel('dkm_panel', [
-        'title'    => __('De Klokjesman', 'dkm'),
-        'priority' => 30,
-    ]);
+	/* ---- Black Friday ---- */
 
-    // --- Announcement Bar ---
-    $wp_customize->add_section('dkm_announcement', [
-        'title' => __('Aankondigingsbalk', 'dkm'),
-        'panel' => 'dkm_panel',
-    ]);
+	$wp_customize->add_section(
+		'dkm_bf',
+		array(
+			'title'       => __( 'Actiebalk (Black Friday)', 'dkm' ),
+			'panel'       => 'dkm',
+			'description' => __( 'Zet de rode balk aan met een aftelling tot het einde van de actiedag. Staat de actie uit, dan is de hele site weer goud.', 'dkm' ),
+		)
+	);
 
-    $wp_customize->add_setting('dkm_announcement_enabled', [
-        'default'           => true,
-        'sanitize_callback' => 'wp_validate_boolean',
-    ]);
-    $wp_customize->add_control('dkm_announcement_enabled', [
-        'label'   => __('Toon aankondigingsbalk', 'dkm'),
-        'section' => 'dkm_announcement',
-        'type'    => 'checkbox',
-    ]);
+	$wp_customize->add_setting(
+		'dkm_bf_enabled',
+		array(
+			'default'           => false,
+			'sanitize_callback' => 'wp_validate_boolean',
+		)
+	);
+	$wp_customize->add_control(
+		'dkm_bf_enabled',
+		array(
+			'label'   => __( 'Actiebalk aan', 'dkm' ),
+			'section' => 'dkm_bf',
+			'type'    => 'checkbox',
+		)
+	);
 
-    $wp_customize->add_setting('dkm_announcement_text', [
-        'default'           => 'Gratis verzending boven €150 | Veilig betalen via iDEAL',
-        'sanitize_callback' => 'sanitize_text_field',
-    ]);
-    $wp_customize->add_control('dkm_announcement_text', [
-        'label'   => __('Aankondigingstekst', 'dkm'),
-        'section' => 'dkm_announcement',
-        'type'    => 'text',
-    ]);
+	$wp_customize->add_setting(
+		'dkm_bf_until',
+		array(
+			'default'           => '',
+			'sanitize_callback' => 'dkm_sanitize_date',
+		)
+	);
+	$wp_customize->add_control(
+		'dkm_bf_until',
+		array(
+			'label'       => __( 'Laatste actiedag', 'dkm' ),
+			'description' => __( 'De aftelling loopt tot middernacht aan het eind van deze dag. Daarna verdwijnt de balk automatisch.', 'dkm' ),
+			'section'     => 'dkm_bf',
+			'type'        => 'date',
+		)
+	);
 
-    // --- Contact Info ---
-    $wp_customize->add_section('dkm_contact', [
-        'title' => __('Contactgegevens', 'dkm'),
-        'panel' => 'dkm_panel',
-    ]);
+	$wp_customize->add_setting(
+		'dkm_bf_text',
+		array(
+			'default'           => __( 'Tot 30% korting op geselecteerde modellen', 'dkm' ),
+			'sanitize_callback' => 'sanitize_text_field',
+		)
+	);
+	$wp_customize->add_control(
+		'dkm_bf_text',
+		array(
+			'label'   => __( 'Tekst in de balk', 'dkm' ),
+			'section' => 'dkm_bf',
+			'type'    => 'text',
+		)
+	);
 
-    $wp_customize->add_setting('dkm_whatsapp_number', [
-        'default'           => '+31647974408',
-        'sanitize_callback' => 'sanitize_text_field',
-    ]);
-    $wp_customize->add_control('dkm_whatsapp_number', [
-        'label'   => __('WhatsApp nummer', 'dkm'),
-        'section' => 'dkm_contact',
-        'type'    => 'text',
-    ]);
+	$wp_customize->add_setting(
+		'dkm_bf_label',
+		array(
+			'default'           => __( 'Black Friday', 'dkm' ),
+			'sanitize_callback' => 'sanitize_text_field',
+		)
+	);
+	$wp_customize->add_control(
+		'dkm_bf_label',
+		array(
+			'label'   => __( 'Naam van de actie', 'dkm' ),
+			'section' => 'dkm_bf',
+			'type'    => 'text',
+		)
+	);
 
-    $wp_customize->add_setting('dkm_email', [
-        'default'           => 'info@deklokjesman.com',
-        'sanitize_callback' => 'sanitize_email',
-    ]);
-    $wp_customize->add_control('dkm_email', [
-        'label'   => __('E-mailadres', 'dkm'),
-        'section' => 'dkm_contact',
-        'type'    => 'email',
-    ]);
+	/* ---- contact ---- */
 
-    $wp_customize->add_setting('dkm_whatsapp_message', [
-        'default'           => 'Hallo, ik heb een vraag over',
-        'sanitize_callback' => 'sanitize_text_field',
-    ]);
-    $wp_customize->add_control('dkm_whatsapp_message', [
-        'label'   => __('WhatsApp standaardbericht', 'dkm'),
-        'section' => 'dkm_contact',
-        'type'    => 'text',
-    ]);
+	$wp_customize->add_section(
+		'dkm_contact',
+		array(
+			'title' => __( 'Contactgegevens', 'dkm' ),
+			'panel' => 'dkm',
+		)
+	);
 
-    // --- Social Media ---
-    $wp_customize->add_section('dkm_social', [
-        'title' => __('Social media', 'dkm'),
-        'panel' => 'dkm_panel',
-    ]);
+	$fields = array(
+		'dkm_whatsapp'      => array(
+			'label'   => __( 'WhatsApp-nummer', 'dkm' ),
+			'default' => '31647974408',
+			'desc'    => __( 'Alleen cijfers, met landnummer, dus 31647974408.', 'dkm' ),
+		),
+		'dkm_whatsapp_text' => array(
+			'label'   => __( 'Standaardbericht', 'dkm' ),
+			'default' => __( 'Hoi! Ik heb een vraag over een horloge.', 'dkm' ),
+			'desc'    => __( 'Wordt voor de klant ingevuld als hij op een WhatsApp-knop klikt.', 'dkm' ),
+		),
+		'dkm_email'         => array(
+			'label'   => __( 'E-mailadres', 'dkm' ),
+			'default' => 'info@deklokjesman.com',
+			'desc'    => '',
+		),
+		'dkm_snapchat'      => array(
+			'label'   => __( 'Snapchat-link', 'dkm' ),
+			'default' => '',
+			'desc'    => '',
+		),
+		'dkm_sister_url'    => array(
+			'label'   => __( 'Link zustermerk', 'dkm' ),
+			'default' => 'https://deoutfitman.com',
+			'desc'    => '',
+		),
+		'dkm_sister_name'   => array(
+			'label'   => __( 'Naam zustermerk', 'dkm' ),
+			'default' => 'De Outfitman',
+			'desc'    => '',
+		),
+	);
 
-    $wp_customize->add_setting('dkm_snapchat_url', [
-        'default'           => 'https://snapchat.com/t/XvOpgrMG',
-        'sanitize_callback' => 'esc_url_raw',
-    ]);
-    $wp_customize->add_control('dkm_snapchat_url', [
-        'label'   => __('Snapchat URL', 'dkm'),
-        'section' => 'dkm_social',
-        'type'    => 'url',
-    ]);
+	foreach ( $fields as $id => $field ) {
+		$is_url = str_contains( $id, '_url' ) || 'dkm_snapchat' === $id;
+		$wp_customize->add_setting(
+			$id,
+			array(
+				'default'           => $field['default'],
+				'sanitize_callback' => $is_url ? 'esc_url_raw' : ( 'dkm_email' === $id ? 'sanitize_email' : 'sanitize_text_field' ),
+			)
+		);
+		$wp_customize->add_control(
+			$id,
+			array(
+				'label'       => $field['label'],
+				'description' => $field['desc'],
+				'section'     => 'dkm_contact',
+				'type'        => $is_url ? 'url' : 'text',
+			)
+		);
+	}
 
-    $wp_customize->add_setting('dkm_whatsapp_link', [
-        'default'           => 'https://wa.link/q23dxa',
-        'sanitize_callback' => 'esc_url_raw',
-    ]);
-    $wp_customize->add_control('dkm_whatsapp_link', [
-        'label'   => __('WhatsApp link (community)', 'dkm'),
-        'section' => 'dkm_social',
-        'type'    => 'url',
-    ]);
+	/* ---- numbers on the homepage ---- */
 
-    // --- Homepage ---
-    $wp_customize->add_section('dkm_homepage', [
-        'title' => __('Homepage', 'dkm'),
-        'panel' => 'dkm_panel',
-    ]);
+	$wp_customize->add_section(
+		'dkm_stats',
+		array(
+			'title'       => __( 'Cijfers op de homepage', 'dkm' ),
+			'panel'       => 'dkm',
+			'description' => __( 'De drie getallen in de hero en bij de reviews.', 'dkm' ),
+		)
+	);
 
-    $wp_customize->add_setting('dkm_hero_title', [
-        'default'           => 'Luxe Horloges',
-        'sanitize_callback' => 'sanitize_text_field',
-    ]);
-    $wp_customize->add_control('dkm_hero_title', [
-        'label'   => __('Hero titel', 'dkm'),
-        'section' => 'dkm_homepage',
-        'type'    => 'text',
-    ]);
+	$stats = array(
+		'dkm_stat_delivered' => array( __( 'Horloges geleverd', 'dkm' ), '1200' ),
+		'dkm_stat_reviews'   => array( __( 'Vijfsterrenreviews', 'dkm' ), '800' ),
+		'dkm_stat_rating'    => array( __( 'Gemiddelde beoordeling', 'dkm' ), '4.9' ),
+		'dkm_stat_recommend' => array( __( 'Beveelt ons aan, in procenten', 'dkm' ), '98' ),
+	);
 
-    $wp_customize->add_setting('dkm_hero_subtitle', [
-        'default'           => 'Zorgvuldig geselecteerde replica horloges van de hoogste kwaliteit voor de echte liefhebber.',
-        'sanitize_callback' => 'sanitize_text_field',
-    ]);
-    $wp_customize->add_control('dkm_hero_subtitle', [
-        'label'   => __('Hero subtitel', 'dkm'),
-        'section' => 'dkm_homepage',
-        'type'    => 'textarea',
-    ]);
+	foreach ( $stats as $id => [$label, $default] ) {
+		$wp_customize->add_setting(
+			$id,
+			array(
+				'default'           => $default,
+				'sanitize_callback' => 'sanitize_text_field',
+			)
+		);
+		$wp_customize->add_control(
+			$id,
+			array(
+				'label'   => $label,
+				'section' => 'dkm_stats',
+				'type'    => 'text',
+			)
+		);
+	}
+}
 
-    $wp_customize->add_setting('dkm_featured_count', [
-        'default'           => 8,
-        'sanitize_callback' => 'absint',
-    ]);
-    $wp_customize->add_control('dkm_featured_count', [
-        'label'   => __('Aantal uitgelichte producten', 'dkm'),
-        'section' => 'dkm_homepage',
-        'type'    => 'number',
-        'input_attrs' => ['min' => 4, 'max' => 24, 'step' => 4],
-    ]);
+/**
+ * Accepts an empty value or a Y-m-d date.
+ */
+function dkm_sanitize_date( $value ): string {
+	$value = trim( (string) $value );
+	if ( '' === $value ) {
+		return '';
+	}
+	$date = DateTimeImmutable::createFromFormat( 'Y-m-d', $value );
+	return ( $date && $date->format( 'Y-m-d' ) === $value ) ? $value : '';
 }
