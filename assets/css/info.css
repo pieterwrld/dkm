@@ -179,6 +179,9 @@
 	/* Headroom so a tooltip opening upward is not clipped by the scroll box. */
 	padding-top: 130px;
 	margin-top: -130px;
+	/* Without this the absolutely positioned tooltips escape the scroll box and
+	   drag the whole page sideways on a phone. */
+	contain: paint;
 }
 
 .tblwrap:focus-visible {
