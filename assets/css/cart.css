@@ -223,6 +223,19 @@
 		width: 76px;
 		height: 76px;
 	}
+
+	/* The row no longer behaves like part of a table here, while the cell
+	   keeps doing the layout. */
+
+	.dkm-cart-actions,
+	.dkm-cart-actions > td.actions {
+		display: block;
+		width: auto;
+	}
+
+	.dkm-cart-actions__update {
+		flex: 1 1 100%;
+	}
 }
 
 /* ---- quantity field ----
@@ -271,13 +284,30 @@ input.qty::-webkit-inner-spin-button,
 
 /* ---- coupon and actions ---- */
 
-.dkm-cart-actions {
+/* The coupon and the update button share one cell that spans the table. The
+   cell itself stays a table cell, because a cell turned into a flex container
+   drops out of the table and loses the width its colspan gives it. */
+
+.dkm-cart-actions > td.actions {
+	padding: 16px 14px;
+	border-top: 1px solid var(--line);
+}
+
+.dkm-cart-actions__in {
 	display: flex;
-	align-items: center;
+	align-items: flex-end;
 	justify-content: space-between;
 	gap: 14px;
 	flex-wrap: wrap;
-	margin-top: 16px;
+}
+
+.dkm-cart-actions .dkm-coupon {
+	flex: 1 1 260px;
+	min-width: 0;
+}
+
+.dkm-cart-actions__update {
+	flex: 0 0 auto;
 }
 
 .dkm-coupon__label {
@@ -293,11 +323,10 @@ input.qty::-webkit-inner-spin-button,
 .dkm-coupon__row {
 	display: flex;
 	gap: 8px;
-	flex-wrap: wrap;
 }
 
 .dkm-coupon__input {
-	flex: 1 1 180px;
+	flex: 1 1 120px;
 	min-width: 0;
 	border: 1.5px solid var(--line);
 	border-radius: 999px;
@@ -309,6 +338,11 @@ input.qty::-webkit-inner-spin-button,
 .dkm-coupon__input:focus {
 	outline: none;
 	border-color: var(--ch2);
+}
+
+.dkm-coupon__btn {
+	flex: 0 0 auto;
+	white-space: nowrap;
 }
 
 /* ---- box offer ---- */

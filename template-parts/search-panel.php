@@ -7,7 +7,12 @@
 
 defined( 'ABSPATH' ) || exit;
 ?>
-<div class="searchp" id="search-panel" hidden>
+<div class="searchp"
+	id="search-panel"
+	role="dialog"
+	aria-modal="true"
+	aria-label="<?php esc_attr_e( 'Zoeken', 'dkm' ); ?>"
+	hidden>
 	<div class="wrap searchp__in">
 		<form role="search" method="get" class="searchp__form" action="<?php echo esc_url( home_url( '/' ) ); ?>">
 			<label class="screen-reader-text" for="dkm-search-field"><?php esc_html_e( 'Zoek een horloge', 'dkm' ); ?></label>

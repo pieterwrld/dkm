@@ -132,9 +132,63 @@
 
 	on(scrim, 'click', closeAllPanels);
 
+	/* ---- keyboard inside an open panel ----
+	   A panel with a scrim covers the page, so the keyboard has to stay inside
+	   it. Without this Tab walks on into the content behind the scrim and the
+	   focus ring disappears off screen, which leaves someone on a keyboard
+	   stuck with no way back. */
+
+	var FOCUSABLE = [
+		'a[href]',
+		'button:not([disabled])',
+		'input:not([disabled]):not([type="hidden"])',
+		'select:not([disabled])',
+		'textarea:not([disabled])',
+		'[tabindex]:not([tabindex="-1"])'
+	].join(',');
+
+	function focusables(el) {
+		return $$(FOCUSABLE, el).filter(function (node) {
+			// A hidden slide or a collapsed row has no box, so it is skipped.
+			return node.offsetWidth || node.offsetHeight || node.getClientRects().length;
+		});
+	}
+
 	on(document, 'keydown', function (e) {
-		if (e.key === 'Escape' && openPanels.length) {
-			closePanel(openPanels[openPanels.length - 1]);
+		if (!openPanels.length) {
+			return;
+		}
+		var panel = openPanels[openPanels.length - 1];
+
+		if (e.key === 'Escape') {
+			closePanel(panel);
+			return;
+		}
+
+		if (e.key !== 'Tab' || !(panel._dkmOpts || {}).trap) {
+			return;
+		}
+
+		var items = focusables(panel);
+		if (!items.length) {
+			return;
+		}
+		var first = items[0];
+		var last = items[items.length - 1];
+
+		// Opened with the mouse, so focus is still on the button outside. The
+		// first Tab moves into the panel rather than past it.
+		if (!panel.contains(document.activeElement)) {
+			e.preventDefault();
+			(e.shiftKey ? last : first).focus();
+			return;
+		}
+		if (e.shiftKey && document.activeElement === first) {
+			e.preventDefault();
+			last.focus();
+		} else if (!e.shiftKey && document.activeElement === last) {
+			e.preventDefault();
+			first.focus();
 		}
 	});
 
@@ -145,7 +199,8 @@
 				cart: '#cart-drawer',
 				search: '#search-panel',
 				modal: '#dkm-modal',
-				mega: '#mega'
+				mega: '#mega',
+				mob: '#mobile-drawer'
 			};
 			closePanel($(map[which] || which));
 		});
@@ -175,7 +230,9 @@
 			}
 			var rect = header.getBoundingClientRect();
 			mega.style.setProperty('--mt', rect.bottom + 'px');
-			openPanel(mega, { scrim: true, toggle: megaToggle, focus: false });
+			// A click from the keyboard reports no pointer detail, and only then is
+			// it right to move focus into the panel.
+			openPanel(mega, { scrim: true, trap: true, toggle: megaToggle, focus: 0 === e.detail });
 		});
 
 		// A pointer leaving both the button and the panel closes it, which is
@@ -202,7 +259,7 @@
 			if (drawer.classList.contains('is-on')) {
 				closePanel(drawer);
 			} else {
-				openPanel(drawer, { lock: true, toggle: burger });
+				openPanel(drawer, { lock: true, trap: true, toggle: burger });
 			}
 		});
 	}
@@ -214,7 +271,7 @@
 			if (searchPanel.classList.contains('is-on')) {
 				closePanel(searchPanel);
 			} else {
-				openPanel(searchPanel, { scrim: true, toggle: searchToggle });
+				openPanel(searchPanel, { scrim: true, trap: true, toggle: searchToggle });
 			}
 		});
 	}
@@ -466,7 +523,7 @@
 		if (modalBody) {
 			modalBody.innerHTML = bodyHtml || '';
 		}
-		openPanel(modal, { lock: true, toggle: toggle });
+		openPanel(modal, { lock: true, trap: true, toggle: toggle });
 	}
 
 	$$('[data-dkm-modal]').forEach(function (trigger) {
@@ -609,7 +666,7 @@
 			if (cartDrawer.classList.contains('is-on')) {
 				closePanel(cartDrawer);
 			} else {
-				openPanel(cartDrawer, { lock: true, scrim: true, toggle: cartToggle });
+				openPanel(cartDrawer, { lock: true, scrim: true, trap: true, toggle: cartToggle });
 			}
 		});
 	}
@@ -710,7 +767,7 @@
 			).then(function () {
 				toast(i18n.added || '');
 				if (cartDrawer) {
-					openPanel(cartDrawer, { lock: true, scrim: true, toggle: cartToggle });
+					openPanel(cartDrawer, { lock: true, scrim: true, trap: true, toggle: cartToggle });
 				}
 			});
 		});

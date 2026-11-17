@@ -13,7 +13,11 @@ if ( ! $cards ) {
 	return;
 }
 ?>
-<div class="mega" id="mega" hidden>
+<div class="mega"
+	id="mega"
+	role="group"
+	aria-label="<?php esc_attr_e( 'Collectie', 'dkm' ); ?>"
+	hidden>
 	<div class="mega__in">
 		<div class="mega__g wrap">
 			<?php foreach ( $cards as $card ) : ?>

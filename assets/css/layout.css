@@ -627,6 +627,15 @@
 	transform: none;
 }
 
+/* Sits in the empty band the drawer's top padding leaves free, clear of a
+   notch or a status bar. */
+
+.mob__close {
+	position: absolute;
+	top: calc(22px + env(safe-area-inset-top, 0px));
+	right: max(var(--pad), env(safe-area-inset-right, 0px));
+}
+
 .mob__link {
 	display: flex;
 	align-items: center;

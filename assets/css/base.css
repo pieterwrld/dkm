@@ -87,6 +87,15 @@ textarea {
 	background: var(--ch2);
 }
 
+/* The panels get a display value of their own further on, and an author rule
+   beats the browser's own rule for the hidden attribute. Without this the
+   closed cart drawer and the closed popup still sit in the tab order, just off
+   screen, so a keyboard runs into controls nobody can see. */
+
+[hidden] {
+	display: none !important;
+}
+
 /* ---- focus: visible for keyboards, quiet for mice ---- */
 
 :focus {

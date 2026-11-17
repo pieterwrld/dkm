@@ -12,7 +12,20 @@ defined( 'ABSPATH' ) || exit;
 
 $items = dkm_nav_items();
 ?>
-<div class="mob" id="mobile-drawer" hidden>
+<div class="mob"
+	id="mobile-drawer"
+	role="dialog"
+	aria-modal="true"
+	aria-label="<?php esc_attr_e( 'Menu', 'dkm' ); ?>"
+	hidden>
+	<?php
+	// The drawer covers the header, so the hamburger underneath it cannot be
+	// reached. Without this button there is no way out of the menu on a phone.
+	?>
+	<button type="button" class="iconbtn mob__close" data-dkm-close="mob">
+		<?php dkm_the_icon( 'close', '', __( 'Menu sluiten', 'dkm' ) ); ?>
+	</button>
+
 	<nav class="mob__nav" aria-label="<?php esc_attr_e( 'Mobiel menu', 'dkm' ); ?>">
 		<a class="mob__link" href="<?php echo esc_url( dkm_shop_url() ); ?>">
 			<?php esc_html_e( 'Alle horloges', 'dkm' ); ?>

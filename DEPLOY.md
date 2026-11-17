@@ -148,6 +148,9 @@ Loop dit af op zowel een computer als een telefoon:
 - [ ] Afrekenen: iDEAL staat erbij en een testbestelling komt door.
 - [ ] Bedankpagina en Mijn account zien er als het thema uit.
 - [ ] Geen zijwaartse scroll op 390 pixels breed.
+- [ ] Toetsenbord: Tab door de pagina, open het megamenu met Enter, loop er met
+      Tab in rond en sluit het met Escape. De focus hoort daarna terug op de
+      knop te staan waarmee je het opende.
 
 Gaat er iets mis bij afrekenen, kijk dan eerst of de pagina de shortcode uit
 stap 4 heeft.
@@ -164,4 +167,3 @@ stap 4 heeft.
 
 - De UGC-sectie draait nu op posters zonder video. Zet de TikTok- en
   Reels-bestanden erin bij UGC-video's.
-- De toegankelijkheidsronde over toetsenbordbediening is nog niet afgerond.

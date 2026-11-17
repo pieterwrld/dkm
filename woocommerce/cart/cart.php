@@ -196,6 +196,11 @@ $dkm_row = static function ( string $cart_item_key, array $cart_item, bool $is_b
 
 					<tr class="dkm-cart-actions">
 						<td colspan="5" class="actions">
+							<?php
+							// The cell stays a real table cell so its colspan keeps holding
+							// the full width. This wrapper does the side by side layout.
+							?>
+							<div class="dkm-cart-actions__in">
 							<?php if ( wc_coupons_enabled() ) { ?>
 								<div class="coupon dkm-coupon">
 									<label for="coupon_code" class="dkm-coupon__label"><?php esc_html_e( 'Kortingscode', 'dkm' ); ?></label>
@@ -210,6 +215,7 @@ $dkm_row = static function ( string $cart_item_key, array $cart_item, bool $is_b
 							<button type="submit" class="btn btn--o dkm-cart-actions__update" name="update_cart" value="<?php esc_attr_e( 'Winkelwagen bijwerken', 'dkm' ); ?>"><?php esc_html_e( 'Winkelwagen bijwerken', 'dkm' ); ?></button>
 
 							<?php do_action( 'woocommerce_cart_actions' ); ?>
+							</div>
 
 							<?php wp_nonce_field( 'woocommerce-cart', 'woocommerce-cart-nonce' ); ?>
 						</td>
