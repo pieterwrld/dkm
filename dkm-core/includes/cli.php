@@ -53,7 +53,7 @@ class DKM_CLI {
 		foreach ( self::ATTRIBUTES as $taxonomy => $label ) {
 			$slug = str_replace( 'pa_', '', $taxonomy );
 			if ( wc_attribute_taxonomy_id_by_name( $slug ) ) {
-				WP_CLI::log( "$taxonomy already exists" );
+				$this->log( sprintf( /* translators: %s is an attribute name. */ __( '%s bestaat al', 'dkm' ), $taxonomy ) );
 				continue;
 			}
 			$res = wc_create_attribute(
@@ -66,10 +66,10 @@ class DKM_CLI {
 				)
 			);
 			if ( is_wp_error( $res ) ) {
-				WP_CLI::warning( "$taxonomy: " . $res->get_error_message() );
+				$this->warn( "$taxonomy: " . $res->get_error_message() );
 				continue;
 			}
-			WP_CLI::success( "$taxonomy created" );
+			$this->ok( sprintf( /* translators: %s is an attribute name. */ __( '%s aangemaakt', 'dkm' ), $taxonomy ) );
 		}
 		$this->flush_attribute_cache();
 	}
@@ -109,19 +109,19 @@ class DKM_CLI {
 		$derive  = empty( $assoc['no-derive'] );
 
 		if ( ! is_readable( $file ) ) {
-			WP_CLI::error( "Cannot read $file" );
+			$this->fail( sprintf( /* translators: %s is a file path. */ __( 'Kan %s niet lezen.', 'dkm' ), $file ) );
 		}
 
 		foreach ( self::ATTRIBUTES as $taxonomy => $label ) {
 			if ( ! taxonomy_exists( $taxonomy ) ) {
-				WP_CLI::error( "$taxonomy does not exist yet. Run: wp dkm create-attributes" );
+				$this->fail( sprintf( /* translators: %s is an attribute name. */ __( '%s bestaat nog niet. Gebruik eerst Attributen aanmaken.', 'dkm' ), $taxonomy ) );
 			}
 		}
 
 		$rows = $this->read_csv( $file );
-		WP_CLI::log( sprintf( '%d rows in %s', count( $rows ), basename( $file ) ) );
+		$this->log( sprintf( /* translators: 1: number of rows, 2: file name. */ __( '%1$d regels in %2$s', 'dkm' ), count( $rows ), basename( $file ) ) );
 		if ( $dry ) {
-			WP_CLI::log( 'Dry run, nothing is written.' );
+			$this->log( __( 'Proefdraai, er wordt niets opgeslagen.', 'dkm' ) );
 		}
 
 		$changed    = 0;
@@ -130,12 +130,16 @@ class DKM_CLI {
 		$unresolved = array();
 		$incomplete = array();
 
+		$behandeld = array();
+
 		foreach ( $rows as $row ) {
 			$product = $this->resolve_product( $row );
 			if ( ! $product ) {
 				$unresolved[] = $row;
 				continue;
 			}
+
+			$behandeld[ $product->get_id() ] = true;
 
 			$values = array(
 				'pa_model'       => trim( (string) ( $row['pa_model'] ?? '' ) ),
@@ -180,41 +184,88 @@ class DKM_CLI {
 			}
 		}
 
+		// Producten die niet in het databestand staan, zoals concepten. Daar is
+		// de titel het enige wat we hebben, dus die wordt uitgelezen.
+		$overig = 0;
+		if ( $derive ) {
+			foreach ( $this->all_product_ids() as $id ) {
+				if ( isset( $behandeld[ $id ] ) ) {
+					continue;
+				}
+				$product = wc_get_product( $id );
+				if ( ! $product ) {
+					continue;
+				}
+
+				$title  = $product->get_name();
+				$values = array_filter(
+					array(
+						'pa_model' => $this->derive_model( $title ),
+						'pa_maat'  => $this->derive_size( $title ),
+					),
+					fn( $v ) => '' !== $v
+				);
+
+				if ( ! $values ) {
+					if ( $this->is_watch( $product ) ) {
+						$incomplete[] = array( $id, $title );
+					}
+					continue;
+				}
+
+				foreach ( $values as $tax => $value ) {
+					$derived[] = array( $id, $tax, $value, $title );
+				}
+
+				if ( $this->attributes_match( $product, $values ) ) {
+					++$unchanged;
+					continue;
+				}
+
+				++$changed;
+				++$overig;
+				if ( ! $dry ) {
+					$this->apply_attributes( $product, $values );
+				}
+			}
+		}
+
 		$this->flush_attribute_cache();
 		if ( ! $dry ) {
 			wc_delete_product_transients();
 		}
 
-		WP_CLI::log( '' );
-		WP_CLI::log( sprintf( 'changed:   %d', $changed ) );
-		WP_CLI::log( sprintf( 'unchanged: %d', $unchanged ) );
-		WP_CLI::log( sprintf( 'derived from the title: %d', count( $derived ) ) );
+		$this->log( '' );
+		$this->log( sprintf( /* translators: %d is a number of products. */ __( 'gewijzigd:            %d', 'dkm' ), $changed ) );
+		$this->log( sprintf( /* translators: %d is a number of products. */ __( 'ongewijzigd:          %d', 'dkm' ), $unchanged ) );
+		$this->log( sprintf( /* translators: %d is a number of values. */ __( 'uit de titel gehaald: %d', 'dkm' ), count( $derived ) ) );
+		$this->log( sprintf( /* translators: %d is a number of products. */ __( 'buiten het databestand: %d', 'dkm' ), $overig ) );
 
 		if ( $derived ) {
-			WP_CLI::log( '' );
-			WP_CLI::log( 'Derived because the CSV column was empty:' );
+			$this->log( '' );
+			$this->log( __( 'Uit de titel gehaald omdat de kolom leeg was:', 'dkm' ) );
 			foreach ( $derived as [$id, $tax, $value, $title] ) {
-				WP_CLI::log( sprintf( '  #%d %s = %s  (%s)', $id, $tax, $value, $title ) );
+				$this->log( sprintf( '  #%d %s = %s  (%s)', $id, $tax, $value, $title ) );
 			}
 		}
 
 		if ( $unresolved ) {
-			WP_CLI::log( '' );
-			WP_CLI::warning( sprintf( '%d CSV rows matched no product:', count( $unresolved ) ) );
+			$this->log( '' );
+			$this->warn( sprintf( /* translators: %d is a number of rows. */ __( '%d regels horen bij geen enkel product:', 'dkm' ), count( $unresolved ) ) );
 			foreach ( $unresolved as $row ) {
-				WP_CLI::log( sprintf( '  %s  %s', $row['id'] ?? '?', $row['name'] ?? '?' ) );
+				$this->log( sprintf( '  %s  %s', $row['id'] ?? '?', $row['name'] ?? '?' ) );
 			}
 		}
 
 		if ( $incomplete ) {
-			WP_CLI::log( '' );
-			WP_CLI::warning( sprintf( '%d watches still have no model and need a value by hand:', count( $incomplete ) ) );
+			$this->log( '' );
+			$this->warn( sprintf( /* translators: %d is a number of watches. */ __( '%d horloges hebben nog geen model en moeten met de hand worden ingevuld:', 'dkm' ), count( $incomplete ) ) );
 			foreach ( $incomplete as [$id, $name] ) {
-				WP_CLI::log( sprintf( '  #%d %s', $id, $name ) );
+				$this->log( sprintf( '  #%d %s', $id, $name ) );
 			}
 		}
 
-		WP_CLI::success( $dry ? 'Dry run complete.' : 'Backfill complete.' );
+		$this->ok( $dry ? __( 'Proefdraai klaar.', 'dkm' ) : __( 'Bijvullen klaar.', 'dkm' ) );
 	}
 
 	/**
@@ -283,14 +334,32 @@ class DKM_CLI {
 			}
 		}
 
-		WP_CLI::log( sprintf( 'set: %d, left alone: %d', $set, $kept ) );
+		$this->log( sprintf( /* translators: 1: number set, 2: number left alone. */ __( 'ingesteld: %1$d, ongemoeid gelaten: %2$d', 'dkm' ), $set, $kept ) );
 		foreach ( $clashed as [$id, $sku, $owner] ) {
-			WP_CLI::warning( sprintf( '#%d wanted %s but #%d already has it', $id, $sku, $owner ) );
+			$this->warn( sprintf( /* translators: 1: product id, 2: article number, 3: other product id. */ __( '#%1$d wilde %2$s maar #%3$d heeft dat nummer al', 'dkm' ), $id, $sku, $owner ) );
 		}
-		WP_CLI::success( $dry ? 'Dry run complete.' : 'SKUs synced.' );
+		$this->ok( $dry ? __( 'Proefdraai klaar.', 'dkm' ) : __( 'Artikelnummers bijgewerkt.', 'dkm' ) );
 	}
 
 	/* ------------------------------------------------------------------ */
+
+	/**
+	 * Every product in the shop, drafts included.
+	 *
+	 * @return array<int, int> Product ids.
+	 */
+	private function all_product_ids(): array {
+		return get_posts(
+			array(
+				'post_type'      => 'product',
+				'post_status'    => 'any',
+				'posts_per_page' => -1,
+				'fields'         => 'ids',
+				'orderby'        => 'ID',
+				'order'          => 'ASC',
+			)
+		);
+	}
 
 	/**
 	 * Reads a CSV into an array of associative rows.
@@ -298,12 +367,12 @@ class DKM_CLI {
 	private function read_csv( string $file ): array {
 		$handle = fopen( $file, 'r' );
 		if ( ! $handle ) {
-			WP_CLI::error( "Cannot open $file" );
+			$this->fail( sprintf( /* translators: %s is a file path. */ __( 'Kan %s niet openen.', 'dkm' ), $file ) );
 		}
 
 		$header = fgetcsv( $handle );
 		if ( ! $header ) {
-			WP_CLI::error( 'CSV has no header row' );
+			$this->fail( __( 'Het CSV-bestand heeft geen kopregel.', 'dkm' ) );
 		}
 		$header = array_map( 'trim', $header );
 
@@ -459,7 +528,7 @@ class DKM_CLI {
 			if ( ! $term ) {
 				$created = wp_insert_term( $value, $taxonomy );
 				if ( is_wp_error( $created ) ) {
-					WP_CLI::warning( sprintf( '#%d %s: %s', $product->get_id(), $taxonomy, $created->get_error_message() ) );
+					$this->warn( sprintf( '#%d %s: %s', $product->get_id(), $taxonomy, $created->get_error_message() ) );
 					continue;
 				}
 				$term_id = (int) $created['term_id'];
@@ -491,6 +560,84 @@ class DKM_CLI {
 			WC_Cache_Helper::invalidate_cache_group( 'woocommerce-attributes' );
 		}
 	}
+
+	/* ------------------------------------------------------------------ */
+	/* Output. On the command line this goes to the terminal, in wp-admin  */
+	/* it is collected so the page can show it.                            */
+	/* ------------------------------------------------------------------ */
+
+	/**
+	 * Collected output lines, used when there is no command line.
+	 */
+	private array $lines = array();
+
+	/**
+	 * Hands back everything that was reported since the last reset.
+	 *
+	 * @return array<int, array{0: string, 1: string}> Pairs of level and text.
+	 */
+	public function take_lines(): array {
+		$lines       = $this->lines;
+		$this->lines = array();
+		return $lines;
+	}
+
+	/**
+	 * True when WP-CLI is driving this.
+	 */
+	private function on_cli(): bool {
+		return defined( 'WP_CLI' ) && WP_CLI;
+	}
+
+	/**
+	 * Reports a plain line.
+	 */
+	private function log( string $text ): void {
+		if ( $this->on_cli() ) {
+			WP_CLI::log( $text );
+			return;
+		}
+		$this->lines[] = array( 'log', $text );
+	}
+
+	/**
+	 * Reports something that deserves attention but is not fatal.
+	 */
+	private function warn( string $text ): void {
+		if ( $this->on_cli() ) {
+			WP_CLI::warning( $text );
+			return;
+		}
+		$this->lines[] = array( 'warn', $text );
+	}
+
+	/**
+	 * Reports that a job finished.
+	 */
+	private function ok( string $text ): void {
+		if ( $this->on_cli() ) {
+			WP_CLI::success( $text );
+			return;
+		}
+		$this->lines[] = array( 'ok', $text );
+	}
+
+	/**
+	 * Stops the job. WP-CLI ends the process here, in wp-admin the exception
+	 * is caught by the page so the rest of the screen still renders.
+	 *
+	 * @throws RuntimeException When there is no command line to end.
+	 */
+	private function fail( string $text ): void {
+		if ( $this->on_cli() ) {
+			WP_CLI::error( $text );
+		}
+		$this->lines[] = array( 'fail', $text );
+		throw new RuntimeException( $text );
+	}
 }
 
-WP_CLI::add_command( 'dkm', 'DKM_CLI' );
+
+if ( defined( 'WP_CLI' ) && WP_CLI ) {
+	WP_CLI::add_command( 'dkm', 'DKM_CLI' );
+}
