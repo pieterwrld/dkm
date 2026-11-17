@@ -312,6 +312,17 @@
 	transition: 0.25s var(--e);
 	position: relative;
 	color: var(--ink);
+	/* Other plugins on the site style every button on the page. Without this
+	   their padding wins over the width above and pushes the row out of the
+	   pill, because padding alone can be wider than the width. */
+	flex: 0 0 auto;
+	box-sizing: border-box;
+	min-width: 0;
+	padding: 0;
+	border: 0;
+	background: none;
+	font: inherit;
+	line-height: 1;
 }
 
 .iconbtn:hover {
@@ -351,6 +362,35 @@
 	height: 38px;
 	border-radius: 50%;
 	place-items: center;
+	/* Same reason as .iconbtn above. */
+	flex: 0 0 auto;
+	box-sizing: border-box;
+	min-width: 0;
+	padding: 0;
+	border: 0;
+	background: none;
+	font: inherit;
+	line-height: 1;
+}
+
+/* The shop carries page builder stylesheets that give every button on the
+   page a generous padding, in logical properties this file does not repeat.
+   Padding alone can be wider than the width above, and then the row grows
+   out of the header pill. These two selectors sit one level deeper than
+   theirs, so the reset wins without having to shout. */
+.hd .burger,
+.hd .iconbtn {
+	padding: 0;
+	padding-block: 0;
+	padding-inline: 0;
+	border: 0;
+	background: none;
+	min-width: 0;
+	min-height: 0;
+	box-sizing: border-box;
+	flex: 0 0 auto;
+	font: inherit;
+	line-height: 1;
 }
 
 .burger span:not(.screen-reader-text) {

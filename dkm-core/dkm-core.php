@@ -3,7 +3,7 @@
  * Plugin Name:       DKM Core
  * Plugin URI:        https://deklokjesman.com
  * Description:       De gegevenslaag van De Klokjesman: productattributen, reviews, UGC-video's en de doos bij een horloge. Hoort in een plugin en niet in het thema, zodat een themawissel geen content of bestelgegevens meeneemt.
- * Version:           1.2.0
+ * Version:           1.3.0
  * Requires at least: 6.4
  * Requires PHP:      8.0
  * Author:            De Klokjesman
@@ -15,7 +15,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'DKM_CORE_VERSION', '1.2.0' );
+define( 'DKM_CORE_VERSION', '1.3.0' );
 define( 'DKM_CORE_DIR', __DIR__ );
 define( 'DKM_CORE_URL', plugin_dir_url( __FILE__ ) );
 
@@ -23,6 +23,7 @@ require_once DKM_CORE_DIR . '/includes/shared.php';
 require_once DKM_CORE_DIR . '/includes/cpt.php';
 require_once DKM_CORE_DIR . '/includes/acf-fields.php';
 require_once DKM_CORE_DIR . '/includes/deploy.php';
+require_once DKM_CORE_DIR . '/includes/tools-rest.php';
 
 add_action( 'plugins_loaded', 'dkm_core_boot' );
 

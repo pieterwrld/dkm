@@ -48,7 +48,8 @@ function dkm_core_register_fields(): void {
 					),
 				),
 			),
-			'active'   => true,
+			'active'       => true,
+			'show_in_rest' => true,
 		)
 	);
 
@@ -91,7 +92,8 @@ function dkm_core_register_fields(): void {
 					),
 				),
 			),
-			'active'   => true,
+			'active'       => true,
+			'show_in_rest' => true,
 		)
 	);
 }

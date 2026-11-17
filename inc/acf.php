@@ -190,7 +190,7 @@ function dkm_register_home_fields(): void {
 			'label_placement'       => 'top',
 			'hide_on_screen'        => array( 'the_content' ),
 			'active'                => true,
-			'show_in_rest'          => false,
+			'show_in_rest'          => true,
 		)
 	);
 }
