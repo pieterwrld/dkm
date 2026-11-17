@@ -86,7 +86,7 @@ class DKM_CLI {
 	 *
 	 * [--file=<path>]
 	 * : CSV with the columns id, slug, name, pa_model, pa_maat, pa_wijzerplaat.
-	 * Defaults to reference/product-attributes.csv in the theme.
+	 * Defaults to data/product-attributes.csv in this plugin.
 	 *
 	 * [--dry-run]
 	 * : Report what would change without writing anything.
@@ -104,7 +104,7 @@ class DKM_CLI {
 	 * @when after_wp_load
 	 */
 	public function backfill_attributes( array $args, array $assoc ): void {
-		$file    = $assoc['file'] ?? DKM_DIR . '/reference/product-attributes.csv';
+		$file    = $assoc['file'] ?? DKM_CORE_DIR . '/data/product-attributes.csv';
 		$dry     = ! empty( $assoc['dry-run'] );
 		$derive  = empty( $assoc['no-derive'] );
 
