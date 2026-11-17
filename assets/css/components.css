@@ -778,6 +778,12 @@
 .crumb a {
 	color: var(--ch4);
 	font-weight: 600;
+	/* A link of text alone is about eighteen pixels tall, which is a small
+	   thing to hit with a thumb. The extra padding is vertical only, so the
+	   line keeps its rhythm. */
+	display: inline-flex;
+	align-items: center;
+	min-height: 24px;
 }
 
 .crumb a:hover {
