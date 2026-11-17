@@ -21,17 +21,15 @@ require_once DKM_DIR . '/inc/setup.php';
 require_once DKM_DIR . '/inc/enqueue.php';
 require_once DKM_DIR . '/inc/customizer.php';
 require_once DKM_DIR . '/inc/acf.php';
-require_once DKM_DIR . '/inc/cpt.php';
 require_once DKM_DIR . '/inc/nav.php';
 require_once DKM_DIR . '/inc/facets.php';
 require_once DKM_DIR . '/inc/performance.php';
 
+// The reviews, the UGC clips and the box that travels with a watch live in the
+// DKM Core plugin, because they are content and order data rather than design.
+require_once DKM_DIR . '/inc/core-fallback.php';
+
 if ( class_exists( 'WooCommerce' ) ) {
 	require_once DKM_DIR . '/inc/woocommerce.php';
-	require_once DKM_DIR . '/inc/box-upsell.php';
 	require_once DKM_DIR . '/inc/cart.php';
-}
-
-if ( defined( 'WP_CLI' ) && WP_CLI ) {
-	require_once DKM_DIR . '/inc/cli.php';
 }

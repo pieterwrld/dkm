@@ -20,6 +20,8 @@ function dkm_stylesheets(): array {
 		'dkm-collection' => 'collection.css',
 		'dkm-product'    => 'product.css',
 		'dkm-info'       => 'info.css',
+		'dkm-cart'       => 'cart.css',
+		'dkm-checkout'   => 'checkout.css',
 	);
 }
 

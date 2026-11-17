@@ -16,7 +16,7 @@ if ( ! $product instanceof WC_Product ) {
 	return;
 }
 
-$show_upsell = $args['show_upsell'] ?? dkm_takes_box( $product );
+$show_upsell = $args['show_upsell'] ?? ( function_exists( 'dkm_takes_box' ) && dkm_takes_box( $product ) );
 $name        = dkm_short_title( $product->get_name() );
 $rating      = (float) $product->get_average_rating();
 $reviews     = (int) $product->get_review_count();

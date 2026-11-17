@@ -185,9 +185,13 @@ function dkm_tier_vars( ?array $tier ): string {
 	);
 }
 
-/**
- * Strips the tier suffix a product title carries, so headings stay short.
- */
-function dkm_short_title( string $name ): string {
-	return trim( (string) preg_replace( '/\s*\((SUPERCLONE|BP SWISS MADE|AAA\+)\)\s*$/i', '', $name ) );
+if ( ! function_exists( 'dkm_short_title' ) ) {
+	/**
+	 * Strips the tier suffix a product title carries, so headings stay short.
+	 *
+	 * Guarded because DKM Core defines the same helper and loads first.
+	 */
+	function dkm_short_title( string $name ): string {
+		return trim( (string) preg_replace( '/\s*\((SUPERCLONE|BP SWISS MADE|AAA\+)\)\s*$/i', '', $name ) );
+	}
 }

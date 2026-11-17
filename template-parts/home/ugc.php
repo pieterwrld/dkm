@@ -7,7 +7,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-$clips = dkm_get_ugc( 9 );
+$clips = function_exists( 'dkm_get_ugc' ) ? dkm_get_ugc( 9 ) : array();
 if ( ! $clips ) {
 	return;
 }

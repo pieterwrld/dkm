@@ -92,7 +92,7 @@ foreach ( $lines as $line ) :
 <?php endforeach; ?>
 
 <?php
-$boxes = dkm_boxes();
+$boxes = function_exists( 'dkm_boxes' ) ? dkm_boxes() : array();
 if ( $boxes && ! dkm_cart_has_box() ) :
 	?>
 	<div class="cart-up">

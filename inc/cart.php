@@ -69,7 +69,9 @@ function dkm_cart_add(): void {
 	}
 
 	if ( $box_id ) {
-		dkm_attach_box( $key, $box_id, $quantity );
+		if ( function_exists( 'dkm_attach_box' ) ) {
+			dkm_attach_box( $key, $box_id, $quantity );
+		}
 	}
 }
 
@@ -78,7 +80,7 @@ function dkm_cart_add(): void {
  */
 function dkm_cart_add_box(): void {
 	$box_id = isset( $_POST['box_id'] ) ? absint( wp_unslash( $_POST['box_id'] ) ) : 0;
-	if ( ! $box_id || ! dkm_is_box( $box_id ) ) {
+	if ( ! $box_id || ! function_exists( 'dkm_is_box' ) || ! dkm_is_box( $box_id ) ) {
 		wp_send_json_error( array( 'message' => __( 'Deze doos bestaat niet.', 'dkm' ) ), 400 );
 	}
 
@@ -148,7 +150,7 @@ function dkm_cart_payload(): array {
 		'count' => (int) WC()->cart->get_cart_contents_count(),
 		'total' => wp_strip_all_tags( WC()->cart->get_cart_total() ),
 		'body'  => $body,
-		'hasBox' => dkm_cart_has_box(),
+		'hasBox' => function_exists( 'dkm_cart_has_box' ) && dkm_cart_has_box(),
 	);
 }
 

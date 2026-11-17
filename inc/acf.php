@@ -21,15 +21,17 @@ defined( 'ABSPATH' ) || exit;
  * @param mixed      $default  Returned when empty or when ACF is absent.
  * @return mixed
  */
-function dkm_field( string $selector, $post_id = null, $default = '' ) {
-	if ( ! function_exists( 'get_field' ) ) {
-		return $default;
+if ( ! function_exists( 'dkm_field' ) ) {
+	function dkm_field( string $selector, $post_id = null, $default = '' ) {
+		if ( ! function_exists( 'get_field' ) ) {
+			return $default;
+		}
+		$value = get_field( $selector, $post_id );
+		if ( null === $value || '' === $value || array() === $value || false === $value ) {
+			return $default;
+		}
+		return $value;
 	}
-	$value = get_field( $selector, $post_id );
-	if ( null === $value || '' === $value || array() === $value || false === $value ) {
-		return $default;
-	}
-	return $value;
 }
 
 /**
@@ -54,8 +56,6 @@ function dkm_register_field_groups(): void {
 
 	dkm_register_home_fields();
 	dkm_register_category_fields();
-	dkm_register_ugc_fields();
-	dkm_register_review_fields();
 }
 
 /**
@@ -262,90 +262,4 @@ function dkm_register_category_fields(): void {
 	);
 }
 
-/**
- * UGC clips: the video itself plus a caption. The poster is the featured image.
- */
-function dkm_register_ugc_fields(): void {
-	acf_add_local_field_group(
-		array(
-			'key'      => 'group_dkm_ugc',
-			'title'    => __( 'Video', 'dkm' ),
-			'fields'   => array(
-				array(
-					'key'           => 'dkm_ugc_video',
-					'label'         => __( 'Videobestand', 'dkm' ),
-					'name'          => 'video',
-					'type'          => 'file',
-					'return_format' => 'array',
-					'mime_types'    => 'mp4,mov,webm',
-					'instructions'  => __( 'Een TikTok- of Reels-bestand, staand formaat 9 bij 16. Zet ook een poster als uitgelichte afbeelding, dan is het eerste beeld scherp.', 'dkm' ),
-				),
-				array(
-					'key'          => 'dkm_ugc_caption',
-					'label'        => __( 'Onderschrift', 'dkm' ),
-					'name'         => 'caption',
-					'type'         => 'text',
-					'instructions' => __( 'Bijvoorbeeld: Unboxing, Pols shot, Levering binnen.', 'dkm' ),
-				),
-			),
-			'location' => array(
-				array(
-					array(
-						'param'    => 'post_type',
-						'operator' => '==',
-						'value'    => 'dkm_ugc',
-					),
-				),
-			),
-			'active'   => true,
-		)
-	);
-}
 
-/**
- * Reviews: who sent it and how many stars.
- */
-function dkm_register_review_fields(): void {
-	acf_add_local_field_group(
-		array(
-			'key'      => 'group_dkm_review',
-			'title'    => __( 'Review', 'dkm' ),
-			'fields'   => array(
-				array(
-					'key'          => 'dkm_review_name',
-					'label'        => __( 'Naam van de klant', 'dkm' ),
-					'name'         => 'reviewer',
-					'type'         => 'text',
-					'instructions' => __( 'Alleen een voornaam is genoeg. Wordt als initialen in de avatar gezet.', 'dkm' ),
-				),
-				array(
-					'key'           => 'dkm_review_rating',
-					'label'         => __( 'Sterren', 'dkm' ),
-					'name'          => 'rating',
-					'type'          => 'number',
-					'min'           => 1,
-					'max'           => 5,
-					'default_value' => 5,
-				),
-				array(
-					'key'           => 'dkm_review_verified',
-					'label'         => __( 'Geverifieerd', 'dkm' ),
-					'name'          => 'verified',
-					'type'          => 'true_false',
-					'ui'            => 1,
-					'default_value' => 1,
-				),
-			),
-			'location' => array(
-				array(
-					array(
-						'param'    => 'post_type',
-						'operator' => '==',
-						'value'    => 'dkm_review',
-					),
-				),
-			),
-			'active'   => true,
-		)
-	);
-}

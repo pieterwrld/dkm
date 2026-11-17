@@ -8,7 +8,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-$reviews = dkm_get_reviews( 12 );
+$reviews = function_exists( 'dkm_get_reviews' ) ? dkm_get_reviews( 12 ) : array();
 if ( ! $reviews ) {
 	return;
 }
@@ -43,7 +43,7 @@ $recommend = (int) preg_replace( '/\D/', '', (string) get_theme_mod( 'dkm_stat_r
 		<div class="rvgrid">
 			<?php
 			foreach ( $reviews as $review ) :
-				$image    = dkm_review_image( $review->ID );
+				$image    = function_exists( 'dkm_review_image' ) ? dkm_review_image( $review->ID ) : null;
 				$name     = (string) dkm_field( 'reviewer', $review->ID, get_the_title( $review ) );
 				$rating   = (float) dkm_field( 'rating', $review->ID, 5 );
 				$verified = (bool) dkm_field( 'verified', $review->ID, true );

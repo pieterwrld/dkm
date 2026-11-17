@@ -17,7 +17,7 @@ if ( ! $product instanceof WC_Product ) {
 	return;
 }
 
-$boxes = dkm_boxes();
+$boxes = function_exists( 'dkm_boxes' ) ? dkm_boxes() : array();
 if ( ! $boxes ) {
 	return;
 }
