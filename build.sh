@@ -39,6 +39,7 @@ echo
 	-x 'dkm/dkm-core/*' \
 	-x 'dkm/reference/*' \
 	-x 'dkm/build.sh' \
+	-x 'dkm/tools/*' \
 	-x 'dkm/DEPLOY.md' \
 	-x 'dkm/*.zip' \
 	-x '*/.DS_Store' )
