@@ -54,7 +54,7 @@ get_template_part( 'template-parts/ticker' );
 			if ( $sale && ! is_wp_error( $sale ) ) :
 				?>
 				<a class="nav__btn nav__btn--red" href="<?php echo esc_url( (string) get_term_link( $sale ) ); ?>">
-					<?php echo esc_html( dkm_black_friday_active() ? get_theme_mod( 'dkm_bf_label', __( 'Black Friday', 'dkm' ) ) : __( 'Sale', 'dkm' ) ); ?>
+					<?php echo esc_html( dkm_black_friday_active() ? dkm_opt( 'bf_label', __( 'Black Friday', 'dkm' ) ) : __( 'Sale', 'dkm' ) ); ?>
 				</a>
 			<?php endif; ?>
 		</nav>

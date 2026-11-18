@@ -97,6 +97,27 @@ function dkm_mark( string $verdict ): string {
  * @return array<int,array{0:string,1:string,2:string}>
  */
 function dkm_usps(): array {
+	$eigen = dkm_opt( 'usps', array() );
+	if ( is_array( $eigen ) && $eigen ) {
+		return array_map(
+			static fn( $rij ) => array( $rij['icoon'] ?? 'check', $rij['titel'] ?? '', $rij['sub'] ?? '' ),
+			$eigen
+		);
+	}
+
+
+	return dkm_usps_base();
+}
+
+/**
+ * The same list as this file writes it, with nothing laid over.
+ *
+ * The editing screen reads this one: the list above asks the screen for
+ * its values, and the two would otherwise call each other forever.
+ *
+ * @return array
+ */
+function dkm_usps_base(): array {
 	return array(
 		array( 'truck', __( 'Vandaag besteld', 'dkm' ), __( 'Morgen in huis', 'dkm' ) ),
 		array( 'shield', __( 'Kwaliteitsgarantie', 'dkm' ), __( 'Op elk horloge', 'dkm' ) ),
@@ -111,6 +132,26 @@ function dkm_usps(): array {
  * @return string[]
  */
 function dkm_ticker(): array {
+	$eigen = dkm_opt( 'ticker', array() );
+	if ( is_array( $eigen ) && $eigen ) {
+		return array_values(
+			array_filter( array_map( static fn( $rij ) => (string) ( $rij['tekst'] ?? '' ), $eigen ) )
+		);
+	}
+
+
+	return dkm_ticker_base();
+}
+
+/**
+ * The same list as this file writes it, with nothing laid over.
+ *
+ * The editing screen reads this one: the list above asks the screen for
+ * its values, and the two would otherwise call each other forever.
+ *
+ * @return array
+ */
+function dkm_ticker_base(): array {
 	return array(
 		__( 'Gratis verzending vanaf €150', 'dkm' ),
 		__( 'Vandaag besteld, morgen in huis', 'dkm' ),
@@ -127,6 +168,27 @@ function dkm_ticker(): array {
  * @return array<int,array{0:string,1:string,2:string}>
  */
 function dkm_delivery(): array {
+	$eigen = dkm_opt( 'delivery', array() );
+	if ( is_array( $eigen ) && $eigen ) {
+		return array_map(
+			static fn( $rij ) => array( $rij['icoon'] ?? 'check', $rij['titel'] ?? '', $rij['tekst'] ?? '' ),
+			$eigen
+		);
+	}
+
+
+	return dkm_delivery_base();
+}
+
+/**
+ * The same list as this file writes it, with nothing laid over.
+ *
+ * The editing screen reads this one: the list above asks the screen for
+ * its values, and the two would otherwise call each other forever.
+ *
+ * @return array
+ */
+function dkm_delivery_base(): array {
 	return array(
 		array( 'box', __( 'In onze eigen verpakking', 'dkm' ), __( 'Elk horloge gaat beschermd en discreet de deur uit. Aan de buitenkant zie je niet wat erin zit.', 'dkm' ) ),
 		array( 'eye', __( 'Gecontroleerd voor verzending', 'dkm' ), __( 'We lopen elk horloge na op de wijzerplaat, het glas, de sluiting en de loop van het uurwerk.', 'dkm' ) ),
@@ -142,6 +204,27 @@ function dkm_delivery(): array {
  * @return array<int,array{0:string,1:string,2:string}>
  */
 function dkm_premium_features(): array {
+	$eigen = dkm_opt( 'premium', array() );
+	if ( is_array( $eigen ) && $eigen ) {
+		return array_map(
+			static fn( $rij ) => array( $rij['icoon'] ?? 'check', $rij['titel'] ?? '', $rij['tekst'] ?? '' ),
+			$eigen
+		);
+	}
+
+
+	return dkm_premium_features_base();
+}
+
+/**
+ * The same list as this file writes it, with nothing laid over.
+ *
+ * The editing screen reads this one: the list above asks the screen for
+ * its values, and the two would otherwise call each other forever.
+ *
+ * @return array
+ */
+function dkm_premium_features_base(): array {
 	return array(
 		array( 'glow', __( 'Glow in the dark', 'dkm' ), __( 'Oplichtende wijzers en indexen, zodat je ook in het donker de tijd afleest.', 'dkm' ) ),
 		array( 'drop', __( 'Waterdicht', 'dkm' ), __( 'Bestand tegen regen en spatten. Hoeveel meter precies hangt af van de kwaliteit.', 'dkm' ) ),

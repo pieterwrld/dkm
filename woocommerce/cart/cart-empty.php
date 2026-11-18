@@ -24,7 +24,7 @@ do_action( 'woocommerce_cart_is_empty' );
 		</a>
 
 		<?php
-		$dkm_wa = function_exists( 'dkm_whatsapp_url' ) ? dkm_whatsapp_url( (string) get_theme_mod( 'dkm_whatsapp_text', '' ) ) : '';
+		$dkm_wa = function_exists( 'dkm_whatsapp_url' ) ? dkm_whatsapp_url( (string) dkm_opt( 'whatsapp_text', '' ) ) : '';
 		if ( $dkm_wa ) :
 			?>
 			<a class="btn btn--o btn--lg" href="<?php echo esc_url( $dkm_wa ); ?>" target="_blank" rel="noopener">

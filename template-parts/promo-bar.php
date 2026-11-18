@@ -13,8 +13,8 @@ if ( ! dkm_black_friday_active() ) {
 	return;
 }
 
-$label = (string) get_theme_mod( 'dkm_bf_label', __( 'Black Friday', 'dkm' ) );
-$text  = (string) get_theme_mod( 'dkm_bf_text', __( 'Tot 30% korting op geselecteerde modellen', 'dkm' ) );
+$label = (string) dkm_opt( 'bf_label', __( 'Black Friday', 'dkm' ) );
+$text  = (string) dkm_opt( 'bf_text', __( 'Tot 30% korting op geselecteerde modellen', 'dkm' ) );
 ?>
 <div class="bf">
 	<div class="bf__in">

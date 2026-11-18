@@ -11,7 +11,7 @@ defined( 'ABSPATH' ) || exit;
  * The WhatsApp link, with an optional prefilled message.
  */
 function dkm_whatsapp_url( string $message = '' ): string {
-	$number = preg_replace( '/\D/', '', (string) get_theme_mod( 'dkm_whatsapp', '31647974408' ) );
+	$number = preg_replace( '/\D/', '', (string) dkm_opt( 'whatsapp', '31647974408' ) );
 	if ( '' === $number ) {
 		return '';
 	}
@@ -35,7 +35,7 @@ function dkm_price( $amount ): string {
  * Whether the Black Friday mode is on. Red takes over from gold while it is.
  */
 function dkm_black_friday_active(): bool {
-	if ( ! get_theme_mod( 'dkm_bf_enabled', false ) ) {
+	if ( ! dkm_opt( 'bf_enabled', false ) ) {
 		return false;
 	}
 	$ends = dkm_black_friday_ends();
@@ -47,7 +47,7 @@ function dkm_black_friday_active(): bool {
  * configured day, in the site's own timezone.
  */
 function dkm_black_friday_ends(): int {
-	$date = (string) get_theme_mod( 'dkm_bf_until', '' );
+	$date = (string) dkm_opt( 'bf_until', '' );
 	if ( '' === $date ) {
 		return 0;
 	}

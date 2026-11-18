@@ -10,7 +10,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-$image_id = (int) get_theme_mod( 'dkm_closing_image', 0 );
+$image_id = (int) dkm_opt( 'closing_image', 0 );
 if ( ! $image_id ) {
 	return;
 }

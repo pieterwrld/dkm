@@ -7,7 +7,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-$wa = dkm_whatsapp_url( (string) get_theme_mod( 'dkm_whatsapp_text', '' ) );
+$wa = dkm_whatsapp_url( (string) dkm_opt( 'whatsapp_text', '' ) );
 if ( ! $wa ) {
 	return;
 }

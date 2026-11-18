@@ -18,8 +18,8 @@ if ( ! dkm_black_friday_active() ) {
 	return;
 }
 
-$mobiel  = (int) get_theme_mod( 'dkm_bf_banner_mobile', 0 );
-$desktop = (int) get_theme_mod( 'dkm_bf_banner_desktop', 0 );
+$mobiel  = (int) dkm_opt( 'bf_banner_mobile', 0 );
+$desktop = (int) dkm_opt( 'bf_banner_desktop', 0 );
 
 if ( ! $mobiel && ! $desktop ) {
 	return;
@@ -27,8 +27,8 @@ if ( ! $mobiel && ! $desktop ) {
 
 $breed  = $desktop ? $desktop : $mobiel;
 $smal   = $mobiel ? $mobiel : $desktop;
-$link   = (string) get_theme_mod( 'dkm_bf_banner_link', '' );
-$knop   = (string) get_theme_mod( 'dkm_bf_banner_cta', __( 'Shop de Black Friday deals', 'dkm' ) );
+$link   = (string) dkm_opt( 'bf_banner_link', '' );
+$knop   = (string) dkm_opt( 'bf_banner_cta', __( 'Shop de Black Friday deals', 'dkm' ) );
 $alt    = __( 'Black Friday bij De Klokjesman, kortingen tot 200 euro', 'dkm' );
 
 if ( '' === $link ) {

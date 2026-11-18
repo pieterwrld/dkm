@@ -44,7 +44,7 @@ $items = dkm_nav_items();
 			<?php dkm_the_icon( 'arrow' ); ?>
 		</a>
 
-		<?php $wa = dkm_whatsapp_url( (string) get_theme_mod( 'dkm_whatsapp_text', '' ) ); ?>
+		<?php $wa = dkm_whatsapp_url( (string) dkm_opt( 'whatsapp_text', '' ) ); ?>
 		<?php if ( $wa ) : ?>
 			<a class="mob__link mob__link--wa" href="<?php echo esc_url( $wa ); ?>" target="_blank" rel="noopener">
 				<?php esc_html_e( 'WhatsApp ons', 'dkm' ); ?>

@@ -34,3 +34,20 @@ function dkm_core_missing_notice(): void {
 		esc_html__( 'De reviews, de UGC-video’s en de doos bij een horloge blijven leeg zolang die plugin uit staat.', 'dkm' )
 	);
 }
+
+
+if ( ! function_exists( 'dkm_opt' ) ) {
+	/**
+	 * Reads a setting from the panel in DKM Core.
+	 *
+	 * Without that plugin there is nothing to read, so every caller gets its
+	 * own text back and the page looks exactly as it was built.
+	 *
+	 * @param string $naam     Setting name.
+	 * @param mixed  $fallback What to use when there is nothing stored.
+	 * @return mixed
+	 */
+	function dkm_opt( string $naam, $fallback = '' ) {
+		return $fallback;
+	}
+}

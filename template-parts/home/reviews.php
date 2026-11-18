@@ -13,9 +13,9 @@ if ( ! $reviews ) {
 	return;
 }
 
-$delivered = (int) preg_replace( '/\D/', '', (string) get_theme_mod( 'dkm_stat_delivered', '1200' ) );
-$five      = (int) preg_replace( '/\D/', '', (string) get_theme_mod( 'dkm_stat_reviews', '800' ) );
-$recommend = (int) preg_replace( '/\D/', '', (string) get_theme_mod( 'dkm_stat_recommend', '98' ) );
+$delivered = (int) preg_replace( '/\D/', '', (string) dkm_opt( 'stat_delivered', '1200' ) );
+$five      = (int) preg_replace( '/\D/', '', (string) dkm_opt( 'stat_reviews', '800' ) );
+$recommend = (int) preg_replace( '/\D/', '', (string) dkm_opt( 'stat_recommend', '98' ) );
 ?>
 <section class="sec">
 	<div class="wrap">

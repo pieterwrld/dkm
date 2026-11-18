@@ -27,7 +27,7 @@ if ( ! $tiers ) {
 		}
 		// Its own picture, set per level, so this row shows other watches than
 		// the bars higher up the page. Falls back to the category's own.
-		$eigen = (int) get_theme_mod( 'dkm_pick_' . str_replace( '-', '_', $slug ), 0 );
+		$eigen = (int) dkm_opt( 'tier_' . $slug . '_pick', 0 );
 		$image = $eigen
 			? wp_get_attachment_image(
 				$eigen,

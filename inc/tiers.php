@@ -21,6 +21,25 @@ function dkm_tiers(): array {
 		return $tiers;
 	}
 
+	$tiers = dkm_tiers_overschrijven( dkm_tiers_base() );
+
+	return $tiers;
+}
+
+/**
+ * The three levels exactly as this file writes them, with nothing laid over.
+ *
+ * The editing screen reads this one, because the list that follows asks the
+ * screen for its values and the two would otherwise call each other forever.
+ *
+ * @return array
+ */
+function dkm_tiers_base(): array {
+	static $tiers = null;
+	if ( null !== $tiers ) {
+		return $tiers;
+	}
+
 	$tiers = array(
 		'superclone'    => array(
 			'key'      => 'superclone',
@@ -128,6 +147,41 @@ function dkm_tiers(): array {
 			'template' => 'aaa',
 		),
 	);
+
+	return $tiers;
+}
+
+/**
+ * Lays whatever was typed in the panel over the list above.
+ *
+ * Only a field that was actually filled in wins, so an untouched shop reads
+ * exactly as it was written here.
+ *
+ * @param array $tiers The list as this file defines it.
+ * @return array
+ */
+function dkm_tiers_overschrijven( array $tiers ): array {
+	foreach ( $tiers as $slug => $tier ) {
+		foreach ( array( 'name', 'short', 'sub', 'claim', 'who' ) as $sleutel ) {
+			$waarde = dkm_opt( 'tier_' . $slug . '_' . $sleutel, '' );
+			if ( '' !== $waarde ) {
+				$tiers[ $slug ][ $sleutel ] = $waarde;
+			}
+		}
+
+		$vanaf = (int) dkm_opt( 'tier_' . $slug . '_from', 0 );
+		if ( $vanaf > 0 ) {
+			$tiers[ $slug ]['from'] = $vanaf;
+		}
+
+		$punten = dkm_opt( 'tier_' . $slug . '_usps', array() );
+		if ( is_array( $punten ) && $punten ) {
+			$tiers[ $slug ]['explain'] = array_map(
+				static fn( $rij ) => array( 'check', $rij['titel'] ?? '', $rij['tekst'] ?? '' ),
+				$punten
+			);
+		}
+	}
 
 	return $tiers;
 }

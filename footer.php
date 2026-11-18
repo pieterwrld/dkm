@@ -7,13 +7,13 @@
 
 defined( 'ABSPATH' ) || exit;
 
-$email    = (string) get_theme_mod( 'dkm_email', 'info@deklokjesman.com' );
-$snapchat = (string) get_theme_mod( 'dkm_snapchat', '' );
-$sister   = (string) get_theme_mod( 'dkm_sister_url', 'https://deoutfitman.com' );
-$sister_n = (string) get_theme_mod( 'dkm_sister_name', 'De Outfitman' );
-$wa_text  = (string) get_theme_mod( 'dkm_whatsapp_text', '' );
+$email    = (string) dkm_opt( 'email', 'info@deklokjesman.com' );
+$snapchat = (string) dkm_opt( 'snapchat', '' );
+$sister   = (string) dkm_opt( 'sister_url', 'https://deoutfitman.com' );
+$sister_n = (string) dkm_opt( 'sister_name', 'De Outfitman' );
+$wa_text  = (string) dkm_opt( 'whatsapp_text', '' );
 $wa       = dkm_whatsapp_url( $wa_text );
-$phone    = (string) get_theme_mod( 'dkm_whatsapp', '31647974408' );
+$phone    = (string) dkm_opt( 'whatsapp', '31647974408' );
 ?>
 </main>
 

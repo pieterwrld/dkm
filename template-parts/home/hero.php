@@ -15,9 +15,9 @@ $title    = (string) dkm_field( 'hero_title', $front_id, __( 'Elegant. Exclusief
 $accent   = (string) dkm_field( 'hero_accent', $front_id, __( 'Tijdloos.', 'dkm' ) );
 $text     = (string) dkm_field( 'hero_text', $front_id, __( 'Drie kwaliteitsniveaus, één standaard. Van een scherp geprijsd instapmodel tot een 1:1 superclone met Zwitsers uurwerk en saffierglas.', 'dkm' ) );
 
-$delivered = (string) get_theme_mod( 'dkm_stat_delivered', '1200' );
-$reviews   = (string) get_theme_mod( 'dkm_stat_reviews', '800' );
-$rating    = (string) get_theme_mod( 'dkm_stat_rating', '4.9' );
+$delivered = (string) dkm_opt( 'stat_delivered', '1200' );
+$reviews   = (string) dkm_opt( 'stat_reviews', '800' );
+$rating    = (string) dkm_opt( 'stat_rating', '4.9' );
 ?>
 <section class="hero">
 	<div class="hero__bg">
