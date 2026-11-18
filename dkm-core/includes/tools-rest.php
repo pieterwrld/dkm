@@ -49,6 +49,73 @@ function dkm_tools_routes(): void {
 			),
 		)
 	);
+
+	register_rest_route(
+		'dkm/v1',
+		'/winkel/zichtbaarheid',
+		array(
+			array(
+				'methods'             => WP_REST_Server::READABLE,
+				'callback'            => 'dkm_winkel_zichtbaarheid_lees',
+				'permission_callback' => 'dkm_tools_may_run',
+			),
+			array(
+				'methods'             => WP_REST_Server::CREATABLE,
+				'callback'            => 'dkm_winkel_zichtbaarheid_zet',
+				'permission_callback' => 'dkm_tools_may_run',
+				'args'                => array(
+					'binnenkort'      => array(
+						'required' => true,
+						'type'     => 'boolean',
+					),
+					'alleen_winkel'   => array(
+						'type' => 'boolean',
+					),
+				),
+			),
+		)
+	);
+}
+
+/**
+ * WooCommerce has its own coming soon mode, apart from any plugin. These two
+ * options are the whole of it, and nothing else here touches them.
+ *
+ * @return array{binnenkort: bool, alleen_winkel: bool}
+ */
+function dkm_winkel_zichtbaarheid_waarden(): array {
+	return array(
+		'binnenkort'    => 'yes' === get_option( 'woocommerce_coming_soon' ),
+		'alleen_winkel' => 'yes' === get_option( 'woocommerce_store_pages_only' ),
+	);
+}
+
+/**
+ * Reports whether the shop is hidden from visitors.
+ */
+function dkm_winkel_zichtbaarheid_lees(): WP_REST_Response {
+	return new WP_REST_Response( dkm_winkel_zichtbaarheid_waarden() );
+}
+
+/**
+ * Opens or closes the shop to visitors.
+ *
+ * @param WP_REST_Request $request The request.
+ */
+function dkm_winkel_zichtbaarheid_zet( WP_REST_Request $request ): WP_REST_Response {
+	$binnenkort = (bool) $request->get_param( 'binnenkort' );
+	update_option( 'woocommerce_coming_soon', $binnenkort ? 'yes' : 'no' );
+
+	if ( null !== $request->get_param( 'alleen_winkel' ) ) {
+		update_option( 'woocommerce_store_pages_only', $request->get_param( 'alleen_winkel' ) ? 'yes' : 'no' );
+	}
+
+	return new WP_REST_Response(
+		array(
+			'ok'     => true,
+			'nu'     => dkm_winkel_zichtbaarheid_waarden(),
+		)
+	);
 }
 
 /**

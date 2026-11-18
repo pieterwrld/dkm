@@ -55,3 +55,47 @@ function dkm_drop_old_theme_assets(): void {
 }
 add_action( 'wp_enqueue_scripts', 'dkm_drop_old_theme_assets', 99 );
 add_action( 'wp_print_footer_scripts', 'dkm_drop_old_theme_assets', 1 );
+
+/**
+ * True when this page was actually built with the page builder.
+ *
+ * @param int $post_id Post to check.
+ */
+function dkm_is_builder_page( int $post_id ): bool {
+	return $post_id > 0 && 'builder' === get_post_meta( $post_id, '_elementor_edit_mode', true );
+}
+
+/**
+ * Keeps the page builder's global typography off the pages this theme draws.
+ *
+ * The builder prints a stylesheet that sets a font, a size and uppercase
+ * headings for the whole site, under selectors that all hang off one class on
+ * the body. Dropping that class on the pages this theme draws is enough: the
+ * rules stop matching, and nothing has to be dequeued or outranked. A page the
+ * builder really made keeps the class, so those pages look as they were made.
+ *
+ * @param string[] $classes Body classes.
+ * @return string[]
+ */
+function dkm_drop_builder_kit_class( array $classes ): array {
+	// The front page and the shop are drawn by this theme, whatever the builder
+	// thinks it owns. Only an ordinary page that the builder really made keeps
+	// its typography.
+	$houdt_kit = is_page()
+		&& ! is_front_page()
+		&& dkm_is_builder_page( (int) get_queried_object_id() );
+
+	if ( $houdt_kit ) {
+		return $classes;
+	}
+
+	return array_values(
+		array_filter(
+			$classes,
+			static function ( $class ) {
+				return ! str_starts_with( (string) $class, 'elementor-kit-' );
+			}
+		)
+	);
+}
+add_filter( 'body_class', 'dkm_drop_builder_kit_class', 20 );
