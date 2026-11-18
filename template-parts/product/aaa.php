@@ -86,9 +86,3 @@ $not = array(
 get_template_part( 'template-parts/product/quality-explainer', null, $args );
 get_template_part( 'template-parts/product/delivery', null, $args );
 ?>
-
-<section class="sec sec--tight">
-	<div class="wrap">
-		<?php woocommerce_output_related_products(); ?>
-	</div>
-</section>

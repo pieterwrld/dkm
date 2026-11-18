@@ -43,19 +43,22 @@ $dkm_review_row = static function ( $cart_item_key, $cart_item, $is_child = fals
 		<td class="product-name">
 			<div class="co__line">
 				<?php
+				// The box has a photograph of its own, and it is the thing being
+				// bought, so it is shown like any other line. The drawn box is
+				// only for a line that has no picture at all.
 				$thumb_id = (int) $product->get_image_id();
-				if ( $thumb_id && ! $is_child ) {
+				if ( $thumb_id ) {
 					echo wp_get_attachment_image( // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 						$thumb_id,
 						'thumbnail',
 						false,
 						array(
-							'class'   => 'co__thumb',
+							'class'   => 'co__thumb' . ( $is_child ? ' co__thumb--child' : '' ),
 							'alt'     => wp_strip_all_tags( $product_name ),
 							'loading' => 'lazy',
 						)
 					);
-				} elseif ( $is_child ) {
+				} else {
 					echo '<span class="co__thumb co__thumb--box" aria-hidden="true">' . dkm_icon( 'box' ) . '</span>';
 				}
 				?>

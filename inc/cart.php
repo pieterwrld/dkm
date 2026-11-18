@@ -148,7 +148,10 @@ function dkm_cart_payload(): array {
 
 	return array(
 		'count' => (int) WC()->cart->get_cart_contents_count(),
-		'total' => wp_strip_all_tags( WC()->cart->get_cart_total() ),
+		// Stripping the tags leaves the euro sign as an entity, and the page
+		// puts this straight into the element as text, so it has to be a real
+		// character here.
+		'total' => html_entity_decode( wp_strip_all_tags( WC()->cart->get_cart_total() ), ENT_QUOTES, 'UTF-8' ),
 		'body'  => $body,
 		'hasBox' => function_exists( 'dkm_cart_has_box' ) && dkm_cart_has_box(),
 	);

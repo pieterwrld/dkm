@@ -69,7 +69,7 @@ $rating    = (string) get_theme_mod( 'dkm_stat_rating', '4.9' );
 			</div>
 			<div class="hero__stat">
 				<b><?php echo esc_html( $reviews ); ?>+</b>
-				<span><?php esc_html_e( 'Vijfsterrenreviews', 'dkm' ); ?></span>
+				<span><?php esc_html_e( 'reviews', 'dkm' ); ?></span>
 			</div>
 			<div class="hero__stat">
 				<b class="hero__stars" aria-hidden="true">★★★★★</b>

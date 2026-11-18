@@ -171,7 +171,7 @@ function dkm_customize_register( WP_Customize_Manager $wp_customize ): void {
 
 	$stats = array(
 		'dkm_stat_delivered' => array( __( 'Horloges geleverd', 'dkm' ), '1200' ),
-		'dkm_stat_reviews'   => array( __( 'Vijfsterrenreviews', 'dkm' ), '800' ),
+		'dkm_stat_reviews'   => array( __( 'reviews', 'dkm' ), '800' ),
 		'dkm_stat_rating'    => array( __( 'Gemiddelde beoordeling', 'dkm' ), '4.9' ),
 		'dkm_stat_recommend' => array( __( 'Beveelt ons aan, in procenten', 'dkm' ), '98' ),
 	);

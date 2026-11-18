@@ -32,7 +32,7 @@ $recommend = (int) preg_replace( '/\D/', '', (string) get_theme_mod( 'dkm_stat_r
 			</div>
 			<div class="rv-s">
 				<b class="gr-txt" data-dkm-count="<?php echo esc_attr( (string) $five ); ?>"><?php echo esc_html( (string) $five ); ?></b>
-				<span><?php esc_html_e( 'Vijfsterrenreviews', 'dkm' ); ?></span>
+				<span><?php esc_html_e( 'reviews', 'dkm' ); ?></span>
 			</div>
 			<div class="rv-s">
 				<b class="gr-txt" data-dkm-count="<?php echo esc_attr( (string) $recommend ); ?>" data-dkm-suffix="%"><?php echo esc_html( (string) $recommend ); ?>%</b>

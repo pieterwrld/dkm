@@ -337,19 +337,22 @@
 /* ---- collection banner ---- */
 
 .cban {
+	/* The picture fills the whole banner and the words sit on top of it. It
+	   used to be two columns, which on a phone meant half a photograph with a
+	   black block under it. */
 	border-radius: var(--r3);
 	overflow: hidden;
 	margin-bottom: 20px;
 	position: relative;
-	display: grid;
-	grid-template-columns: 0.85fr 1.15fr;
+	display: block;
 	background: var(--ink);
 	color: var(--on-dark);
-	min-height: 170px;
+	min-height: clamp(260px, 42vw, 330px);
 }
 
 .cban__img {
-	position: relative;
+	position: absolute;
+	inset: 0;
 	overflow: hidden;
 	min-width: 0;
 }
@@ -358,20 +361,20 @@
 	width: 100%;
 	height: 100%;
 	object-fit: cover;
+	object-position: center;
 }
 
 .cban__img::after {
-	/* A plain gradient over the whole photograph, top to bottom, so the words
-	   below it stay readable. The glow that used to sit under the picture is
-	   gone: it made a bright blob instead of a clean fade. */
+	/* One even layer over the whole photograph, a little heavier where the
+	   words are, so the picture stays visible and the text stays readable. */
 	content: '';
 	position: absolute;
 	inset: 0;
 	background: linear-gradient(
 		180deg,
-		rgba(8, 8, 9, 0.18) 0%,
-		rgba(8, 8, 9, 0.52) 48%,
-		rgba(8, 8, 9, 0.88) 100%
+		rgba(8, 8, 9, 0.42) 0%,
+		rgba(8, 8, 9, 0.58) 45%,
+		rgba(8, 8, 9, 0.82) 100%
 	);
 }
 
@@ -421,17 +424,8 @@
 }
 
 @media (max-width: 720px) {
-	.cban {
-		grid-template-columns: 1fr;
-	}
-
-	.cban__img {
-		height: 110px;
-	}
-
-	.cban__img::after {
-		background: linear-gradient(180deg, transparent 25%, var(--veil));
-	}
+	/* The picture covers the whole banner here too. It used to be a strip of
+	   110 pixels with a black block under it, which showed half a watch. */
 
 	.cban__u {
 		grid-template-columns: 1fr;
@@ -447,4 +441,10 @@
 		align-items: flex-start;
 		gap: 2px;
 	}
+}
+
+
+.cban__b {
+	position: relative;
+	z-index: 2;
 }
