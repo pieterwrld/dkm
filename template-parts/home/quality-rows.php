@@ -58,11 +58,10 @@ defined( 'ABSPATH' ) || exit;
 								<span class="qfeat__i"><?php dkm_the_icon( 'check' ); ?><?php echo esc_html( $feat ); ?></span>
 							<?php endforeach; ?>
 						</span>
-						<span class="qmeta">
-							<b><?php echo esc_html( $tier['sub'] ); ?></b>
-							<span><?php esc_html_e( 'Bekijk', 'dkm' ); ?></span>
+						<span class="qshop">
+							<?php esc_html_e( 'Shop nu', 'dkm' ); ?>
+							<?php dkm_the_icon( 'arrow' ); ?>
 						</span>
-						<span class="qgo"><?php dkm_the_icon( 'arrow' ); ?></span>
 					</span>
 				</a>
 			<?php endforeach; ?>

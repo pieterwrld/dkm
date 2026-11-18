@@ -40,7 +40,7 @@ $recommend = (int) preg_replace( '/\D/', '', (string) get_theme_mod( 'dkm_stat_r
 			</div>
 		</div>
 
-		<div class="rvgrid">
+		<div class="rvgrid" data-dkm-track>
 			<?php
 			foreach ( $reviews as $review ) :
 				$image    = function_exists( 'dkm_review_image' ) ? dkm_review_image( $review->ID ) : null;
@@ -81,6 +81,15 @@ $recommend = (int) preg_replace( '/\D/', '', (string) get_theme_mod( 'dkm_stat_r
 					</footer>
 				</article>
 			<?php endforeach; ?>
+		</div>
+
+		<div class="rvnav">
+			<button type="button" class="cbtn" data-dkm-track-prev aria-label="<?php esc_attr_e( 'Vorige gesprekken', 'dkm' ); ?>">
+				<?php dkm_the_icon( 'left' ); ?>
+			</button>
+			<button type="button" class="cbtn" data-dkm-track-next aria-label="<?php esc_attr_e( 'Volgende gesprekken', 'dkm' ); ?>">
+				<?php dkm_the_icon( 'arrow' ); ?>
+			</button>
 		</div>
 	</div>
 </section>

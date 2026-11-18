@@ -25,7 +25,21 @@ if ( ! $tiers ) {
 		if ( ! $term || is_wp_error( $term ) ) {
 			continue;
 		}
-		$image = dkm_product_cat_image( $term, 'dkm-card' );
+		// Its own picture, set per level, so this row shows other watches than
+		// the bars higher up the page. Falls back to the category's own.
+		$eigen = (int) get_theme_mod( 'dkm_pick_' . str_replace( '-', '_', $slug ), 0 );
+		$image = $eigen
+			? wp_get_attachment_image(
+				$eigen,
+				'dkm-card',
+				false,
+				array(
+					'alt'     => '',
+					'loading' => 'lazy',
+					'sizes'   => '(max-width:900px) 46vw, 360px',
+				)
+			)
+			: dkm_product_cat_image( $term, 'dkm-card' );
 		?>
 		<a class="qcard<?php echo $current === $slug ? ' is-on' : ''; ?>"
 			href="<?php echo esc_url( (string) get_term_link( $term ) ); ?>"

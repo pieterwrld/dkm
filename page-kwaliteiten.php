@@ -14,8 +14,16 @@ get_header();
 the_post();
 
 $heading     = get_the_title();
-$has_heading = '' !== trim( (string) $heading ) && __( 'Kwaliteitsinformatie', 'dkm' ) !== $heading;
-$intro       = trim( (string) get_the_content() );
+// A page called Informatie or Kwaliteitsinformatie says nothing on its own, so
+// the heading this template was written with is used instead. A title the shop
+// chose itself still wins.
+$algemeen    = array( __( 'Kwaliteitsinformatie', 'dkm' ), __( 'Informatie', 'dkm' ) );
+$has_heading = '' !== trim( (string) $heading ) && ! in_array( $heading, $algemeen, true );
+// A page that was once laid out in the builder still carries that layout in
+// its content, and here it would print the three levels a second time, in the
+// builder's own styling. This template draws them itself, so on such a page
+// the written intro is left out and the standard line is used.
+$intro = dkm_is_builder_page( get_the_ID() ) ? '' : trim( (string) get_the_content() );
 ?>
 
 <section class="info-head">

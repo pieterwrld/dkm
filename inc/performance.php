@@ -54,7 +54,8 @@ function dkm_trim_wc_scripts(): void {
 	wp_dequeue_script( 'wc-cart-fragments' );
 	wp_dequeue_script( 'wc-password-strength-meter' );
 	wp_dequeue_script( 'selectWoo' );
-	wp_dequeue_style( 'select2' );
+	// Not this one. WooCommerce swaps the country field for a widget of its
+	// own, and without this stylesheet that widget is a one pixel line.
 }
 
 /**

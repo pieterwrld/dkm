@@ -303,10 +303,11 @@
 }
 
 .qrow {
-	/* A grid, not a flex row: the left bar took its width from the longest
-	   label, so the three rows never lined up under each other. */
+	/* One line per level at every width, with a small gap between the two
+	   bars. The left bar takes what is left over, the right one only as much
+	   as it needs, so the three rows still line up under each other. */
 	display: grid;
-	grid-template-columns: minmax(0, 300px) minmax(0, 1fr);
+	grid-template-columns: minmax(0, 1fr) auto;
 	align-items: stretch;
 	gap: 10px;
 }
@@ -379,6 +380,7 @@
 .qlong {
 	display: flex;
 	align-items: center;
+	justify-content: flex-end;
 	gap: 14px;
 	padding: 10px 14px;
 	min-width: 0;
@@ -487,43 +489,65 @@
 	transform: translateX(3px);
 }
 
-@media (max-width: 860px) {
-	.qlong {
-		gap: 10px;
-	}
+/* The small gold button that replaced the subtitle. */
+.qshop {
+	display: inline-flex;
+	align-items: center;
+	gap: 7px;
+	flex: 0 0 auto;
+	padding: 9px 16px;
+	border-radius: 999px;
+	font-size: 12.5px;
+	font-weight: 800;
+	letter-spacing: -0.01em;
+	color: #231a08;
+	white-space: nowrap;
+	background: var(--grad);
+	background-size: 260% 100%;
+	animation: gmove 7s linear infinite;
+	box-shadow: 0 10px 24px -12px rgba(201, 170, 112, 0.8);
+	transition: transform 0.3s var(--es);
+}
 
-	/* Side by side the two pills squeezed each other until the longer one
-	   broke into a column of single words. Stacked they each keep their own
-	   line and the text stays readable. */
-	.qfeat {
-		flex-direction: column;
-		align-items: flex-start;
-		gap: 5px;
-		flex: 1 1 auto;
-		overflow: visible;
-	}
+.qshop .ico {
+	font-size: 14px;
+	transition: transform 0.3s var(--e);
+}
 
-	.qfeat__i {
-		font-size: 10.5px;
-		padding: 4px 9px;
-		white-space: normal;
-		max-width: 100%;
-	}
+.qrow:hover .qshop {
+	transform: translateY(-1px);
+}
 
-	.qmeta {
-		flex: 0 0 auto;
+.qrow:hover .qshop .ico {
+	transform: translateX(3px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.qshop {
+		animation: none;
 	}
 }
 
-@media (max-width: 680px) {
-	/* Below this the row stacks, and the two selling points get the full
-	   width under the price block instead of fighting it for space. */
-	.qrow {
-		grid-template-columns: minmax(0, 1fr);
+@media (max-width: 1040px) {
+	.qfeat__i:nth-child(n + 2) {
+		display: none;
+	}
+}
+
+@media (max-width: 720px) {
+	/* Too narrow for a selling point beside the button. The pills move to the
+	   information page; the row keeps its single line. */
+	.qfeat {
+		display: none;
 	}
 
-	.qmeta {
-		text-align: left;
+	.qlong {
+		padding: 8px 10px;
+	}
+
+	.qshop {
+		font-size: 11.5px;
+		padding: 8px 13px;
 	}
 }
 
@@ -1148,6 +1172,9 @@
 
 .bfb {
 	background: #0B0A08;
+	/* First thing on the page now, so it slides up under the floating header
+	   the way the old hero did. */
+	margin-top: calc(-1 * (var(--hd-h) + 20px));
 }
 
 .bfb__link {
@@ -1192,10 +1219,10 @@
 .bfb__btn {
 	display: inline-flex;
 	align-items: center;
-	gap: 9px;
-	padding: 14px 26px;
+	gap: 11px;
+	padding: clamp(16px, 2vw, 21px) clamp(28px, 3.4vw, 46px);
 	border-radius: 999px;
-	font-size: clamp(12px, 1.5vw, 15px);
+	font-size: clamp(14px, 1.9vw, 19px);
 	font-weight: 800;
 	letter-spacing: -0.01em;
 	color: #231a08;
@@ -1233,5 +1260,195 @@
 	   upright one, so the button sits a little higher there. */
 	.bfb__cta {
 		bottom: 11%;
+	}
+}
+
+
+/* ---- Closing section: the photograph that opens up ---- */
+
+.cls {
+	--p: 0;
+	position: relative;
+	height: 210vh;
+	background: var(--bg);
+}
+
+.cls__stage {
+	position: sticky;
+	top: 0;
+	height: 100vh;
+	display: grid;
+	place-items: center;
+	overflow: hidden;
+}
+
+.cls__frame {
+	position: relative;
+	/* From a panel in the middle of the screen to the whole of it. The two
+	   numbers are driven by how far the section has travelled. */
+	width: calc(100% - (1 - var(--p)) * 2 * var(--pad) - (1 - var(--p)) * 10%);
+	height: calc(56vh + 44vh * var(--p));
+	border-radius: calc(26px * (1 - var(--p)));
+	overflow: hidden;
+	background: #0B0A08;
+	display: grid;
+	place-items: center;
+	transition: none;
+}
+
+.cls__img {
+	position: absolute;
+	inset: 0;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	object-position: center;
+}
+
+.cls__veil {
+	position: absolute;
+	inset: 0;
+	background:
+		linear-gradient(180deg, rgba(8, 8, 9, 0.72) 0%, rgba(8, 8, 9, 0.5) 42%, rgba(8, 8, 9, 0.86) 100%);
+}
+
+.cls__in {
+	position: relative;
+	z-index: 2;
+	width: 100%;
+	max-width: 980px;
+	padding: clamp(18px, 3vw, 44px) max(var(--pad), env(safe-area-inset-left, 0px));
+	text-align: center;
+	color: var(--on-dark);
+}
+
+.cls__t {
+	color: var(--on-dark);
+	margin-top: 6px;
+}
+
+.cls__usps {
+	display: grid;
+	/* Two by two at every width, as asked. */
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: clamp(8px, 1.4vw, 16px);
+	margin-top: clamp(16px, 2.4vw, 30px);
+}
+
+.cls__usp {
+	display: grid;
+	justify-items: center;
+	gap: 3px;
+	padding: clamp(12px, 1.8vw, 20px) clamp(8px, 1.4vw, 18px);
+	border: 1px solid rgba(255, 255, 255, 0.16);
+	border-radius: 16px;
+	background: rgba(255, 255, 255, 0.07);
+	backdrop-filter: blur(9px);
+	-webkit-backdrop-filter: blur(9px);
+	min-width: 0;
+}
+
+.cls__usp b {
+	font-size: clamp(12px, 1.5vw, 15px);
+	font-weight: 800;
+	letter-spacing: -0.01em;
+}
+
+.cls__usp > span:last-child {
+	font-size: clamp(10px, 1.2vw, 12.5px);
+	color: rgba(255, 255, 255, 0.72);
+	line-height: 1.35;
+}
+
+.cls__ico {
+	display: grid;
+	place-items: center;
+	width: 38px;
+	height: 38px;
+	border-radius: 50%;
+	background: var(--grad);
+	background-size: 260% 100%;
+	animation: gmove 8s linear infinite;
+	margin-bottom: 4px;
+}
+
+.cls__ico .ico {
+	font-size: 19px;
+	color: #231a08;
+	stroke-width: 2.2;
+}
+
+.cls__cta {
+	margin-top: clamp(16px, 2.2vw, 28px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.cls {
+		height: auto;
+	}
+
+	.cls__stage {
+		position: static;
+		height: auto;
+	}
+
+	.cls__frame {
+		width: 100%;
+		height: auto;
+		min-height: 78vh;
+		border-radius: 0;
+	}
+
+	.cls__ico {
+		animation: none;
+	}
+}
+
+
+/* ---- The conversations, two at a time ---- */
+
+.rvgrid {
+	/* Was a grid of four short cards, and the chats were cut off halfway. Two
+	   tall cards at a time now, and the rest slides in from the side. */
+	display: flex;
+	grid-template-columns: none;
+	gap: clamp(10px, 1.4vw, 18px);
+	overflow-x: auto;
+	scroll-snap-type: x mandatory;
+	scroll-behavior: smooth;
+	scrollbar-width: none;
+	padding-bottom: 4px;
+	-webkit-overflow-scrolling: touch;
+}
+
+.rvgrid::-webkit-scrollbar {
+	display: none;
+}
+
+.rvgrid > .rvc {
+	flex: 0 0 calc((100% - clamp(10px, 1.4vw, 18px)) / 2);
+	scroll-snap-align: start;
+	min-width: 0;
+}
+
+.rvc__s {
+	/* Tall enough to read a conversation instead of the first two lines. */
+	height: clamp(380px, 56vh, 560px);
+}
+
+.rvnav {
+	display: flex;
+	justify-content: center;
+	gap: 10px;
+	margin-top: clamp(14px, 2vw, 22px);
+}
+
+@media (max-width: 560px) {
+	.rvgrid > .rvc {
+		flex-basis: calc((100% - clamp(10px, 1.4vw, 18px)) / 2);
+	}
+
+	.rvc__s {
+		height: clamp(320px, 52vh, 460px);
 	}
 }

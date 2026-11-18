@@ -125,7 +125,7 @@ $phone    = (string) get_theme_mod( 'dkm_whatsapp', '31647974408' );
 						<?php dkm_the_icon( 'arrow' ); ?>
 						<?php
 						/* translators: %s is the name of the sister brand. */
-						printf( esc_html__( 'Zustermerk %s', 'dkm' ), esc_html( $sister_n ) );
+						echo esc_html( $sister_n );
 						?>
 					</a>
 				<?php endif; ?>

@@ -41,7 +41,7 @@ if ( ! $clips ) {
 
 	<div class="wrap ugc__in">
 		<div class="sec-hd sec-hd--ctr">
-			<span class="eyebrow"><?php esc_html_e( 'Van onze klanten', 'dkm' ); ?></span>
+			<span class="eyebrow"><?php esc_html_e( 'Videos gedragen door', 'dkm' ); ?></span>
 			<h2 class="h-l ugc__title"><?php esc_html_e( 'De Klokjesman', 'dkm' ); ?> <span class="em gr-txt"><?php esc_html_e( 'in het echt', 'dkm' ); ?></span></h2>
 			<p class="lead"><?php esc_html_e( 'Echte beelden van klanten en ambassadors.', 'dkm' ); ?></p>
 		</div>
@@ -64,7 +64,7 @@ if ( ! $clips ) {
 							playsinline
 							muted
 							loop
-							preload="none"
+							preload="metadata"
 							<?php if ( $poster ) : ?>
 								poster="<?php echo esc_url( (string) wp_get_attachment_image_url( $poster, 'dkm-card-2x' ) ); ?>"
 							<?php endif; ?>>

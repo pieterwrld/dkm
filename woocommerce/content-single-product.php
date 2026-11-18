@@ -38,3 +38,10 @@ $slug = dkm_product_template_slug( $tier );
 	do_action( 'woocommerce_after_single_product' );
 	?>
 </div>
+
+<?php
+// The same two sections as on the home page: the clips our customers filmed,
+// and the conversations behind them. They carry more weight here, right under
+// the watch someone is looking at, than anywhere else on the site.
+get_template_part( 'template-parts/home/ugc' );
+get_template_part( 'template-parts/home/reviews' );

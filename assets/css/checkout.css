@@ -607,3 +607,52 @@ table.shop_table tfoot td {
 	color: var(--ch4);
 	text-decoration: underline;
 }
+
+
+/* ---- The country field and the blocks below it ---- */
+
+.co .select2-container--default .select2-selection--single {
+	height: 46px;
+	border: 1.5px solid var(--line);
+	border-radius: 12px;
+	background: var(--bg);
+	display: flex;
+	align-items: center;
+	padding: 0 12px;
+}
+
+.co .select2-container--default .select2-selection--single .select2-selection__rendered {
+	line-height: 1.2;
+	padding: 0;
+	color: var(--ink);
+	font-size: 14px;
+}
+
+.co .select2-container--default .select2-selection--single .select2-selection__arrow {
+	height: 44px;
+	right: 8px;
+}
+
+.co .select2-container {
+	width: 100% !important;
+}
+
+.co .select2-dropdown {
+	border: 1.5px solid var(--line);
+	border-radius: 12px;
+	overflow: hidden;
+}
+
+/* The extra blocks sat flush against the card's edge while every field inside
+   it was indented, so the page looked a step out of line. */
+.co .woocommerce-additional-fields,
+.co .woocommerce-shipping-fields {
+	padding-left: clamp(16px, 2.2vw, 24px);
+	padding-right: clamp(16px, 2.2vw, 24px);
+}
+
+.co .woocommerce-additional-fields h3,
+.co .woocommerce-shipping-fields h3 {
+	margin-top: clamp(14px, 2vw, 22px);
+	margin-bottom: 10px;
+}

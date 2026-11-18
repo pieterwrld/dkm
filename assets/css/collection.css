@@ -361,18 +361,22 @@
 }
 
 .cban__img::after {
+	/* A plain gradient over the whole photograph, top to bottom, so the words
+	   below it stay readable. The glow that used to sit under the picture is
+	   gone: it made a bright blob instead of a clean fade. */
 	content: '';
 	position: absolute;
 	inset: 0;
-	background: linear-gradient(90deg, transparent 35%, var(--veil));
+	background: linear-gradient(
+		180deg,
+		rgba(8, 8, 9, 0.18) 0%,
+		rgba(8, 8, 9, 0.52) 48%,
+		rgba(8, 8, 9, 0.88) 100%
+	);
 }
 
 .cban__glow {
-	position: absolute;
-	inset: 0;
-	z-index: 1;
-	pointer-events: none;
-	background: radial-gradient(420px 180px at 72% 40%, var(--veil-glow), transparent 70%);
+	display: none;
 }
 
 .cban__b {

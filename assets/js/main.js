@@ -321,6 +321,67 @@
 		var timer = setInterval(tick, 1000);
 	});
 
+
+	/* ====================================================================
+	   The closing photograph, which opens up as it passes
+	   ==================================================================== */
+
+	(function () {
+		var grower = $('[data-dkm-grow]');
+		if (!grower || reduced) {
+			return;
+		}
+
+		var ticking = false;
+
+		function paint() {
+			ticking = false;
+			var box = grower.getBoundingClientRect();
+			var reisbaar = box.height - window.innerHeight;
+			if (reisbaar <= 0) {
+				grower.style.setProperty('--p', '1');
+				return;
+			}
+			// How far the section has travelled through the sticky stage.
+			var gedaan = Math.min(1, Math.max(0, -box.top / reisbaar));
+			grower.style.setProperty('--p', gedaan.toFixed(4));
+		}
+
+		function vraag() {
+			if (!ticking) {
+				ticking = true;
+				window.requestAnimationFrame(paint);
+			}
+		}
+
+		on(window, 'scroll', vraag, { passive: true });
+		on(window, 'resize', vraag);
+		paint();
+	})();
+
+	/* ====================================================================
+	   A row that slides, driven by two buttons
+	   ==================================================================== */
+
+	$$('[data-dkm-track]').forEach(function (track) {
+		var root = track.parentNode;
+		var vorige = $('[data-dkm-track-prev]', root);
+		var volgende = $('[data-dkm-track-next]', root);
+
+		function stap(richting) {
+			// One screen of the track at a time, so the pair in view is
+			// replaced by the next pair.
+			track.scrollBy({ left: richting * track.clientWidth, behavior: 'smooth' });
+		}
+
+		on(vorige, 'click', function () {
+			stap(-1);
+		});
+
+		on(volgende, 'click', function () {
+			stap(1);
+		});
+	});
 	/* ====================================================================
 	   Scroll reveal
 	   ==================================================================== */

@@ -81,9 +81,12 @@ function dkm_drop_builder_kit_class( array $classes ): array {
 	// The front page and the shop are drawn by this theme, whatever the builder
 	// thinks it owns. Only an ordinary page that the builder really made keeps
 	// its typography.
+	$id        = (int) get_queried_object_id();
+	$sjabloon  = $id ? (string) get_page_template_slug( $id ) : '';
 	$houdt_kit = is_page()
 		&& ! is_front_page()
-		&& dkm_is_builder_page( (int) get_queried_object_id() );
+		&& '' === $sjabloon
+		&& dkm_is_builder_page( $id );
 
 	if ( $houdt_kit ) {
 		return $classes;
