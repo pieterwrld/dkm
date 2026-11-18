@@ -11,7 +11,7 @@
 	align-items: flex-end;
 	overflow: hidden;
 	background: var(--dark2);
-	margin-top: calc(-1 * (var(--hd-h) + 10px));
+	margin-top: calc(-1 * (var(--hd-h) + 20px));
 	padding-top: 70px;
 }
 
@@ -294,15 +294,21 @@
 
 /* ---- quality rows: always one line ---- */
 
-.qrow {
-	display: flex;
-	align-items: stretch;
+.qrows {
+	/* Equal rows, so one level with a longer selling point does not make its
+	   whole block taller than the other two. */
+	display: grid;
+	grid-auto-rows: 1fr;
 	gap: 10px;
-	margin-bottom: 10px;
 }
 
-.qrow:last-child {
-	margin-bottom: 0;
+.qrow {
+	/* A grid, not a flex row: the left bar took its width from the longest
+	   label, so the three rows never lined up under each other. */
+	display: grid;
+	grid-template-columns: minmax(0, 300px) minmax(0, 1fr);
+	align-items: stretch;
+	gap: 10px;
 }
 
 .qbar {
@@ -324,7 +330,7 @@
 	align-items: center;
 	gap: 11px;
 	padding: 10px 14px 10px 10px;
-	flex: 0 0 auto;
+	min-width: 0;
 }
 
 .qshort__img {
@@ -375,8 +381,35 @@
 	align-items: center;
 	gap: 14px;
 	padding: 10px 14px;
-	flex: 1;
 	min-width: 0;
+	/* The quality's own colour wells up from the right edge and drifts, so the
+	   bar reads as belonging to that level without shouting. */
+	position: relative;
+	overflow: hidden;
+	background:
+		linear-gradient(90deg, transparent 38%, var(--qbg) 100%),
+		var(--bg);
+}
+
+.qlong::after {
+	content: "";
+	position: absolute;
+	inset: 0;
+	pointer-events: none;
+	background: linear-gradient(
+		100deg,
+		transparent 42%,
+		color-mix(in srgb, var(--qc) 22%, transparent) 58%,
+		transparent 72%
+	);
+	background-size: 260% 100%;
+	animation: gmove 7s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.qlong::after {
+		animation: none;
+	}
 }
 
 .qfeat {
@@ -454,15 +487,43 @@
 	transform: translateX(3px);
 }
 
-@media (max-width: 1100px) {
-	.qfeat__i:nth-child(n + 3) {
-		display: none;
+@media (max-width: 860px) {
+	.qlong {
+		gap: 10px;
+	}
+
+	/* Side by side the two pills squeezed each other until the longer one
+	   broke into a column of single words. Stacked they each keep their own
+	   line and the text stays readable. */
+	.qfeat {
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 5px;
+		flex: 1 1 auto;
+		overflow: visible;
+	}
+
+	.qfeat__i {
+		font-size: 10.5px;
+		padding: 4px 9px;
+		white-space: normal;
+		max-width: 100%;
+	}
+
+	.qmeta {
+		flex: 0 0 auto;
 	}
 }
 
-@media (max-width: 860px) {
-	.qfeat {
-		display: none;
+@media (max-width: 680px) {
+	/* Below this the row stacks, and the two selling points get the full
+	   width under the price block instead of fighting it for space. */
+	.qrow {
+		grid-template-columns: minmax(0, 1fr);
+	}
+
+	.qmeta {
+		text-align: left;
 	}
 }
 

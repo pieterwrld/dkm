@@ -25,6 +25,7 @@ function dkm_tiers(): array {
 		'superclone'    => array(
 			'key'      => 'superclone',
 			'name'     => __( 'Superclone', 'dkm' ),
+			'short'    => __( 'Superclone', 'dkm' ),
 			'sub'      => __( 'Niet van echt te onderscheiden', 'dkm' ),
 			'icon'     => 'crown',
 			'from'     => 900,
@@ -59,6 +60,7 @@ function dkm_tiers(): array {
 		'bp-swiss-made' => array(
 			'key'      => 'bp',
 			'name'     => __( 'BP Swiss Made', 'dkm' ),
+			'short'    => __( 'BP', 'dkm' ),
 			'sub'      => __( 'De slimste keuze', 'dkm' ),
 			'icon'     => 'swiss',
 			'from'     => 370,
@@ -93,6 +95,7 @@ function dkm_tiers(): array {
 		'aaa'           => array(
 			'key'      => 'aaa',
 			'name'     => __( 'AAA+', 'dkm' ),
+			'short'    => __( 'AAA+', 'dkm' ),
 			'sub'      => __( 'Betaalbaar instapmodel', 'dkm' ),
 			'icon'     => 'spark',
 			'from'     => 150,

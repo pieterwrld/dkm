@@ -113,6 +113,7 @@ function dkm_query_args( array $filters, string $ignore = '' ): array {
 		'no_found_rows'       => false,
 		'posts_per_page'      => $filters['per_page'],
 		'paged'               => $filters['page'],
+		'dkm_stock_last'      => true,
 	);
 
 	if ( count( $tax ) > 1 ) {
@@ -341,4 +342,59 @@ function dkm_rest_products( WP_REST_Request $request ) {
 			'price'  => dkm_price_bounds( $filters ),
 		)
 	);
+}
+
+
+/**
+ * Sold out goes to the back of every list.
+ *
+ * Whatever the shopper sorted on, a watch that cannot be bought should not sit
+ * at the top of the page. This puts one sort step in front of the chosen one,
+ * so within each group the chosen order is kept exactly as it was.
+ *
+ * It reads WooCommerce's own lookup table rather than post meta, because that
+ * table has one row per product and an index on the column.
+ *
+ * @param array<string, string> $clauses The SQL pieces of the query.
+ * @param WP_Query              $query   The query itself.
+ * @return array<string, string>
+ */
+function dkm_stock_last_clauses( array $clauses, WP_Query $query ): array {
+	if ( ! dkm_query_wants_stock_last( $query ) ) {
+		return $clauses;
+	}
+
+	global $wpdb;
+	$lookup = $wpdb->prefix . 'wc_product_meta_lookup';
+
+	if ( false === strpos( (string) $clauses['join'], 'dkm_stock' ) ) {
+		$clauses['join'] .= " LEFT JOIN {$lookup} AS dkm_stock ON {$wpdb->posts}.ID = dkm_stock.product_id";
+	}
+
+	$eerst = "CASE WHEN dkm_stock.stock_status = 'outofstock' THEN 1 ELSE 0 END ASC";
+	$rest  = trim( (string) $clauses['orderby'] );
+
+	$clauses['orderby'] = '' === $rest ? $eerst : $eerst . ', ' . $rest;
+
+	return $clauses;
+}
+add_filter( 'posts_clauses', 'dkm_stock_last_clauses', 10, 2 );
+
+/**
+ * True for the lists this theme builds and for the shop's own archive.
+ *
+ * @param WP_Query $query The query.
+ */
+function dkm_query_wants_stock_last( WP_Query $query ): bool {
+	if ( $query->get( 'dkm_stock_last' ) ) {
+		return true;
+	}
+
+	if ( is_admin() || ! $query->is_main_query() ) {
+		return false;
+	}
+
+	return $query->is_post_type_archive( 'product' )
+		|| $query->is_tax( 'product_cat' )
+		|| $query->is_tax( 'product_tag' );
 }

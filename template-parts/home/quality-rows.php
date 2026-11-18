@@ -41,7 +41,7 @@ defined( 'ABSPATH' ) || exit;
 							?>
 						</span>
 						<span class="qshort__t">
-							<span class="qpill"><?php echo esc_html( $tier['name'] ); ?></span>
+							<span class="qpill"><?php echo esc_html( $tier['short'] ?? $tier['name'] ); ?></span>
 							<b>
 								<?php
 								/* translators: %s is a price such as €900. */
@@ -59,7 +59,7 @@ defined( 'ABSPATH' ) || exit;
 
 					<span class="qbar qlong">
 						<span class="qfeat">
-							<?php foreach ( $tier['feats'] as $feat ) : ?>
+							<?php foreach ( array_slice( $tier['feats'], 0, 2 ) as $feat ) : ?>
 								<span class="qfeat__i"><?php dkm_the_icon( 'check' ); ?><?php echo esc_html( $feat ); ?></span>
 							<?php endforeach; ?>
 						</span>
