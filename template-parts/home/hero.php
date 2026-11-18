@@ -44,12 +44,14 @@ $rating    = (string) get_theme_mod( 'dkm_stat_rating', '4.9' );
 			<span class="hero__badge"><i aria-hidden="true"></i><?php echo esc_html( $badge ); ?></span>
 		<?php endif; ?>
 
-		<h1 class="h-xl hero__title">
-			<?php echo esc_html( $title ); ?>
-			<?php if ( $accent ) : ?>
-				<span class="em gr-txt"><?php echo esc_html( $accent ); ?></span>
-			<?php endif; ?>
-		</h1>
+		<h1 class="h-xl hero__title"><?php
+			// Printed without a break between the two, so the line wraps on the
+			// space itself and not on the indentation of this file.
+			echo esc_html( $title );
+			if ( $accent ) {
+				echo ' <span class="em gr-txt">' . esc_html( $accent ) . '</span>';
+			}
+		?></h1>
 
 		<?php if ( $text ) : ?>
 			<p class="lead hero__lead"><?php echo esc_html( $text ); ?></p>

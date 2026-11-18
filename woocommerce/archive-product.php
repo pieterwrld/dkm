@@ -107,6 +107,13 @@ do_action( 'woocommerce_before_main_content' );
 				</nav>
 			<?php else : ?>
 				<div class="fchips" role="group" aria-label="<?php esc_attr_e( 'Filter op kwaliteit', 'dkm' ); ?>">
+					<button type="button"
+						class="ch is-on"
+						data-dkm-facet-all="tier"
+						aria-pressed="true">
+						<?php esc_html_e( 'Alles', 'dkm' ); ?>
+						<b><?php echo esc_html( (string) $total ); ?></b>
+					</button>
 					<?php foreach ( $facets['tier'] as $option ) : ?>
 						<button type="button"
 							class="ch"

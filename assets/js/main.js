@@ -598,8 +598,17 @@
 		var index = 0;
 
 		function layout() {
+			var aantal = cards.length;
 			cards.forEach(function (card, i) {
+				// The stack is a ring, so a card far ahead is really just
+				// behind. Without this the fan only ever opens to one side.
 				var offset = i - index;
+				if (offset > aantal / 2) {
+					offset -= aantal;
+				}
+				if (offset < -aantal / 2) {
+					offset += aantal;
+				}
 				var abs = Math.abs(offset);
 				var scale = Math.max(0.6, 1 - abs * 0.14);
 				var x = offset * 56;
@@ -987,12 +996,38 @@
 				});
 		}
 
+		// Each group has one button that stands for "no choice made". It lights
+		// up when nothing in its group is picked, and pressing it lets go of
+		// whatever was picked there.
+		function paintAllButtons() {
+			$$('[data-dkm-facet-all]', root).forEach(function (btn) {
+				var group = btn.getAttribute('data-dkm-facet-all');
+				var gekozen = $$('[data-dkm-facet="' + group + '"].is-on', root).length;
+				btn.classList.toggle('is-on', gekozen === 0);
+				btn.setAttribute('aria-pressed', gekozen === 0 ? 'true' : 'false');
+			});
+		}
+
 		$$('[data-dkm-facet]', root).forEach(function (btn) {
 			on(btn, 'click', function () {
 				btn.classList.toggle('is-on');
+				paintAllButtons();
 				load(false);
 			});
 		});
+
+		$$('[data-dkm-facet-all]', root).forEach(function (btn) {
+			on(btn, 'click', function () {
+				var group = btn.getAttribute('data-dkm-facet-all');
+				$$('[data-dkm-facet="' + group + '"].is-on', root).forEach(function (other) {
+					other.classList.toggle('is-on', false);
+				});
+				paintAllButtons();
+				load(false);
+			});
+		});
+
+		paintAllButtons();
 
 		on(sortEl, 'change', function () {
 			load(false);
@@ -1020,8 +1055,9 @@
 
 		on($('[data-dkm-clear]', root), 'click', function () {
 			$$('[data-dkm-facet].is-on', root).forEach(function (btn) {
-				btn.classList.remove('is-on');
+				btn.classList.toggle('is-on', false);
 			});
+			paintAllButtons();
 			if (priceEl) {
 				priceEl.value = priceEl.max;
 			}

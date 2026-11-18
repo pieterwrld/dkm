@@ -50,6 +50,24 @@ function dkm_tools_routes(): void {
 		)
 	);
 
+
+	register_rest_route(
+		'dkm/v1',
+		'/thema/instellingen',
+		array(
+			array(
+				'methods'             => WP_REST_Server::READABLE,
+				'callback'            => 'dkm_thema_lees',
+				'permission_callback' => 'dkm_tools_may_run',
+			),
+			array(
+				'methods'             => WP_REST_Server::CREATABLE,
+				'callback'            => 'dkm_thema_zet',
+				'permission_callback' => 'dkm_tools_may_run',
+			),
+		)
+	);
+
 	register_rest_route(
 		'dkm/v1',
 		'/winkel/zichtbaarheid',
@@ -175,6 +193,81 @@ function dkm_tools_rest_run( WP_REST_Request $request ) {
 			'ok'     => ! $mislukt,
 			'taak'   => $taak,
 			'regels' => $uit,
+		)
+	);
+}
+
+
+/**
+ * The theme settings this route may touch. Anything outside this list is
+ * refused, so the route cannot be used to change the site at large.
+ *
+ * @return array<string, string> Setting name to type.
+ */
+function dkm_thema_sleutels(): array {
+	return array(
+		'dkm_bf_enabled'    => 'bool',
+		'dkm_bf_until'      => 'text',
+		'dkm_bf_text'       => 'text',
+		'dkm_bf_label'      => 'text',
+		'dkm_stat_delivered' => 'text',
+		'dkm_stat_reviews'  => 'text',
+		'dkm_stat_rating'   => 'text',
+		'dkm_stat_recommend' => 'text',
+		'dkm_whatsapp'      => 'text',
+		'dkm_whatsapp_text' => 'text',
+		'dkm_email'         => 'text',
+		'dkm_snapchat'      => 'text',
+		'dkm_sister_name'   => 'text',
+		'dkm_sister_url'    => 'text',
+	);
+}
+
+/**
+ * Reports the current values.
+ */
+function dkm_thema_lees(): WP_REST_Response {
+	$uit = array();
+	foreach ( dkm_thema_sleutels() as $naam => $soort ) {
+		$uit[ $naam ] = get_theme_mod( $naam, 'bool' === $soort ? false : '' );
+	}
+	return new WP_REST_Response( $uit );
+}
+
+/**
+ * Writes the values that are on the list.
+ *
+ * @param WP_REST_Request $request The request.
+ */
+function dkm_thema_zet( WP_REST_Request $request ) {
+	$toegestaan = dkm_thema_sleutels();
+	$gegeven    = (array) $request->get_json_params();
+	$onbekend   = array_diff( array_keys( $gegeven ), array_keys( $toegestaan ) );
+
+	if ( $onbekend ) {
+		return new WP_Error(
+			'dkm_onbekende_instelling',
+			sprintf(
+				/* translators: %s is a list of setting names. */
+				__( 'Deze instellingen bestaan niet: %s', 'dkm' ),
+				implode( ', ', $onbekend )
+			),
+			array( 'status' => 400 )
+		);
+	}
+
+	foreach ( $gegeven as $naam => $waarde ) {
+		if ( 'bool' === $toegestaan[ $naam ] ) {
+			set_theme_mod( $naam, (bool) $waarde );
+			continue;
+		}
+		set_theme_mod( $naam, sanitize_text_field( (string) $waarde ) );
+	}
+
+	return new WP_REST_Response(
+		array(
+			'ok' => true,
+			'nu' => dkm_thema_lees()->get_data(),
 		)
 	);
 }

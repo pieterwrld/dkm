@@ -51,6 +51,13 @@ if ( ! $query->have_posts() ) {
 		</div>
 
 		<div class="fchips" role="group" aria-label="<?php esc_attr_e( 'Filter op kwaliteit', 'dkm' ); ?>">
+			<button type="button"
+				class="ch is-on"
+				data-dkm-facet-all="tier"
+				aria-pressed="true">
+				<?php esc_html_e( 'Alles', 'dkm' ); ?>
+				<b><?php echo esc_html( (string) $query->found_posts ); ?></b>
+			</button>
 			<?php foreach ( $facets['tier'] as $option ) : ?>
 				<button type="button"
 					class="ch"
@@ -63,6 +70,12 @@ if ( ! $query->have_posts() ) {
 		</div>
 
 		<div class="fsmall" role="group" aria-label="<?php esc_attr_e( 'Filter op model', 'dkm' ); ?>">
+			<button type="button"
+				class="chs is-on"
+				data-dkm-facet-all="model"
+				aria-pressed="true">
+				<?php esc_html_e( 'Alle modellen', 'dkm' ); ?>
+			</button>
 			<?php foreach ( $facets['model'] as $option ) : ?>
 				<button type="button"
 					class="chs"
@@ -73,11 +86,6 @@ if ( ! $query->have_posts() ) {
 				</button>
 			<?php endforeach; ?>
 		</div>
-
-		<p class="cnt bestsellers__count">
-			<b data-dkm-count-total><?php echo esc_html( (string) $query->found_posts ); ?></b>
-			<?php esc_html_e( 'producten', 'dkm' ); ?>
-		</p>
 
 		<div class="grid" id="dkm-bestsellers-grid" data-dkm-grid>
 			<?php
@@ -90,10 +98,6 @@ if ( ! $query->have_posts() ) {
 			endwhile;
 			wp_reset_postdata();
 			?>
-		</div>
-
-		<div class="more">
-			<button type="button" class="btn btn--o" data-dkm-more hidden><?php esc_html_e( 'Meer laden', 'dkm' ); ?></button>
 		</div>
 	</div>
 </section>
