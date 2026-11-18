@@ -433,3 +433,14 @@
 		grid-template-columns: 1fr;
 	}
 }
+
+
+@media (max-width: 620px) {
+	/* Price and link side by side left no room for the word Bekijk, which got
+	   cut off at the card's edge. Stacked they both fit. */
+	.qcard__row {
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 2px;
+	}
+}

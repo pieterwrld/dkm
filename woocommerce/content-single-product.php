@@ -21,9 +21,7 @@ $tier = dkm_product_tier( $product );
 $slug = dkm_product_template_slug( $tier );
 ?>
 <div class="pd-page" style="<?php echo esc_attr( dkm_tier_vars( $tier ) ); ?>">
-	<div class="wrap">
-		<?php woocommerce_breadcrumb(); ?>
-	</div>
+	<?php woocommerce_breadcrumb(); ?>
 
 	<?php
 	do_action( 'woocommerce_before_single_product' );

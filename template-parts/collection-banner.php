@@ -55,6 +55,11 @@ if ( ! $usps ) {
 			);
 		} elseif ( $term instanceof WP_Term ) {
 			echo dkm_product_cat_image( $term, 'dkm-card' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		} else {
+			// The shop itself has no category to borrow a picture from, so it
+			// takes the newest watch that has one. Without this the banner was
+			// a block of colour with nothing in it.
+			echo dkm_latest_product_image( 'dkm-wide' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		}
 		?>
 	</div>

@@ -29,9 +29,11 @@
 		grid-template-columns: 1fr;
 	}
 
-	/* On a phone the order comes first, so it is clear what is being paid for. */
+	/* The fields come first. Putting the order summary on top also put the
+	   place order button above the address, so the page asked you to confirm
+	   before it had asked you anything. */
 	.co__side {
-		order: -1;
+		order: 0;
 	}
 }
 

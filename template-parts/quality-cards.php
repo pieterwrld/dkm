@@ -41,16 +41,7 @@ if ( ! $tiers ) {
 
 			<span class="qcard__b">
 				<span class="qcard__h"><?php echo esc_html( $tier['name'] ); ?></span>
-				<span class="qcard__sub">
-					<?php
-					printf(
-						/* translators: %1$s is the tier subtitle, %2$d the number of models. */
-						esc_html__( '%1$s · %2$d modellen', 'dkm' ),
-						esc_html( $tier['sub'] ),
-						(int) $term->count
-					);
-					?>
-				</span>
+				<span class="qcard__sub"><?php echo esc_html( $tier['sub'] ); ?></span>
 				<span class="qcard__row">
 					<b>
 						<?php

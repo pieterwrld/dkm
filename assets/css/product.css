@@ -1013,3 +1013,24 @@
 	letter-spacing: -0.03em;
 	margin-bottom: clamp(16px, 2vw, 26px);
 }
+
+
+.utxt > span {
+	/* A box whose own description runs to a paragraph would otherwise push the
+	   row to six lines. The whole text is still there, in the preview. */
+	display: -webkit-box;
+	-webkit-line-clamp: 2;
+	line-clamp: 2;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+}
+
+.modal__hd img {
+	/* The photographs are upright. Letting them keep their own shape inside a
+	   bounded height beats cropping the top and bottom away. */
+	width: 100%;
+	height: auto;
+	max-height: min(52vh, 420px);
+	object-fit: contain;
+	background: var(--surf);
+}

@@ -76,7 +76,27 @@ $modals = array();
 			data-label="<?php echo esc_attr( $no_box ); ?>"
 			checked>
 		<span class="urad" aria-hidden="true"><i></i></span>
-		<span class="uimg uimg--none" aria-hidden="true"><?php dkm_the_icon( 'watch' ); ?></span>
+		<?php
+		// The watch itself, so the first row shows what you are actually
+		// buying rather than a drawing of a watch.
+		$eigen_foto = (int) $product->get_image_id();
+		if ( $eigen_foto ) {
+			echo wp_get_attachment_image( // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+				$eigen_foto,
+				'thumbnail',
+				false,
+				array(
+					'class'   => 'uimg',
+					'alt'     => '',
+					'loading' => 'lazy',
+				)
+			);
+		} else {
+			?>
+			<span class="uimg uimg--none" aria-hidden="true"><?php dkm_the_icon( 'watch' ); ?></span>
+			<?php
+		}
+		?>
 		<span class="utxt">
 			<b><?php echo esc_html( $no_box ); ?></b>
 			<span><?php esc_html_e( 'In onze eigen verpakking, discreet verzonden', 'dkm' ); ?></span>
@@ -136,9 +156,11 @@ $modals = array();
 foreach ( $modals as $modal ) :
 	$head = '';
 	if ( $modal['thumb_id'] ) {
+		// Not a wide crop: these boxes are photographed upright, and cutting
+		// them to a letterbox shape lost the lid and the booklet.
 		$head = wp_get_attachment_image(
 			$modal['thumb_id'],
-			'dkm-wide',
+			'large',
 			false,
 			array( 'alt' => $modal['box']->get_name() )
 		);

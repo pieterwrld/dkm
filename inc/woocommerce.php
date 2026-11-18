@@ -64,8 +64,10 @@ add_filter( 'woocommerce_breadcrumb_defaults', 'dkm_breadcrumb_defaults' );
 
 function dkm_breadcrumb_defaults( array $args ): array {
 	$args['delimiter']   = '<span class="crumb__sep" aria-hidden="true">›</span>';
-	$args['wrap_before'] = '<nav class="crumb" aria-label="' . esc_attr__( 'Kruimelpad', 'dkm' ) . '">';
-	$args['wrap_after']  = '</nav>';
+	// The shop prints this outside the content column, so it carries its own
+	// gutter and the same maximum width as everything else.
+	$args['wrap_before'] = '<div class="crumbwrap"><nav class="crumb" aria-label="' . esc_attr__( 'Kruimelpad', 'dkm' ) . '">';
+	$args['wrap_after']  = '</nav></div>';
 	$args['before']      = '';
 	$args['after']       = '';
 	$args['home']        = __( 'Home', 'dkm' );

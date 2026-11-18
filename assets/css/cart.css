@@ -551,3 +551,130 @@ input.qty::-webkit-inner-spin-button,
 	font-weight: 700;
 	text-decoration: underline;
 }
+
+
+/* --------------------------------------------------------------------------
+   The cart table, whoever printed it
+
+   One of the page builder add-ons replaces the cart template with its own,
+   and that copy is needed elsewhere on the site, so it stays. WooCommerce's
+   own stylesheet, which would have stacked this table on a phone, is not
+   loaded here. These rules do that work on the generic classes, so the table
+   behaves whether it came from this theme or from the add-on.
+   -------------------------------------------------------------------------- */
+
+.woocommerce-cart-form__contents {
+	width: 100%;
+	max-width: 100%;
+	border-collapse: collapse;
+}
+
+.woocommerce-cart-form__contents td,
+.woocommerce-cart-form__contents th {
+	min-width: 0;
+	word-break: break-word;
+}
+
+@media (max-width: 760px) {
+	.woocommerce-cart-form__contents thead {
+		position: absolute;
+		width: 1px;
+		height: 1px;
+		overflow: hidden;
+		clip: rect(0, 0, 0, 0);
+	}
+
+	.woocommerce-cart-form__contents,
+	.woocommerce-cart-form__contents tbody,
+	.woocommerce-cart-form__contents tr,
+	.woocommerce-cart-form__contents td {
+		display: block;
+		width: auto;
+	}
+
+	.woocommerce-cart-form__cart-item {
+		position: relative;
+		padding: 14px;
+		border-bottom: 1px solid var(--line);
+	}
+
+	.woocommerce-cart-form__contents td {
+		padding: 5px 0;
+		border: none;
+		text-align: left;
+	}
+
+	.woocommerce-cart-form__contents td.product-thumbnail {
+		width: 84px;
+		padding-bottom: 10px;
+	}
+
+	.woocommerce-cart-form__contents td.product-thumbnail img {
+		width: 84px;
+		height: auto;
+		border-radius: 10px;
+	}
+
+	.woocommerce-cart-form__contents td.product-price,
+	.woocommerce-cart-form__contents td.product-quantity,
+	.woocommerce-cart-form__contents td.product-subtotal {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 10px;
+	}
+
+	.woocommerce-cart-form__contents td[data-title]::before {
+		content: attr(data-title);
+		font-size: 10px;
+		font-weight: 900;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		color: var(--ink3);
+	}
+
+	/* The coupon field and its button sat on one line and ran off the side. */
+	.woocommerce-cart-form__contents td.actions {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 8px;
+	}
+
+	.woocommerce-cart-form__contents td.actions .coupon {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 8px;
+		width: 100%;
+	}
+
+	.woocommerce-cart-form__contents td.actions .coupon input[type="text"] {
+		flex: 1 1 140px;
+		min-width: 0;
+	}
+
+	.woocommerce-cart-form__contents td.actions button {
+		flex: 0 0 auto;
+	}
+}
+
+/* The totals block cut its own amounts off at the right edge. */
+.cart_totals table,
+.dkm-totals__table {
+	width: 100%;
+	table-layout: auto;
+}
+
+.cart_totals table td,
+.cart_totals table th,
+.dkm-totals__table td,
+.dkm-totals__table th {
+	min-width: 0;
+	white-space: normal;
+	overflow-wrap: anywhere;
+}
+
+.cart_totals table td:last-child,
+.dkm-totals__table td:last-child {
+	text-align: right;
+	white-space: nowrap;
+}

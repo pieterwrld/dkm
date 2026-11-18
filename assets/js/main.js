@@ -982,7 +982,13 @@
 					}
 					paintCounts(data.facets);
 					if (activeEl) {
-						var active = state.tier.length + state.model.length + state.maat.length + (state.max ? 1 : 0);
+						// The price slider sits at its maximum until someone
+						// moves it, so a slider at the top is not a filter and
+						// should not light up the badge.
+						var prijsGezet = priceEl && state.max > 0 &&
+							state.max < (parseInt(priceEl.max, 10) || 0);
+						var active = state.tier.length + state.model.length +
+							state.maat.length + (prijsGezet ? 1 : 0);
 						activeEl.textContent = active;
 						activeEl.hidden = active === 0;
 					}

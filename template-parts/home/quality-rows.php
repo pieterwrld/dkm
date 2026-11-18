@@ -48,12 +48,7 @@ defined( 'ABSPATH' ) || exit;
 								printf( esc_html__( 'Vanaf %s', 'dkm' ), esc_html( dkm_price( $tier['from'] ) ) );
 								?>
 							</b>
-							<small>
-								<?php
-								/* translators: %d is a number of models. */
-								printf( esc_html( _n( '%d model', '%d modellen', (int) $term->count, 'dkm' ) ), (int) $term->count );
-								?>
-							</small>
+
 						</span>
 					</span>
 

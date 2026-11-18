@@ -202,3 +202,45 @@ class DKM_Footer_Walker extends Walker_Nav_Menu {
 
 	public function end_el( &$output, $item, $depth = 0, $args = null ) {}
 }
+
+
+/**
+ * The newest published product that has a picture.
+ *
+ * Used where there is no category to take a picture from, such as the shop
+ * page itself.
+ *
+ * @param string $size Image size to render.
+ */
+function dkm_latest_product_image( string $size = 'dkm-card' ): string {
+	$ids = get_posts(
+		array(
+			'post_type'      => 'product',
+			'post_status'    => 'publish',
+			'posts_per_page' => 1,
+			'fields'         => 'ids',
+			'orderby'        => 'date',
+			'order'          => 'DESC',
+			'meta_query'     => array(
+				array(
+					'key'     => '_thumbnail_id',
+					'compare' => 'EXISTS',
+				),
+			),
+		)
+	);
+
+	if ( ! $ids ) {
+		return '';
+	}
+
+	return (string) get_the_post_thumbnail(
+		(int) $ids[0],
+		$size,
+		array(
+			'alt'     => '',
+			'loading' => 'lazy',
+			'sizes'   => '(max-width:720px) 100vw, 480px',
+		)
+	);
+}

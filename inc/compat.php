@@ -99,3 +99,28 @@ function dkm_drop_builder_kit_class( array $classes ): array {
 	);
 }
 add_filter( 'body_class', 'dkm_drop_builder_kit_class', 20 );
+
+
+/**
+ * The theme's own shop templates win.
+ *
+ * Several of the page builder add-ons on this site hand WooCommerce their own
+ * copies of cart and checkout templates. That is how the cart ended up as the
+ * default table, which runs off the side of a phone and cuts the amount in
+ * half. If this theme has a file for that template, that file is used.
+ *
+ * @param string $template      Path the shop settled on.
+ * @param string $template_name Template being looked for, such as cart/cart.php.
+ * @param string $template_path Folder the shop looks in.
+ * @return string
+ */
+function dkm_own_shop_templates( $template, $template_name, $template_path ) {
+	$eigen = get_template_directory() . '/woocommerce/' . $template_name;
+
+	if ( $template_name && file_exists( $eigen ) ) {
+		return $eigen;
+	}
+
+	return $template;
+}
+add_filter( 'woocommerce_locate_template', 'dkm_own_shop_templates', 999, 3 );
