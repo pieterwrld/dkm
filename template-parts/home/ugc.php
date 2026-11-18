@@ -54,8 +54,7 @@ if ( ! $clips ) {
 				$poster  = (int) get_post_thumbnail_id( $clip->ID );
 				$src     = is_array( $video ) ? (string) ( $video['url'] ?? '' ) : (string) $video;
 				?>
-				<button type="button"
-					class="ugc__card"
+				<div class="ugc__card"
 					data-dkm-ugc-card
 					data-dkm-ugc-caption="<?php echo esc_attr( $caption ); ?>">
 
@@ -68,7 +67,13 @@ if ( ! $clips ) {
 							<?php if ( $poster ) : ?>
 								poster="<?php echo esc_url( (string) wp_get_attachment_image_url( $poster, 'dkm-card-2x' ) ); ?>"
 							<?php endif; ?>>
-							<source src="<?php echo esc_url( $src ); ?>" type="<?php echo esc_attr( (string) ( $video['mime_type'] ?? 'video/mp4' ) ); ?>">
+							<?php
+							// The fragment asks the browser for a tenth of a
+							// second in, which is enough for it to draw that
+							// frame. Without it the card stays black until
+							// someone presses play.
+							?>
+							<source src="<?php echo esc_url( $src ); ?>#t=0.1" type="<?php echo esc_attr( (string) ( $video['mime_type'] ?? 'video/mp4' ) ); ?>">
 						</video>
 					<?php elseif ( $poster ) : ?>
 						<?php
@@ -84,15 +89,30 @@ if ( ! $clips ) {
 						?>
 					<?php endif; ?>
 
-					<span class="ugc__ply" aria-hidden="true">
-						<i><?php dkm_the_icon( 'play' ); ?></i>
-					</span>
+					<button type="button"
+						class="ugc__hit"
+						data-dkm-ugc-play
+						aria-label="<?php echo esc_attr( sprintf( /* translators: %s is the clip's caption. */ __( 'Speel %s af', 'dkm' ), $caption ) ); ?>">
+						<span class="ugc__ply" aria-hidden="true">
+							<i><?php dkm_the_icon( 'play' ); ?></i>
+						</span>
+					</button>
+
+					<?php if ( $src ) : ?>
+						<button type="button"
+							class="ugc__snd"
+							data-dkm-ugc-sound
+							aria-pressed="false"
+							aria-label="<?php esc_attr_e( 'Geluid aanzetten', 'dkm' ); ?>">
+							<?php dkm_the_icon( 'mute' ); ?>
+						</button>
+					<?php endif; ?>
 
 					<span class="ugc__cap">
 						<b><?php echo esc_html( $caption ); ?></b>
 						<span><?php esc_html_e( 'Tik om te spelen', 'dkm' ); ?></span>
 					</span>
-				</button>
+				</div>
 			<?php endforeach; ?>
 		</div>
 

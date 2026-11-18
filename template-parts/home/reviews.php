@@ -50,6 +50,7 @@ $recommend = (int) preg_replace( '/\D/', '', (string) get_theme_mod( 'dkm_stat_r
 				$initials = dkm_initials( $name );
 				?>
 				<article class="rvc rv">
+					<span class="rvc__notch" aria-hidden="true"></span>
 					<header class="rvc__h">
 						<span class="rvc__av" aria-hidden="true"><?php echo esc_html( $initials ); ?></span>
 						<span class="rvc__who">

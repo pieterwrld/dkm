@@ -48,20 +48,41 @@ defined( 'ABSPATH' ) || exit;
 								printf( esc_html__( 'Vanaf %s', 'dkm' ), esc_html( dkm_price( $tier['from'] ) ) );
 								?>
 							</b>
+							<small class="qshop">
+								<?php esc_html_e( 'Shop nu', 'dkm' ); ?>
+								<?php dkm_the_icon( 'arrow' ); ?>
+							</small>
 
 						</span>
 					</span>
 
 					<span class="qbar qlong">
-						<span class="qfeat">
-							<?php foreach ( array_slice( $tier['feats'], 0, 2 ) as $feat ) : ?>
-								<span class="qfeat__i"><?php dkm_the_icon( 'check' ); ?><?php echo esc_html( $feat ); ?></span>
-							<?php endforeach; ?>
-						</span>
-						<span class="qshop">
-							<?php esc_html_e( 'Shop nu', 'dkm' ); ?>
-							<?php dkm_the_icon( 'arrow' ); ?>
-						</span>
+						<?php
+						// Two reasons to pick this level, each with a line of
+						// explanation. The tier's own notes have that text; the
+						// short labels did not say anything on their own.
+						$punten = array();
+						foreach ( array_slice( $tier['explain'] ?? array(), 0, 2 ) as $uitleg ) {
+							$punten[] = array( $uitleg[1], $uitleg[2] );
+						}
+						if ( count( $punten ) < 2 ) {
+							foreach ( array_slice( $tier['feats'], 0, 2 ) as $feat ) {
+								$punten[] = array( $feat, '' );
+							}
+							$punten = array_slice( $punten, 0, 2 );
+						}
+						?>
+						<?php foreach ( $punten as $punt ) : ?>
+							<span class="qusp">
+								<span class="qusp__ico"><?php dkm_the_icon( 'check' ); ?></span>
+								<span class="qusp__t">
+									<b><?php echo esc_html( $punt[0] ); ?></b>
+									<?php if ( '' !== $punt[1] ) : ?>
+										<span><?php echo esc_html( $punt[1] ); ?></span>
+									<?php endif; ?>
+								</span>
+							</span>
+						<?php endforeach; ?>
 					</span>
 				</a>
 			<?php endforeach; ?>

@@ -415,39 +415,17 @@
 	   Counting numbers
 	   ==================================================================== */
 
+	// The numbers used to count up from zero every time they came into view,
+	// which meant that for a second the page claimed eighteen reviews. They
+	// are written out as they are.
 	$$('[data-dkm-count]').forEach(function (el) {
 		var target = parseFloat(el.getAttribute('data-dkm-count'));
 		var suffix = el.getAttribute('data-dkm-suffix') || '';
 		if (isNaN(target)) {
 			return;
 		}
-		if (reduced || !('IntersectionObserver' in window)) {
-			el.textContent = target.toLocaleString('nl-NL') + suffix;
-			return;
-		}
-		var seen = false;
-		var io = new IntersectionObserver(function (entries) {
-			entries.forEach(function (entry) {
-				if (!entry.isIntersecting || seen) {
-					return;
-				}
-				seen = true;
-				var start = performance.now();
-				var run = function (now) {
-					var p = Math.min(1, (now - start) / 1100);
-					var eased = 1 - Math.pow(1 - p, 3);
-					el.textContent = Math.round(target * eased).toLocaleString('nl-NL') + suffix;
-					if (p < 1) {
-						requestAnimationFrame(run);
-					}
-				};
-				requestAnimationFrame(run);
-				io.unobserve(entry.target);
-			});
-		});
-		io.observe(el);
+		el.textContent = target.toLocaleString('nl-NL') + suffix;
 	});
-
 	/* ====================================================================
 	   Carousels
 	   ==================================================================== */
@@ -701,7 +679,7 @@
 		});
 
 		cards.forEach(function (card, i) {
-			on(card, 'click', function () {
+			on($('[data-dkm-ugc-play]', card), 'click', function () {
 				if (i !== index) {
 					index = i;
 					layout();
@@ -717,6 +695,25 @@
 				} else {
 					video.pause();
 					card.classList.remove('is-playing');
+				}
+			});
+
+			// The clips start silent, because a browser will not play a clip
+			// with sound before someone asks for it. This button is the ask.
+			on($('[data-dkm-ugc-sound]', card), 'click', function (e) {
+				e.stopPropagation();
+				var video = $('video', card);
+				if (!video) {
+					return;
+				}
+				var aan = video.muted;
+				video.muted = !aan;
+				this.setAttribute('aria-pressed', aan ? 'true' : 'false');
+				this.setAttribute('aria-label', aan ? i18n.soundOff || 'Geluid uitzetten' : i18n.soundOn || 'Geluid aanzetten');
+				this.classList.toggle('is-on', aan);
+				if (aan && video.paused) {
+					video.play();
+					card.classList.add('is-playing');
 				}
 			});
 		});
