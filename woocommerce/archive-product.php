@@ -240,10 +240,14 @@ do_action( 'woocommerce_before_main_content' );
 			?>
 		</div>
 
-		<div class="more">
+		<div class="more" data-dkm-end>
 			<button type="button" class="btn btn--o" data-dkm-more<?php echo $pages > 1 ? '' : ' hidden'; ?>>
 				<?php esc_html_e( 'Meer laden', 'dkm' ); ?>
 			</button>
+			<span class="more__busy" data-dkm-more-busy hidden>
+				<i aria-hidden="true"></i>
+				<?php esc_html_e( 'Meer horloges laden', 'dkm' ); ?>
+			</span>
 		</div>
 	</div>
 </div>

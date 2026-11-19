@@ -46,11 +46,63 @@
 	max-width: 100%;
 }
 
-.gal__main img {
-	width: 100%;
+.gal__main .shots__track > img {
 	aspect-ratio: 1 / 1;
 	object-fit: cover;
 	max-width: 100%;
+}
+
+/* The two arrows over the photo. They scroll the same track a finger does. */
+
+.gal__nav {
+	position: absolute;
+	top: 50%;
+	transform: translateY(-50%);
+	z-index: 3;
+	display: grid;
+	place-items: center;
+	width: 36px;
+	height: 36px;
+	padding: 0;
+	border: 1px solid var(--line);
+	border-radius: 50%;
+	background: rgba(255, 255, 255, 0.88);
+	backdrop-filter: blur(8px);
+	-webkit-backdrop-filter: blur(8px);
+	color: var(--ink);
+	cursor: pointer;
+	transition: 0.25s var(--e);
+}
+
+.gal__nav--prev {
+	left: 10px;
+}
+
+.gal__nav--next {
+	right: 10px;
+}
+
+.gal__nav:hover {
+	background: #fff;
+	border-color: var(--ch2);
+}
+
+.gal__nav[disabled] {
+	opacity: 0;
+	pointer-events: none;
+}
+
+.gal__nav .ico {
+	font-size: 17px;
+	stroke-width: 2.4;
+}
+
+.gal__main .shots__bar {
+	bottom: 12px;
+}
+
+.gal__main .shots__bar {
+	background: rgba(14, 14, 16, 0.26);
 }
 
 .gal__ph {

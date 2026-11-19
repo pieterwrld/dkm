@@ -35,10 +35,6 @@ $base        = (float) wc_get_price_to_display( $product );
 
 	<h1 class="pd__title"><?php echo esc_html( $name ); ?></h1>
 
-	<?php if ( $tier ) : ?>
-		<p class="pd__claim"><?php echo esc_html( $tier['claim'] ); ?></p>
-	<?php endif; ?>
-
 	<?php if ( $reviews > 0 ) : ?>
 		<div class="pd__rate">
 			<?php echo dkm_stars( $rating ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
@@ -129,7 +125,7 @@ $base        = (float) wc_get_price_to_display( $product );
 
 	<div class="acc" data-dkm-accordion>
 		<?php if ( $tier ) : ?>
-			<div class="acc__i is-on">
+			<div class="acc__i">
 				<button type="button" class="acc__h">
 					<?php esc_html_e( 'Specificaties', 'dkm' ); ?>
 					<?php dkm_the_icon( 'close' ); ?>

@@ -141,7 +141,6 @@ $modals = array();
 
 			<span class="utxt">
 				<b><?php echo esc_html( $box->get_name() ); ?></b>
-				<span><?php echo esc_html( $blurb( $box ) ); ?></span>
 				<button type="button" class="ulook" data-dkm-box-preview="<?php echo esc_attr( $modal_id ); ?>">
 					<?php dkm_the_icon( 'eye' ); ?><?php esc_html_e( 'Bekijk deze doos', 'dkm' ); ?>
 				</button>

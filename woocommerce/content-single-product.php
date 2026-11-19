@@ -46,8 +46,3 @@ $slug = dkm_product_template_slug( $tier );
 get_template_part( 'template-parts/home/ugc' );
 get_template_part( 'template-parts/home/reviews' );
 ?>
-
-<?php
-// Last of all. Pointing at other watches belongs after everything this page
-// had to say about the one you came for. The template brings its own section.
-woocommerce_output_related_products();

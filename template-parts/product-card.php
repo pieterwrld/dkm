@@ -26,7 +26,17 @@ if ( $size ) {
 	$kicker = trim( $kicker . ' · ' . $size );
 }
 
-$thumb_id = (int) $product->get_image_id();
+// Up to four photos per card. More than that is a lot of weight on a page
+// that may hold two dozen cards, and nobody swipes further than that here.
+$fotos = array();
+if ( $product->get_image_id() ) {
+	$fotos[] = (int) $product->get_image_id();
+}
+foreach ( $product->get_gallery_image_ids() as $extra ) {
+	$fotos[] = (int) $extra;
+}
+$fotos = array_slice( array_values( array_unique( array_filter( $fotos ) ) ), 0, 4 );
+$meer  = count( $fotos ) > 1;
 ?>
 <article class="pc rv" data-dkm-product="<?php echo esc_attr( (string) $product->get_id() ); ?>">
 	<a class="pc__link" href="<?php echo esc_url( (string) get_permalink( $product->get_id() ) ); ?>">
@@ -46,22 +56,36 @@ $thumb_id = (int) $product->get_image_id();
 				<?php endif; ?>
 			</div>
 
-			<?php
-			if ( $thumb_id ) {
-				echo wp_get_attachment_image( // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-					$thumb_id,
-					'dkm-card',
-					false,
-					array(
-						'alt'     => $name,
-						'loading' => 'lazy',
-						'sizes'   => '(max-width:760px) 50vw, (max-width:1100px) 33vw, 320px',
-					)
-				);
-			} else {
-				echo '<span class="pc__ph" aria-hidden="true">' . dkm_icon( 'watch' ) . '</span>';
-			}
-			?>
+			<?php if ( $fotos ) : ?>
+				<span class="shots" data-dkm-shots>
+					<span class="shots__track" data-dkm-shots-track>
+						<?php foreach ( $fotos as $index => $foto ) : ?>
+							<?php
+							echo wp_get_attachment_image( // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+								$foto,
+								'dkm-card',
+								false,
+								array(
+									'alt'     => 0 === $index ? $name : '',
+									'loading' => 'lazy',
+									'sizes'   => '(max-width:760px) 50vw, (max-width:1100px) 33vw, 320px',
+								)
+							);
+							?>
+						<?php endforeach; ?>
+					</span>
+
+					<?php if ( $meer ) : ?>
+						<span class="shots__bar" aria-hidden="true">
+							<?php foreach ( $fotos as $index => $foto ) : ?>
+								<i<?php echo 0 === $index ? ' class="is-on"' : ''; ?>></i>
+							<?php endforeach; ?>
+						</span>
+					<?php endif; ?>
+				</span>
+			<?php else : ?>
+				<span class="pc__ph" aria-hidden="true"><?php dkm_the_icon( 'watch' ); ?></span>
+			<?php endif; ?>
 		</div>
 
 		<div class="pc__b">

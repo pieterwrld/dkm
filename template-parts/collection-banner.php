@@ -31,18 +31,6 @@ if ( ! $image_id && $term instanceof WP_Term ) {
 	$image_id = (int) get_term_meta( $term->term_id, 'thumbnail_id', true );
 }
 
-$usps = array();
-for ( $i = 1; $i <= 4; $i++ ) {
-	$text = $acf_id ? (string) dkm_field( "banner_usp_{$i}_text", $acf_id, '' ) : '';
-	$icon = $acf_id ? (string) dkm_field( "banner_usp_{$i}_icon", $acf_id, '' ) : '';
-	if ( '' === $text ) {
-		continue;
-	}
-	$usps[] = array( $icon ?: 'check', $text );
-}
-if ( ! $usps ) {
-	$usps = $fallback['usps'];
-}
 ?>
 <div class="cban">
 	<div class="cban__img">
@@ -74,13 +62,5 @@ if ( ! $usps ) {
 	<div class="cban__b">
 		<span class="eyebrow"><?php echo esc_html( $eyebrow ); ?></span>
 		<h2 class="cban__t"><?php echo esc_html( $title ); ?></h2>
-		<div class="cban__u">
-			<?php foreach ( $usps as [$icon, $text] ) : ?>
-				<div>
-					<?php dkm_the_icon( $icon ); ?>
-					<span><?php echo esc_html( $text ); ?></span>
-				</div>
-			<?php endforeach; ?>
-		</div>
 	</div>
 </div>

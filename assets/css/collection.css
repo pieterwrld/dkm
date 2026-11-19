@@ -371,17 +371,11 @@
 	position: absolute;
 	inset: 0;
 	background:
-		linear-gradient(
-			100deg,
-			rgba(8, 8, 9, 0.52) 0%,
-			rgba(8, 8, 9, 0.22) 58%,
-			rgba(8, 8, 9, 0) 100%
-		),
-		linear-gradient(
-			180deg,
-			rgba(8, 8, 9, 0.4) 0%,
-			rgba(8, 8, 9, 0.54) 45%,
-			rgba(8, 8, 9, 0.78) 100%
+		radial-gradient(
+			110% 85% at 50% 48%,
+			rgba(8, 8, 9, 0.74) 0%,
+			rgba(8, 8, 9, 0.56) 48%,
+			rgba(8, 8, 9, 0.34) 100%
 		);
 }
 
@@ -390,11 +384,16 @@
 }
 
 .cban__b {
-	padding: clamp(16px, 2.4vw, 30px);
+	/* Only the name of the level and one line about it, in the middle of the
+	   picture. The four points under them said what the page already shows. */
+	padding: clamp(20px, 3vw, 36px);
+	min-height: inherit;
 	display: flex;
 	flex-direction: column;
+	align-items: center;
 	justify-content: center;
-	gap: 12px;
+	text-align: center;
+	gap: 10px;
 	position: relative;
 	z-index: 2;
 	min-width: 0;
@@ -405,38 +404,10 @@
 }
 
 .cban__t {
-	font-size: clamp(1rem, 1.9vw, 1.5rem);
+	font-size: clamp(1.15rem, 2.2vw, 1.7rem);
 	letter-spacing: -0.035em;
-	max-width: 22ch;
-}
-
-.cban__u {
-	display: grid;
-	grid-template-columns: repeat(2, 1fr);
-	gap: 8px 16px;
-}
-
-.cban__u div {
-	display: flex;
-	align-items: center;
-	gap: 8px;
-	font-size: 11.5px;
-	color: rgba(255, 255, 255, 0.84);
-	min-width: 0;
-}
-
-.cban__u .ico {
-	font-size: 15px;
-	color: var(--ch3);
-}
-
-@media (max-width: 720px) {
-	/* The picture covers the whole banner here too. It used to be a strip of
-	   110 pixels with a black block under it, which showed half a watch. */
-
-	.cban__u {
-		grid-template-columns: 1fr;
-	}
+	max-width: 20ch;
+	text-wrap: balance;
 }
 
 
@@ -454,4 +425,54 @@
 .cban__b {
 	position: relative;
 	z-index: 2;
+}
+
+/* ---- The photos on a card, and the end of the list ---- */
+
+.pc__img .shots,
+.pc__img .shots__track {
+	height: 100%;
+}
+
+.pc__img .shots__track > img {
+	height: 100%;
+	object-fit: cover;
+}
+
+.more {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	min-height: 48px;
+}
+
+.more__busy {
+	display: inline-flex;
+	align-items: center;
+	gap: 9px;
+	font-size: 12px;
+	font-weight: 600;
+	letter-spacing: 0.02em;
+	color: var(--ink3);
+}
+
+.more__busy i {
+	width: 14px;
+	height: 14px;
+	border-radius: 50%;
+	border: 2px solid var(--line2);
+	border-top-color: var(--ch1);
+	animation: dkm-spin 0.8s linear infinite;
+}
+
+@keyframes dkm-spin {
+	to {
+		transform: rotate(360deg);
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.more__busy i {
+		animation: none;
+	}
 }

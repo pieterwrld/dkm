@@ -26,34 +26,6 @@ if ( ! $product instanceof WC_Product ) {
 	</div>
 </div>
 
-<section class="sec sec--tight">
-	<div class="wrap">
-		<div class="verify">
-			<div class="verify__hd">
-				<span class="eyebrow"><?php esc_html_e( 'Waar je het aan herkent', 'dkm' ); ?></span>
-				<h2 class="h-l"><?php esc_html_e( 'Drie dingen die een kenner', 'dkm' ); ?> <span class="em gr-txt"><?php esc_html_e( 'direct controleert', 'dkm' ); ?></span></h2>
-				<p class="lead"><?php esc_html_e( 'Dit zijn de punten waarop een superclone zich onderscheidt, en precies waar wij op nakijken voordat je horloge de deur uit gaat.', 'dkm' ); ?></p>
-			</div>
-
-			<ol class="verify__l">
-				<?php foreach ( $tier['explain'] as $index => [$icon, $title, $text] ) : ?>
-					<li class="verify__i">
-						<span class="verify__n"><?php echo esc_html( (string) ( $index + 1 ) ); ?></span>
-						<div class="verify__b">
-							<b><?php dkm_the_icon( $icon ); ?><?php echo esc_html( $title ); ?></b>
-							<p><?php echo esc_html( $text ); ?></p>
-						</div>
-					</li>
-				<?php endforeach; ?>
-			</ol>
-
-			<p class="verify__note">
-				<?php dkm_the_icon( 'eye' ); ?>
-				<span><?php esc_html_e( 'Elk exemplaar gaat door onze eigen controle op de wijzerplaat, het glas, de sluiting en de loop van het uurwerk. Pas daarna wordt hij ingepakt.', 'dkm' ); ?></span>
-			</p>
-		</div>
-	</div>
-</section>
 
 <?php
 get_template_part( 'template-parts/product/quality-explainer', null, $args );

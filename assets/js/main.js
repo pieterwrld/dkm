@@ -890,6 +890,118 @@
 	})();
 
 	/* ====================================================================
+	   A row of photos you can swipe through
+	   ==================================================================== */
+
+	// Used on the product page, where it carries arrows and thumbnails, and on
+	// every card in the collection, where it is only the photos and the line
+	// underneath. The track does the scrolling, so a finger behaves as it does
+	// everywhere else and nothing has to be dragged by hand.
+
+	function bindShots(scope) {
+		$$('[data-dkm-shots]', scope || document).forEach(function (root) {
+		if (root.dataset.dkmShotsOn) {
+			return;
+		}
+		root.dataset.dkmShotsOn = '1';
+
+		var track = $('[data-dkm-shots-track]', root);
+		if (!track) {
+			return;
+		}
+
+		var fotos = $$('img', track);
+		if (fotos.length < 2) {
+			return;
+		}
+
+		var streepjes = $$('.shots__bar i', root);
+		var vorige = $('[data-dkm-shots-prev]', root);
+		var volgende = $('[data-dkm-shots-next]', root);
+		var duimen = $$('[data-dkm-shots-go]', root.parentNode || root);
+		var nu = 0;
+		var wacht = false;
+
+		function breedte() {
+			return track.clientWidth || 1;
+		}
+
+		function teken() {
+			var i = Math.round(track.scrollLeft / breedte());
+			i = Math.max(0, Math.min(fotos.length - 1, i));
+			if (i === nu) {
+				return;
+			}
+			nu = i;
+			streepjes.forEach(function (streep, n) {
+				streep.classList.toggle('is-on', n === i);
+			});
+			duimen.forEach(function (duim, n) {
+				duim.classList.toggle('is-on', n === i);
+			});
+			if (vorige) {
+				vorige.disabled = 0 === i;
+			}
+			if (volgende) {
+				volgende.disabled = i === fotos.length - 1;
+			}
+		}
+
+		function naar(i) {
+			i = Math.max(0, Math.min(fotos.length - 1, i));
+			track.scrollTo({ left: i * breedte(), behavior: reduced ? 'auto' : 'smooth' });
+		}
+
+		on(track, 'scroll', function () {
+			if (wacht) {
+				return;
+			}
+			wacht = true;
+			window.requestAnimationFrame(function () {
+				wacht = false;
+				teken();
+			});
+		}, { passive: true });
+
+		on(vorige, 'click', function (e) {
+			e.preventDefault();
+			naar(nu - 1);
+		});
+
+		on(volgende, 'click', function (e) {
+			e.preventDefault();
+			naar(nu + 1);
+		});
+
+		duimen.forEach(function (duim) {
+			on(duim, 'click', function (e) {
+				e.preventDefault();
+				naar(parseInt(duim.getAttribute('data-dkm-shots-go'), 10) || 0);
+			});
+		});
+
+		// The arrow keys move the photos when the track itself has focus.
+		on(track, 'keydown', function (e) {
+			if ('ArrowRight' === e.key) {
+				e.preventDefault();
+				naar(nu + 1);
+			}
+			if ('ArrowLeft' === e.key) {
+				e.preventDefault();
+				naar(nu - 1);
+			}
+		});
+
+		if (vorige) {
+			vorige.disabled = true;
+		}
+		});
+	}
+
+	bindShots(document);
+	window.dkmBindShots = bindShots;
+
+	/* ====================================================================
 	   Cart
 	   ==================================================================== */
 
@@ -1069,6 +1181,22 @@
 			on(input, 'change', sync);
 		});
 
+		// A label with a button inside it needs two taps on a phone: the first
+		// one only moves focus. Picking the row by hand makes one tap enough.
+		$$('.uopt', ups).forEach(function (opt) {
+			on(opt, 'click', function (e) {
+				if (e.target.closest && e.target.closest('[data-dkm-box-preview]')) {
+					return;
+				}
+				var input = $('input[name="dkm_box"]', opt);
+				if (!input || input.checked) {
+					return;
+				}
+				input.checked = true;
+				sync();
+			});
+		});
+
 		$$('[data-dkm-box-preview]', ups).forEach(function (btn) {
 			on(btn, 'click', function (e) {
 				e.preventDefault();
@@ -1095,6 +1223,11 @@
 
 		var countEl = $('[data-dkm-count-total]', root);
 		var moreBtn = $('[data-dkm-more]', root);
+		var endEl = $('[data-dkm-end]', root);
+		var busyEl = $('[data-dkm-more-busy]', root);
+		// The next page comes in by itself as you reach the end. The button
+		// stays for anyone whose browser cannot watch the page scroll.
+		var vanzelf = typeof IntersectionObserver !== 'undefined' && !!endEl;
 		var sortEl = $('[data-dkm-sort]', root);
 		var priceEl = $('[data-dkm-price]', root);
 		var priceOut = $('[data-dkm-price-value]', root);
@@ -1203,8 +1336,15 @@
 					if (countEl) {
 						countEl.textContent = data.total;
 					}
+					var meer = state.page < pages;
 					if (moreBtn) {
-						moreBtn.hidden = state.page >= pages;
+						moreBtn.hidden = vanzelf || !meer;
+					}
+					if (busyEl) {
+						busyEl.hidden = !vanzelf || !meer;
+					}
+					if (window.dkmBindShots) {
+						window.dkmBindShots(grid);
 					}
 					paintCounts(data.facets);
 					if (activeEl) {
@@ -1278,12 +1418,27 @@
 			priceLabel();
 		}
 
-		on(moreBtn, 'click', function () {
-			if (state.page < pages) {
-				state.page += 1;
-				load(true);
+		function volgendePagina() {
+			if (busy || state.page >= pages) {
+				return;
 			}
-		});
+			state.page += 1;
+			load(true);
+		}
+
+		on(moreBtn, 'click', volgendePagina);
+
+		if (vanzelf) {
+			moreBtn.hidden = true;
+			var kijker = new IntersectionObserver(function (entries) {
+				entries.forEach(function (entry) {
+					if (entry.isIntersecting) {
+						volgendePagina();
+					}
+				});
+			}, { rootMargin: '600px 0px' });
+			kijker.observe(endEl);
+		}
 
 		on($('[data-dkm-clear]', root), 'click', function () {
 			$$('[data-dkm-facet].is-on', root).forEach(function (btn) {
@@ -1299,9 +1454,48 @@
 		var filterToggle = $('[data-dkm-filter-toggle]', root);
 		var filterPanel = $('[data-dkm-filter-panel]', root);
 		if (filterToggle && filterPanel) {
+			var vanafY = 0;
+
+			var sluit = function () {
+				if (!filterPanel.classList.contains('is-on')) {
+					return;
+				}
+				filterPanel.classList.remove('is-on');
+				filterToggle.setAttribute('aria-expanded', 'false');
+			};
+
 			on(filterToggle, 'click', function () {
 				var open = filterPanel.classList.toggle('is-on');
 				filterToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+				vanafY = window.scrollY || window.pageYOffset || 0;
+			});
+
+			// The bar it sits in is pinned to the top, so an open panel kept
+			// riding along over the watches. Scrolling away closes it.
+			on(window, 'scroll', function () {
+				if (!filterPanel.classList.contains('is-on')) {
+					return;
+				}
+				var nu = window.scrollY || window.pageYOffset || 0;
+				if (Math.abs(nu - vanafY) > 40) {
+					sluit();
+				}
+			}, { passive: true });
+
+			on(document, 'keydown', function (e) {
+				if ('Escape' === e.key) {
+					sluit();
+				}
+			});
+
+			on(document, 'click', function (e) {
+				if (!filterPanel.classList.contains('is-on')) {
+					return;
+				}
+				if (filterPanel.contains(e.target) || filterToggle.contains(e.target)) {
+					return;
+				}
+				sluit();
 			});
 		}
 
