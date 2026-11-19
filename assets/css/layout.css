@@ -802,18 +802,31 @@
 	color: var(--ink3);
 }
 
-.cart-row__box {
+/* The box that belongs to the watch above it: a step to the right, a little
+   smaller, and in the gold of the shop so you can see it was chosen. */
+
+.cart-row--box {
+	padding-left: 22px;
+	background:
+		linear-gradient(90deg, var(--ch2) 0 2px, transparent 2px) no-repeat 8px 11px / 2px calc(100% - 22px);
+}
+
+.cart-row--box .cart-row__img {
+	width: 44px;
+	height: 44px;
+}
+
+.cart-row--box .cart-row__t b {
 	display: flex;
 	align-items: center;
 	gap: 5px;
-	font-size: 11px;
 	color: var(--ch4);
-	font-weight: 700;
-	margin-top: 3px;
+	font-size: 12px;
 }
 
-.cart-row__box .ico {
-	font-size: 12px;
+.cart-row--box .cart-row__t b .ico {
+	font-size: 13px;
+	flex: 0 0 auto;
 }
 
 .cart-row__p {

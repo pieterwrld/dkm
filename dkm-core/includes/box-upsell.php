@@ -219,20 +219,6 @@ function dkm_lock_box_quantity( $html, $cart_item_key, $cart_item ) {
 	return '<span class="qty-fixed">' . esc_html( (string) $cart_item['quantity'] ) . '</span>';
 }
 
-add_filter( 'woocommerce_cart_item_remove_link', 'dkm_hide_box_remove_link', 10, 2 );
-
-/**
- * A linked box is removed with its watch, not on its own.
- */
-function dkm_hide_box_remove_link( $link, $cart_item_key ) {
-	$cart = WC()->cart;
-	$item = $cart ? ( $cart->get_cart()[ $cart_item_key ] ?? array() ) : array();
-	if ( ! empty( $item[ DKM_BOX_PARENT ] ) ) {
-		return '';
-	}
-	return $link;
-}
-
 /* ==========================================================================
    How it reads in the cart and on the order
    ========================================================================== */

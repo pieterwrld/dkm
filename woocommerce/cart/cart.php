@@ -97,25 +97,25 @@ $dkm_row = static function ( string $cart_item_key, array $cart_item, bool $is_b
 			}
 			?>
 
-			<?php if ( ! $is_box ) : ?>
-				<span class="dkm-line__remove">
-					<?php
-					echo apply_filters( // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-						'woocommerce_cart_item_remove_link',
-						sprintf(
-							'<a role="button" href="%s" class="remove" aria-label="%s" data-product_id="%s" data-product_sku="%s">%s</a>',
-							esc_url( wc_get_cart_remove_url( $cart_item_key ) ),
-							/* translators: %s is the product name. */
-							esc_attr( sprintf( __( 'Verwijder %s uit je winkelwagen', 'dkm' ), wp_strip_all_tags( $product_name ) ) ),
-							esc_attr( $product_id ),
-							esc_attr( $_product->get_sku() ),
-							esc_html__( 'Verwijderen', 'dkm' )
-						),
-						$cart_item_key
-					);
-					?>
-				</span>
-			<?php endif; ?>
+			<span class="dkm-line__remove">
+				<?php
+				// A box can go on its own now. It used to be stuck to its
+				// watch, so the only way to drop it was to drop the watch.
+				echo apply_filters( // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+					'woocommerce_cart_item_remove_link',
+					sprintf(
+						'<a role="button" href="%s" class="remove" aria-label="%s" data-product_id="%s" data-product_sku="%s">%s</a>',
+						esc_url( wc_get_cart_remove_url( $cart_item_key ) ),
+						/* translators: %s is the product name. */
+						esc_attr( sprintf( __( 'Verwijder %s uit je winkelwagen', 'dkm' ), wp_strip_all_tags( $product_name ) ) ),
+						esc_attr( $product_id ),
+						esc_attr( $_product->get_sku() ),
+						$is_box ? esc_html__( 'Doos verwijderen', 'dkm' ) : esc_html__( 'Verwijderen', 'dkm' )
+					),
+					$cart_item_key
+				);
+				?>
+			</span>
 		</td>
 
 		<td class="product-price dkm-line__price" data-title="<?php esc_attr_e( 'Prijs', 'dkm' ); ?>">

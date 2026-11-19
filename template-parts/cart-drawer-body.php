@@ -84,31 +84,62 @@ foreach ( $lines as $line ) :
 				?>
 			</span>
 
-			<?php if ( $child ) : ?>
-				<?php $box = $child['item']['data'] ?? null; ?>
-				<?php if ( $box instanceof WC_Product ) : ?>
-					<span class="cart-row__box">
-						<?php dkm_the_icon( 'box' ); ?>
-						<?php echo esc_html( $box->get_name() ); ?>
-					</span>
-				<?php endif; ?>
-			<?php endif; ?>
-
 			<button type="button" class="cart-row__x" data-dkm-cart-remove="<?php echo esc_attr( $line['key'] ); ?>">
 				<?php esc_html_e( 'Verwijderen', 'dkm' ); ?>
 			</button>
 		</div>
 
 		<span class="cart-row__p">
-			<?php
-			$total = (float) $item['line_subtotal'] + (float) $item['line_subtotal_tax'];
-			if ( $child ) {
-				$total += (float) $child['item']['line_subtotal'] + (float) $child['item']['line_subtotal_tax'];
-			}
-			echo wp_kses_post( wc_price( $total ) );
-			?>
+			<?php echo wp_kses_post( wc_price( (float) $item['line_subtotal'] + (float) $item['line_subtotal_tax'] ) ); ?>
 		</span>
 	</div>
+
+	<?php
+	// The box gets a line of its own, with its photograph, its price and its
+	// own way out. It used to be a word under the watch that you could only
+	// get rid of by throwing the watch away with it.
+	$box = $child ? ( $child['item']['data'] ?? null ) : null;
+	if ( $box instanceof WC_Product ) :
+		$box_thumb = (int) $box->get_image_id();
+		?>
+		<div class="cart-row cart-row--box">
+			<?php
+			if ( $box_thumb ) {
+				echo wp_get_attachment_image( // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+					$box_thumb,
+					'thumbnail',
+					false,
+					array(
+						'class'   => 'cart-row__img',
+						'alt'     => $box->get_name(),
+						'loading' => 'lazy',
+					)
+				);
+			}
+			?>
+
+			<div class="cart-row__t">
+				<b><?php dkm_the_icon( 'box' ); ?><?php echo esc_html( $box->get_name() ); ?></b>
+				<span class="cart-row__meta">
+					<?php
+					printf(
+						/* translators: %s is a watch name. */
+						esc_html__( 'Bij je %s', 'dkm' ),
+						esc_html( $name )
+					);
+					?>
+				</span>
+
+				<button type="button" class="cart-row__x" data-dkm-cart-remove="<?php echo esc_attr( $child['key'] ); ?>">
+					<?php esc_html_e( 'Doos verwijderen', 'dkm' ); ?>
+				</button>
+			</div>
+
+			<span class="cart-row__p">
+				<?php echo wp_kses_post( wc_price( (float) $child['item']['line_subtotal'] + (float) $child['item']['line_subtotal_tax'] ) ); ?>
+			</span>
+		</div>
+	<?php endif; ?>
 <?php endforeach; ?>
 
 <?php

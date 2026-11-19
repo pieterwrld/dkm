@@ -70,15 +70,6 @@ $dkm_lines = function_exists( 'dkm_cart_lines' ) ? dkm_cart_lines() : array();
 					</span>
 
 					<?php
-					$box = $child ? ( $child['item']['data'] ?? null ) : null;
-					if ( $box instanceof WC_Product ) :
-						?>
-						<span class="cart-row__box">
-							<?php dkm_the_icon( 'box' ); ?><?php echo esc_html( $box->get_name() ); ?>
-						</span>
-					<?php endif; ?>
-
-					<?php
 					echo apply_filters( // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 						'woocommerce_cart_item_remove_link',
 						sprintf(
@@ -97,15 +88,68 @@ $dkm_lines = function_exists( 'dkm_cart_lines' ) ? dkm_cart_lines() : array();
 				</div>
 
 				<span class="cart-row__p">
-					<?php
-					$total = (float) $item['line_subtotal'] + (float) $item['line_subtotal_tax'];
-					if ( $child ) {
-						$total += (float) $child['item']['line_subtotal'] + (float) $child['item']['line_subtotal_tax'];
-					}
-					echo wp_kses_post( wc_price( $total ) );
-					?>
+					<?php echo wp_kses_post( wc_price( (float) $item['line_subtotal'] + (float) $item['line_subtotal_tax'] ) ); ?>
 				</span>
 			</li>
+
+			<?php
+			// The box reads as a line of its own here too, so it can be taken
+			// off without the watch going with it.
+			$box = $child ? ( $child['item']['data'] ?? null ) : null;
+			if ( $box instanceof WC_Product ) :
+				$box_thumb = (int) $box->get_image_id();
+				?>
+				<li class="woocommerce-mini-cart-item mini_cart_item cart-row cart-row--box">
+					<?php
+					if ( $box_thumb ) {
+						echo wp_get_attachment_image( // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+							$box_thumb,
+							'thumbnail',
+							false,
+							array(
+								'class'   => 'cart-row__img',
+								'alt'     => $box->get_name(),
+								'loading' => 'lazy',
+							)
+						);
+					}
+					?>
+
+					<div class="cart-row__t">
+						<b><?php dkm_the_icon( 'box' ); ?><?php echo esc_html( $box->get_name() ); ?></b>
+						<span class="cart-row__meta">
+							<?php
+							printf(
+								/* translators: %s is a watch name. */
+								esc_html__( 'Bij je %s', 'dkm' ),
+								esc_html( $name )
+							);
+							?>
+						</span>
+
+						<?php
+						echo apply_filters( // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+							'woocommerce_cart_item_remove_link',
+							sprintf(
+								'<a href="%s" class="remove remove_from_cart_button cart-row__x" aria-label="%s" data-product_id="%s" data-cart_item_key="%s" data-product_sku="%s">%s</a>',
+								esc_url( wc_get_cart_remove_url( $child['key'] ) ),
+								/* translators: %s is the box name. */
+								esc_attr( sprintf( __( 'Verwijder %s uit je winkelwagen', 'dkm' ), wp_strip_all_tags( $box->get_name() ) ) ),
+								esc_attr( $box->get_id() ),
+								esc_attr( $child['key'] ),
+								esc_attr( $box->get_sku() ),
+								esc_html__( 'Doos verwijderen', 'dkm' )
+							),
+							$child['key']
+						);
+						?>
+					</div>
+
+					<span class="cart-row__p">
+						<?php echo wp_kses_post( wc_price( (float) $child['item']['line_subtotal'] + (float) $child['item']['line_subtotal_tax'] ) ); ?>
+					</span>
+				</li>
+			<?php endif; ?>
 		<?php endforeach; ?>
 
 		<?php do_action( 'woocommerce_mini_cart_contents' ); ?>
