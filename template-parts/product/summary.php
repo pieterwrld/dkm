@@ -206,14 +206,14 @@ $base        = (float) wc_get_price_to_display( $product );
 
 		<div class="acc__i">
 			<button type="button" class="acc__h">
-				<?php esc_html_e( 'Verzending en omruilen', 'dkm' ); ?>
+				<?php esc_html_e( 'Verzending', 'dkm' ); ?>
 				<?php dkm_the_icon( 'close' ); ?>
 			</button>
 			<div class="acc__c">
 				<div>
 					<div class="acc__b">
 						<p><?php esc_html_e( 'Bestel je op werkdagen voor 17:00, dan ligt je horloge de volgende dag op de mat. Alles gaat discreet verpakt de deur uit, aan de buitenkant zie je niet wat erin zit.', 'dkm' ); ?></p>
-						<p style="margin-top:10px"><?php esc_html_e( 'Zit hij toch niet lekker of valt de maat anders uit dan je dacht? Dan ruilen we hem binnen 14 dagen om voor een ander model.', 'dkm' ); ?></p>
+						<p style="margin-top:10px"><?php printf( esc_html__( 'Vanaf %s is de verzending gratis. Blijf je daaronder, dan zie je de verzendkosten in je winkelwagen voordat je afrekent.', 'dkm' ), esc_html( dkm_price( dkm_free_shipping_from() ) ) ); ?></p>
 					</div>
 				</div>
 			</div>

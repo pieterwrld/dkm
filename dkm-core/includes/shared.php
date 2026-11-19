@@ -39,3 +39,55 @@ if ( ! function_exists( 'dkm_field' ) ) {
 		return $value;
 	}
 }
+
+
+/* ==========================================================================
+   The Sale category follows the sale price
+   ========================================================================== */
+
+add_action( 'woocommerce_after_product_object_save', 'dkm_sale_category_follows', 20, 1 );
+
+/**
+ * Puts a watch in the Sale category the moment it gets a sale price, and takes
+ * it out again when the price goes back up.
+ *
+ * Doing this by hand meant the Sale page was always a little behind the real
+ * prices.
+ *
+ * @param WC_Product $product The product that was just saved.
+ */
+function dkm_sale_category_follows( $product ): void {
+	static $bezig = false;
+	if ( $bezig ) {
+		return;
+	}
+
+	if ( ! $product instanceof WC_Product || 'product' !== get_post_type( $product->get_id() ) ) {
+		return;
+	}
+
+	$term = get_term_by( 'slug', 'sale', 'product_cat' );
+	if ( ! $term || is_wp_error( $term ) ) {
+		return;
+	}
+
+	$id      = $product->get_id();
+	$korting = $product->is_on_sale( 'edit' );
+	$erin    = has_term( $term->term_id, 'product_cat', $id );
+
+	if ( $korting === $erin ) {
+		return;
+	}
+
+	$bezig = true;
+
+	if ( $korting ) {
+		wp_set_object_terms( $id, array( (int) $term->term_id ), 'product_cat', true );
+	} else {
+		$houden = wp_get_object_terms( $id, 'product_cat', array( 'fields' => 'ids' ) );
+		$houden = array_values( array_diff( (array) $houden, array( (int) $term->term_id ) ) );
+		wp_set_object_terms( $id, $houden, 'product_cat' );
+	}
+
+	$bezig = false;
+}

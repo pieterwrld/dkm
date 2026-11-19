@@ -561,6 +561,81 @@ class DKM_CLI {
 		}
 	}
 
+	/**
+	 * Puts every reduced watch in the Sale category and takes the rest out.
+	 *
+	 * The shop sets its sale prices in WooCommerce, but the Sale page is a
+	 * category, so the two drift apart the moment a price changes. This walks
+	 * the whole catalogue and makes them agree again.
+	 *
+	 * @param array $args  Unused.
+	 * @param array $assoc Takes dry-run.
+	 */
+	public function sync_sale( array $args, array $assoc ): void {
+		$dry = ! empty( $assoc['dry-run'] );
+
+		$term = get_term_by( 'slug', 'sale', 'product_cat' );
+		if ( ! $term || is_wp_error( $term ) ) {
+			$this->warn( __( 'De categorie Sale bestaat niet.', 'dkm' ) );
+			return;
+		}
+
+		$ids = get_posts(
+			array(
+				'post_type'      => 'product',
+				'post_status'    => 'any',
+				'posts_per_page' => -1,
+				'fields'         => 'ids',
+			)
+		);
+
+		$erbij = 0;
+		$eraf  = 0;
+		$gelijk = 0;
+
+		foreach ( $ids as $id ) {
+			$product = wc_get_product( $id );
+			if ( ! $product ) {
+				continue;
+			}
+
+			$korting = $product->is_on_sale( 'edit' );
+			$erin    = has_term( $term->term_id, 'product_cat', $id );
+
+			if ( $korting === $erin ) {
+				++$gelijk;
+				continue;
+			}
+
+			if ( $korting ) {
+				++$erbij;
+			} else {
+				++$eraf;
+			}
+
+			if ( ! $dry ) {
+				wp_set_object_terms( $id, array( (int) $term->term_id ), 'product_cat', $korting );
+
+				if ( ! $korting ) {
+					$houden = wp_get_object_terms( $id, 'product_cat', array( 'fields' => 'ids' ) );
+					$houden = array_values( array_diff( (array) $houden, array( (int) $term->term_id ) ) );
+					wp_set_object_terms( $id, $houden, 'product_cat' );
+				}
+			}
+		}
+
+		$this->log(
+			sprintf(
+				/* translators: 1: number added, 2: number removed, 3: number left alone. */
+				__( 'erbij: %1$d, eraf: %2$d, ongemoeid gelaten: %3$d', 'dkm' ),
+				$erbij,
+				$eraf,
+				$gelijk
+			)
+		);
+		$this->ok( $dry ? __( 'Proefdraai klaar.', 'dkm' ) : __( 'De categorie Sale klopt weer.', 'dkm' ) );
+	}
+
 	/* ------------------------------------------------------------------ */
 	/* Output. On the command line this goes to the terminal, in wp-admin  */
 	/* it is collected so the page can show it.                            */

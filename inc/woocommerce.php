@@ -200,3 +200,90 @@ function dkm_product_template_slug( ?array $tier ): string {
 	 */
 	return (string) apply_filters( 'dkm_product_template_slug', $slug, $tier );
 }
+
+
+/* ==========================================================================
+   Free delivery over a set amount
+   ========================================================================== */
+
+/**
+ * The amount from which delivery is free, as WooCommerce has it.
+ *
+ * The figure is read from the shipping zones rather than written out here, so
+ * what the page promises and what the basket charges can never drift apart.
+ * The fallback is only used before a zone has been set up.
+ */
+function dkm_free_shipping_from(): float {
+	static $bedrag = null;
+	if ( null !== $bedrag ) {
+		return $bedrag;
+	}
+
+	$bedrag = 0.0;
+
+	if ( class_exists( 'WC_Shipping_Zones' ) ) {
+		$zones   = WC_Shipping_Zones::get_zones();
+		$zones[] = array( 'shipping_methods' => WC_Shipping_Zones::get_zone( 0 )->get_shipping_methods() );
+
+		foreach ( $zones as $zone ) {
+			foreach ( (array) ( $zone['shipping_methods'] ?? array() ) as $methode ) {
+				if ( 'free_shipping' !== $methode->id || 'yes' !== $methode->enabled ) {
+					continue;
+				}
+				$grens = (float) ( $methode->min_amount ?? 0 );
+				if ( $grens <= 0 ) {
+					continue;
+				}
+				$bedrag = $bedrag ? min( $bedrag, $grens ) : $grens;
+			}
+		}
+	}
+
+	if ( ! $bedrag ) {
+		$bedrag = 350.0;
+	}
+
+	return $bedrag;
+}
+
+/**
+ * What is still missing before delivery is free, or zero when it already is.
+ */
+function dkm_free_shipping_left(): float {
+	if ( ! function_exists( 'WC' ) || ! WC()->cart ) {
+		return 0.0;
+	}
+
+	$grens = dkm_free_shipping_from();
+	$nu    = (float) WC()->cart->get_displayed_subtotal();
+
+	if ( WC()->cart->display_prices_including_tax() ) {
+		$nu = round( $nu - (float) WC()->cart->get_discount_tax(), wc_get_price_decimals() );
+	}
+	$nu -= (float) WC()->cart->get_discount_total();
+
+	return max( 0.0, $grens - $nu );
+}
+
+add_filter( 'woocommerce_package_rates', 'dkm_only_free_when_free', 100, 2 );
+
+/**
+ * Hides the paid rates as soon as free delivery applies.
+ *
+ * Without this the basket offers both, and a customer who has earned free
+ * delivery still sees a charge sitting next to it.
+ *
+ * @param array $rates The rates WooCommerce found.
+ * @return array
+ */
+function dkm_only_free_when_free( $rates ) {
+	$gratis = array();
+
+	foreach ( (array) $rates as $sleutel => $tarief ) {
+		if ( 'free_shipping' === $tarief->get_method_id() ) {
+			$gratis[ $sleutel ] = $tarief;
+		}
+	}
+
+	return $gratis ? $gratis : $rates;
+}

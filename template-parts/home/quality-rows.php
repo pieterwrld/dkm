@@ -58,29 +58,25 @@ defined( 'ABSPATH' ) || exit;
 
 					<span class="qbar qlong">
 						<?php
-						// Two reasons to pick this level, each with a line of
-						// explanation. The tier's own notes have that text; the
-						// short labels did not say anything on their own.
+						// Three reasons to pick this level, each on one line. The
+						// line of explanation that used to sit under every point
+						// is gone: the labels say it well enough on their own.
 						$punten = array();
-						foreach ( array_slice( $tier['explain'] ?? array(), 0, 2 ) as $uitleg ) {
-							$punten[] = array( $uitleg[1], $uitleg[2] );
+						foreach ( $tier['explain'] ?? array() as $uitleg ) {
+							$punten[] = (string) $uitleg[1];
 						}
-						if ( count( $punten ) < 2 ) {
-							foreach ( array_slice( $tier['feats'], 0, 2 ) as $feat ) {
-								$punten[] = array( $feat, '' );
+						foreach ( $tier['feats'] as $feat ) {
+							if ( count( $punten ) >= 3 ) {
+								break;
 							}
-							$punten = array_slice( $punten, 0, 2 );
+							$punten[] = (string) $feat;
 						}
+						$punten = array_slice( $punten, 0, 3 );
 						?>
 						<?php foreach ( $punten as $punt ) : ?>
 							<span class="qusp">
 								<span class="qusp__ico"><?php dkm_the_icon( 'check' ); ?></span>
-								<span class="qusp__t">
-									<b><?php echo esc_html( $punt[0] ); ?></b>
-									<?php if ( '' !== $punt[1] ) : ?>
-										<span><?php echo esc_html( $punt[1] ); ?></span>
-									<?php endif; ?>
-								</span>
+								<span class="qusp__t"><b><?php echo esc_html( $punt ); ?></b></span>
 							</span>
 						<?php endforeach; ?>
 					</span>

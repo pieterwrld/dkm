@@ -58,11 +58,21 @@ $matrix = dkm_matrix();
 
 						<ul class="qc__l">
 							<?php
-							foreach ( $matrix as [$label, $verdicts, $explain] ) :
-								$verdict = $verdicts[ $tier['key'] ] ?? 'n';
-								if ( 'n' === $verdict && 'superclone' === $tier['key'] ) {
-									continue;
-								}
+							// What this level has comes first, then what it only
+							// partly has, then what it misses. Every card keeps
+							// every line, so the three read as one table.
+							$volgorde = array( 'y' => 0, 'p' => 1, 'n' => 2 );
+							$regels   = array();
+							foreach ( $matrix as $positie => [$label, $verdicts, $explain] ) {
+								$verdict  = $verdicts[ $tier['key'] ] ?? 'n';
+								$regels[] = array( $volgorde[ $verdict ] ?? 3, $positie, $verdict, $label, $explain );
+							}
+							usort(
+								$regels,
+								static fn( $a, $b ) => array( $a[0], $a[1] ) <=> array( $b[0], $b[1] )
+							);
+
+							foreach ( $regels as [$rang, $positie, $verdict, $label, $explain] ) :
 								?>
 								<li class="qc__li<?php echo 'y' === $verdict ? '' : ' qc__li--off'; ?>">
 									<?php echo dkm_mark( $verdict ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
@@ -76,7 +86,7 @@ $matrix = dkm_matrix();
 							<?php endforeach; ?>
 						</ul>
 
-						<a class="btn <?php echo $feat ? 'btn--g' : 'btn--o'; ?> btn--full" href="<?php echo esc_url( $url ); ?>">
+						<a class="btn btn--g btn--full" href="<?php echo esc_url( $url ); ?>">
 							<?php
 							/* translators: %s is a tier name. */
 							printf( esc_html__( 'Bekijk %s', 'dkm' ), esc_html( $tier['name'] ) );

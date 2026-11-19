@@ -27,6 +27,26 @@ if ( ! $lines ) :
 	return;
 endif;
 
+$tekort = function_exists( 'dkm_free_shipping_left' ) ? dkm_free_shipping_left() : 0.0;
+?>
+<div class="cart-ship<?php echo $tekort > 0 ? '' : ' is-free'; ?>">
+	<?php dkm_the_icon( 'truck' ); ?>
+	<span>
+		<?php
+		if ( $tekort > 0 ) {
+			printf(
+				/* translators: %s is an amount such as EUR 40. */
+				esc_html__( 'Nog %s en de verzending is gratis', 'dkm' ),
+				esc_html( dkm_price( $tekort ) )
+			);
+		} else {
+			esc_html_e( 'Je verzending is gratis', 'dkm' );
+		}
+		?>
+	</span>
+</div>
+<?php
+
 foreach ( $lines as $line ) :
 	$product = $line['product'];
 	$item    = $line['item'];

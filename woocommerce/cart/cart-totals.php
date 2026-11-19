@@ -67,13 +67,31 @@ defined( 'ABSPATH' ) || exit;
 
 	</table>
 
+	<?php $tekort = function_exists( 'dkm_free_shipping_left' ) ? dkm_free_shipping_left() : 0.0; ?>
+	<div class="cart-ship<?php echo $tekort > 0 ? '' : ' is-free'; ?>">
+		<?php dkm_the_icon( 'truck' ); ?>
+		<span>
+			<?php
+			if ( $tekort > 0 ) {
+				printf(
+					/* translators: %s is an amount such as EUR 40. */
+					esc_html__( 'Nog %s en de verzending is gratis', 'dkm' ),
+					esc_html( dkm_price( $tekort ) )
+				);
+			} else {
+				esc_html_e( 'Je verzending is gratis', 'dkm' );
+			}
+			?>
+		</span>
+	</div>
+
 	<div class="wc-proceed-to-checkout dkm-totals__go">
 		<?php do_action( 'woocommerce_proceed_to_checkout' ); ?>
 	</div>
 
 	<ul class="dkm-totals__usp">
 		<li><?php dkm_the_icon( 'truck' ); ?><?php esc_html_e( 'Vandaag besteld, morgen in huis', 'dkm' ); ?></li>
-		<li><?php dkm_the_icon( 'refresh' ); ?><?php esc_html_e( '14 dagen omruilgarantie', 'dkm' ); ?></li>
+		<li><?php dkm_the_icon( 'truck' ); ?><?php echo esc_html( sprintf( /* translators: %s is an amount such as €350. */ __( 'Gratis verzending vanaf %s', 'dkm' ), dkm_price( dkm_free_shipping_from() ) ) ); ?></li>
 		<li><?php dkm_the_icon( 'box' ); ?><?php esc_html_e( 'Discreet verpakt verzonden', 'dkm' ); ?></li>
 	</ul>
 

@@ -686,6 +686,48 @@
 		var label = $('[data-dkm-ugc-label]');
 		var index = 0;
 
+		function video(card) {
+			return $('video', card);
+		}
+
+		// Only one clip may ever be heard, so every other one is stopped and
+		// put back on silent, button and all. Two clips talking over each
+		// other was the thing that made this section unusable.
+		function stil(behalve) {
+			cards.forEach(function (card) {
+				if (card === behalve) {
+					return;
+				}
+				var clip = video(card);
+				if (clip) {
+					clip.pause();
+					clip.muted = true;
+				}
+				card.classList.remove('is-playing');
+				var knop = $('[data-dkm-ugc-sound]', card);
+				if (knop) {
+					knop.classList.remove('is-on');
+					knop.setAttribute('aria-pressed', 'false');
+					knop.setAttribute('aria-label', i18n.soundOn || 'Geluid aanzetten');
+				}
+			});
+		}
+
+		function speel(card) {
+			stil(card);
+			var clip = video(card);
+			if (!clip) {
+				return;
+			}
+			var bezig = clip.play();
+			if (bezig && bezig.catch) {
+				bezig.catch(function () {
+					card.classList.remove('is-playing');
+				});
+			}
+			card.classList.add('is-playing');
+		}
+
 		function layout() {
 			var aantal = cards.length;
 			cards.forEach(function (card, i) {
@@ -716,55 +758,131 @@
 			}
 		}
 
-		function go(dir) {
-			index = Math.min(cards.length - 1, Math.max(0, index + dir));
+		// Moving on always leaves silence behind, whichever way you got there.
+		function naar(doel) {
+			var aantal = cards.length;
+			index = ((doel % aantal) + aantal) % aantal;
+			stil(null);
 			layout();
 		}
 
 		on($('[data-dkm-ugc-prev]'), 'click', function () {
-			go(-1);
+			naar(index - 1);
 		});
 		on($('[data-dkm-ugc-next]'), 'click', function () {
-			go(1);
+			naar(index + 1);
 		});
+
+		/* ---- Swiping ---- */
+
+		var vanX = 0;
+		var vanY = 0;
+		var raakt = false;
+		var sleept = false;
+		var negeerKlik = false;
+
+		on(stage, 'pointerdown', function (e) {
+			if ('mouse' === e.pointerType && 0 !== e.button) {
+				return;
+			}
+			raakt = true;
+			sleept = false;
+			vanX = e.clientX;
+			vanY = e.clientY;
+		});
+
+		on(stage, 'pointermove', function (e) {
+			if (!raakt || sleept) {
+				return;
+			}
+			var dx = e.clientX - vanX;
+			var dy = e.clientY - vanY;
+			// Sideways beats up and down, otherwise the page may not scroll.
+			if (Math.abs(dx) > 12 && Math.abs(dx) > Math.abs(dy)) {
+				sleept = true;
+			}
+		});
+
+		function los(e) {
+			if (!raakt) {
+				return;
+			}
+			raakt = false;
+			if (!sleept) {
+				return;
+			}
+			sleept = false;
+			// The tap that follows a swipe must not also press play.
+			negeerKlik = true;
+			var dx = e.clientX - vanX;
+			if (Math.abs(dx) >= 40) {
+				naar(index + (dx < 0 ? 1 : -1));
+			}
+		}
+
+		on(stage, 'pointerup', los);
+		on(stage, 'pointercancel', function () {
+			raakt = false;
+			sleept = false;
+		});
+
+		on(stage, 'click', function (e) {
+			if (!negeerKlik) {
+				return;
+			}
+			negeerKlik = false;
+			e.preventDefault();
+			e.stopPropagation();
+		}, true);
+
+		/* ---- The two buttons on a card ---- */
 
 		cards.forEach(function (card, i) {
 			on($('[data-dkm-ugc-play]', card), 'click', function () {
 				if (i !== index) {
-					index = i;
-					layout();
+					naar(i);
 					return;
 				}
-				var video = $('video', card);
-				if (!video) {
+				var clip = video(card);
+				if (!clip) {
 					return;
 				}
-				if (video.paused) {
-					video.play();
-					card.classList.add('is-playing');
+				if (clip.paused) {
+					speel(card);
 				} else {
-					video.pause();
+					clip.pause();
 					card.classList.remove('is-playing');
 				}
 			});
 
 			// The clips start silent, because a browser will not play a clip
-			// with sound before someone asks for it. This button is the ask.
+			// with sound before someone asks for it. This button is the ask,
+			// and it shows which of the two states it is in.
 			on($('[data-dkm-ugc-sound]', card), 'click', function (e) {
 				e.stopPropagation();
-				var video = $('video', card);
-				if (!video) {
+				var clip = video(card);
+				if (!clip) {
 					return;
 				}
-				var aan = video.muted;
-				video.muted = !aan;
-				this.setAttribute('aria-pressed', aan ? 'true' : 'false');
-				this.setAttribute('aria-label', aan ? i18n.soundOff || 'Geluid uitzetten' : i18n.soundOn || 'Geluid aanzetten');
-				this.classList.toggle('is-on', aan);
-				if (aan && video.paused) {
-					video.play();
-					card.classList.add('is-playing');
+				var aanzetten = clip.muted;
+
+				if (aanzetten) {
+					if (clip.paused) {
+						speel(card);
+					} else {
+						stil(card);
+					}
+					clip.muted = false;
+				} else {
+					clip.muted = true;
 				}
+
+				this.classList.toggle('is-on', aanzetten);
+				this.setAttribute('aria-pressed', aanzetten ? 'true' : 'false');
+				this.setAttribute(
+					'aria-label',
+					aanzetten ? (i18n.soundOff || 'Geluid uitzetten') : (i18n.soundOn || 'Geluid aanzetten')
+				);
 			});
 		});
 

@@ -104,7 +104,8 @@ if ( ! $clips ) {
 							data-dkm-ugc-sound
 							aria-pressed="false"
 							aria-label="<?php esc_attr_e( 'Geluid aanzetten', 'dkm' ); ?>">
-							<?php dkm_the_icon( 'mute' ); ?>
+							<span class="ugc__snd-uit"><?php dkm_the_icon( 'mute' ); ?></span>
+							<span class="ugc__snd-aan"><?php dkm_the_icon( 'sound' ); ?></span>
 						</button>
 					<?php endif; ?>
 

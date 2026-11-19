@@ -71,7 +71,7 @@ if ( ! $checkout->is_registration_enabled() && $checkout->is_registration_requir
 		<ul class="co__assure">
 			<li><?php dkm_the_icon( 'shield' ); ?><?php esc_html_e( 'Gecontroleerd voor verzending', 'dkm' ); ?></li>
 			<li><?php dkm_the_icon( 'truck' ); ?><?php esc_html_e( 'Vandaag besteld, morgen in huis', 'dkm' ); ?></li>
-			<li><?php dkm_the_icon( 'refresh' ); ?><?php esc_html_e( '14 dagen omruilgarantie', 'dkm' ); ?></li>
+			<li><?php dkm_the_icon( 'truck' ); ?><?php echo esc_html( sprintf( /* translators: %s is an amount such as €350. */ __( 'Gratis verzending vanaf %s', 'dkm' ), dkm_price( dkm_free_shipping_from() ) ) ); ?></li>
 		</ul>
 	</aside>
 

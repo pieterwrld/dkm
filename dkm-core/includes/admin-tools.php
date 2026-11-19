@@ -41,6 +41,18 @@ function dkm_tools_jobs(): array {
 			'knop'   => __( 'Proefdraaien', 'dkm' ),
 			'soort'  => 'veilig',
 		),
+		'sale-proef'          => array(
+			'label'  => __( 'Sale-categorie proefdraaien', 'dkm' ),
+			'uitleg' => __( 'Laat zien welke afgeprijsde producten in Sale zouden komen en welke eruit zouden gaan. Er wordt niets opgeslagen.', 'dkm' ),
+			'knop'   => __( 'Proefdraaien', 'dkm' ),
+			'soort'  => 'veilig',
+		),
+		'sale-bijwerken'      => array(
+			'label'  => __( 'Sale-categorie bijwerken', 'dkm' ),
+			'uitleg' => __( 'Zet elk product met een actieprijs in de categorie Sale en haalt de producten zonder actieprijs eruit. Dit schrijft naar je producten.', 'dkm' ),
+			'knop'   => __( 'Bijwerken', 'dkm' ),
+			'soort'  => 'schrijft',
+		),
 		'skus-vullen'         => array(
 			'label'  => __( 'Artikelnummers bijwerken', 'dkm' ),
 			'uitleg' => __( 'Geeft elk product zonder artikelnummer het nummer DKM plus het product-id. Dit schrijft naar je producten.', 'dkm' ),
@@ -101,6 +113,12 @@ function dkm_tools_run( string $job ): array {
 				break;
 			case 'skus-vullen':
 				$cli->sync_skus( array(), array() );
+				break;
+			case 'sale-proef':
+				$cli->sync_sale( array(), array( 'dry-run' => true ) );
+				break;
+			case 'sale-bijwerken':
+				$cli->sync_sale( array(), array() );
 				break;
 			default:
 				return array( array( 'fail', __( 'Onbekende taak.', 'dkm' ) ) );

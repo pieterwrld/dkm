@@ -104,6 +104,39 @@ function dkm_drop_builder_kit_class( array $classes ): array {
 add_filter( 'body_class', 'dkm_drop_builder_kit_class', 20 );
 
 
+add_action( 'wp_enqueue_scripts', 'dkm_drop_builder_scripts', 100 );
+
+/**
+ * Takes the builder's front end scripts off the home page.
+ *
+ * They were loading there without the settings object they read on start up,
+ * which threw an error into the console on every visit, and this theme draws
+ * that page itself so none of them have anything to do. Everywhere else they
+ * are left alone: the contact page and the basket lean on their add-ons.
+ */
+function dkm_drop_builder_scripts(): void {
+	if ( is_admin() || ! is_front_page() ) {
+		return;
+	}
+
+	foreach (
+		array(
+			'elementor-frontend',
+			'elementor-frontend-modules',
+			'elementor-webpack-runtime',
+			'elementor-waypoints',
+			'elementor-pro-frontend',
+			'font-awesome-4-shim',
+			'jquery-numerator',
+			'pa-elements-handler',
+			'eael-general',
+		) as $handvat
+	) {
+		wp_dequeue_script( $handvat );
+	}
+}
+
+
 /**
  * The theme's own shop templates win.
  *

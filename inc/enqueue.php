@@ -92,6 +92,8 @@ function dkm_script_data(): array {
 			'error'     => __( 'Dat ging niet goed. Probeer het nog eens.', 'dkm' ),
 			'empty'     => __( 'Je winkelwagen is nog leeg.', 'dkm' ),
 			'noResults' => __( 'Geen horloges gevonden met deze filters.', 'dkm' ),
+			'soundOn'   => __( 'Geluid aanzetten', 'dkm' ),
+			'soundOff'  => __( 'Geluid uitzetten', 'dkm' ),
 		),
 	);
 

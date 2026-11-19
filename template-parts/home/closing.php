@@ -19,7 +19,7 @@ $usps = array(
 	array( 'shield', __( 'Kwaliteitsgarantie', 'dkm' ), __( 'Elk horloge gecontroleerd voor verzending', 'dkm' ) ),
 	array( 'truck', __( 'Morgen in huis', 'dkm' ), __( 'Vandaag besteld, discreet verpakt onderweg', 'dkm' ) ),
 	array( 'chat', __( 'Persoonlijk advies', 'dkm' ), __( 'Direct contact via WhatsApp, ook na je aankoop', 'dkm' ) ),
-	array( 'refresh', __( '14 dagen omruilen', 'dkm' ), __( 'Niet wat je ervan verwachtte, dan ruilen we om', 'dkm' ) ),
+	array( 'truck', __( 'Gratis verzending', 'dkm' ), sprintf( /* translators: %s is an amount such as €350. */ __( 'Vanaf %s betaal je geen verzendkosten', 'dkm' ), dkm_price( dkm_free_shipping_from() ) ) ),
 );
 ?>
 <section class="cls" data-dkm-grow>

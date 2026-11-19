@@ -153,10 +153,9 @@ function dkm_ticker(): array {
  */
 function dkm_ticker_base(): array {
 	return array(
-		__( 'Gratis verzending vanaf €150', 'dkm' ),
+		sprintf( /* translators: %s is an amount such as €350. */ __( 'Gratis verzending vanaf %s', 'dkm' ), dkm_price( dkm_free_shipping_from() ) ),
 		__( 'Vandaag besteld, morgen in huis', 'dkm' ),
 		__( '1200+ horloges geleverd', 'dkm' ),
-		__( '14 dagen omruilgarantie', 'dkm' ),
 		__( 'Persoonlijk advies via WhatsApp', 'dkm' ),
 		__( 'Discreet verpakt verzonden', 'dkm' ),
 	);
@@ -194,7 +193,7 @@ function dkm_delivery_base(): array {
 		array( 'eye', __( 'Gecontroleerd voor verzending', 'dkm' ), __( 'We lopen elk horloge na op de wijzerplaat, het glas, de sluiting en de loop van het uurwerk.', 'dkm' ) ),
 		array( 'truck', __( 'Vandaag besteld, morgen in huis', 'dkm' ), __( 'Bestel je op werkdagen voor 17:00, dan ligt het de volgende dag op de mat.', 'dkm' ) ),
 		array( 'chat', __( 'Vragen onderweg', 'dkm' ), __( 'Twijfel je over de maat of de kleur? Stuur een bericht, we sturen extra foto’s of een video.', 'dkm' ) ),
-		array( 'refresh', __( '14 dagen omruilen', 'dkm' ), __( 'Zit hij toch niet lekker? Dan ruilen we hem binnen 14 dagen om voor een ander model.', 'dkm' ) ),
+		array( 'truck', sprintf( /* translators: %s is an amount such as €350. */ __( 'Gratis verzending vanaf %s', 'dkm' ), dkm_price( dkm_free_shipping_from() ) ), __( 'Blijf je onder dat bedrag, dan rekenen we de verzendkosten die de vervoerder ons rekent.', 'dkm' ) ),
 	);
 }
 
@@ -287,7 +286,7 @@ function dkm_banner_defaults(): array {
 			'usps'    => array(
 				array( 'truck', __( 'Vandaag besteld, morgen in huis', 'dkm' ) ),
 				array( 'shield', __( 'Kwaliteitscontrole voor verzending', 'dkm' ) ),
-				array( 'refresh', __( '14 dagen omruilgarantie', 'dkm' ) ),
+				array( 'truck', sprintf( /* translators: %s is an amount such as €350. */ __( 'Gratis verzending vanaf %s', 'dkm' ), dkm_price( dkm_free_shipping_from() ) ) ),
 				array( 'chat', __( 'Persoonlijk advies via WhatsApp', 'dkm' ) ),
 			),
 		),

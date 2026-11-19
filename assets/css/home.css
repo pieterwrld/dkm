@@ -492,10 +492,11 @@
 /* Two reasons to pick this level, in the bar on the right. */
 .qusp {
 	display: flex;
-	align-items: flex-start;
+	align-items: center;
 	gap: 10px;
 	min-width: 0;
-	padding: clamp(10px, 1.6vw, 15px) 0;
+	flex: 1 1 0;
+	padding: clamp(8px, 1.3vw, 13px) 0;
 }
 
 .qusp + .qusp {
@@ -505,8 +506,8 @@
 .qusp__ico {
 	display: grid;
 	place-items: center;
-	width: 26px;
-	height: 26px;
+	width: 24px;
+	height: 24px;
 	border-radius: 50%;
 	background: color-mix(in srgb, var(--qc) 16%, var(--bg));
 	flex: 0 0 auto;
@@ -514,7 +515,7 @@
 }
 
 .qusp__ico .ico {
-	font-size: 13px;
+	font-size: 12px;
 	color: var(--qc);
 	stroke-width: 3;
 }
@@ -525,8 +526,8 @@
 
 .qusp__t b {
 	display: block;
-	font-size: clamp(12px, 1.5vw, 14.5px);
-	font-weight: 800;
+	font-size: clamp(11.5px, 1.4vw, 14px);
+	font-weight: 700;
 	letter-spacing: -0.01em;
 	line-height: 1.25;
 }
@@ -719,6 +720,9 @@
 
 .ugc__stage {
 	position: relative;
+	/* The browser keeps the up and down scroll, we take the sideways swipe. */
+	touch-action: pan-y;
+	cursor: grab;
 	height: clamp(380px, 46vw, 520px);
 	perspective: 1500px;
 	margin-top: 22px;
@@ -1280,11 +1284,32 @@
 	stroke-width: 2;
 }
 
-.ugc__snd:hover,
-.ugc__snd.is-on {
+.ugc__snd:hover {
 	background: rgba(12, 12, 14, 0.8);
 	border-color: var(--ch2);
 	color: var(--ch3);
+}
+
+/* With the sound on the button is gold and solid, so one glance tells you
+   which of the two states you are in. It used to look the same either way. */
+
+.ugc__snd.is-on {
+	background: var(--grad);
+	border-color: transparent;
+	color: #171208;
+}
+
+.ugc__snd-aan {
+	display: none;
+}
+
+.ugc__snd-uit,
+.ugc__snd.is-on .ugc__snd-aan {
+	display: inline-flex;
+}
+
+.ugc__snd.is-on .ugc__snd-uit {
+	display: none;
 }
 
 /* ---- Reviews: the numbers and two handsets ---- */
