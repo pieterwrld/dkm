@@ -369,9 +369,12 @@
 		var volgende = $('[data-dkm-track-next]', root);
 
 		function stap(richting) {
-			// One screen of the track at a time, so the pair in view is
-			// replaced by the next pair.
-			track.scrollBy({ left: richting * track.clientWidth, behavior: 'smooth' });
+			// One item at a time, the same distance a swipe covers, so the
+			// button and the finger agree on what happens next.
+			var kind = track.firstElementChild;
+			var gat = parseFloat(window.getComputedStyle(track).columnGap) || 0;
+			var afstand = kind ? kind.getBoundingClientRect().width + gat : track.clientWidth;
+			track.scrollBy({ left: richting * afstand, behavior: reduced ? 'auto' : 'smooth' });
 		}
 
 		on(vorige, 'click', function () {

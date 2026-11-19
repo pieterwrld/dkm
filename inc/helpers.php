@@ -32,6 +32,23 @@ function dkm_price( $amount ): string {
 }
 
 /**
+ * What the red badge on a reduced watch says.
+ *
+ * During Black Friday it names the sale, because that is what the bar at the
+ * top of every page is shouting about. The rest of the year it is the plain
+ * percentage, which says more when there is no campaign to lean on.
+ *
+ * @param int $procent How much is off, as a whole number.
+ */
+function dkm_sale_badge( int $procent ): string {
+	if ( dkm_black_friday_active() ) {
+		return (string) dkm_opt( 'bf_label', __( 'Black Friday', 'dkm' ) );
+	}
+
+	return $procent ? '-' . $procent . '%' : __( 'Sale', 'dkm' );
+}
+
+/**
  * Whether the Black Friday mode is on. Red takes over from gold while it is.
  */
 function dkm_black_friday_active(): bool {

@@ -58,8 +58,8 @@ $base        = (float) wc_get_price_to_display( $product );
 
 	<div class="pd__pr">
 		<?php echo wp_kses_post( $product->get_price_html() ); ?>
-		<?php if ( $percent ) : ?>
-			<span class="pd__off"><?php echo esc_html( '-' . $percent . '%' ); ?></span>
+		<?php if ( $product->is_on_sale() ) : ?>
+			<span class="pd__off"><?php echo esc_html( dkm_sale_badge( (int) $percent ) ); ?></span>
 		<?php endif; ?>
 	</div>
 

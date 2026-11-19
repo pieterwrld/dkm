@@ -243,15 +243,17 @@
 }
 
 .pd__off {
-	font-size: 10px;
+	display: inline-flex;
+	align-items: center;
+	font-size: 11px;
 	font-weight: 900;
-	letter-spacing: 0.1em;
+	letter-spacing: 0.12em;
 	text-transform: uppercase;
-	background: var(--red);
+	background: linear-gradient(100deg, var(--red2) 0%, var(--red) 55%, var(--red2) 100%);
 	color: var(--on-dark);
-	padding: 3px 9px;
+	padding: 6px 14px;
 	border-radius: 999px;
-	letter-spacing: 0.1em;
+	box-shadow: 0 8px 20px -10px rgba(190, 20, 32, 0.8);
 }
 
 .pd__oos {
@@ -331,9 +333,14 @@
 	border-bottom: none;
 }
 
-.uopt:hover,
 .uopt.is-on {
 	background: var(--chbg);
+}
+
+@media (hover: hover) {
+	.uopt:hover {
+		background: var(--chbg);
+	}
 }
 
 .uopt:focus-within {
@@ -422,26 +429,26 @@
 }
 
 .ulook {
+	/* Always in view. It used to appear on hover, which on a phone meant the
+	   first tap only woke the row up and you had to tap a second time to
+	   choose a box. */
 	display: inline-flex;
 	align-items: center;
 	gap: 4px;
-	font-size: 10px;
+	font-size: 10.5px;
 	font-weight: 800;
 	color: var(--ch4);
-	margin-top: 3px;
-	opacity: 0;
-	max-height: 0;
-	overflow: hidden;
+	margin-top: 4px;
+	text-decoration: underline;
+	text-underline-offset: 2px;
 	transition: 0.3s var(--e);
 	padding: 0;
 	text-decoration: underline;
 }
 
-.uopt.is-on .ulook,
-.uopt:hover .ulook,
+.ulook:hover,
 .ulook:focus-visible {
-	opacity: 1;
-	max-height: 20px;
+	color: var(--ch1);
 }
 
 .ulook .ico {

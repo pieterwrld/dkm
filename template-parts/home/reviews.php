@@ -11,7 +11,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-$reviews = function_exists( 'dkm_get_reviews' ) ? dkm_get_reviews( 12 ) : array();
+$reviews = function_exists( 'dkm_get_reviews' ) ? dkm_get_reviews( 20 ) : array();
 if ( ! $reviews ) {
 	return;
 }
@@ -44,11 +44,14 @@ $cijfers = array(
 
 		<div class="rvp" data-dkm-track>
 			<?php
-			foreach ( $reviews as $review ) :
+			foreach ( $reviews as $plek => $review ) :
 				$image = function_exists( 'dkm_review_image' ) ? dkm_review_image( $review->ID ) : null;
 				if ( ! $image ) {
 					continue;
 				}
+				// The first four are loaded straight away, so the first two
+				// swipes never land on an empty phone.
+				$vroeg = $plek < 4;
 				$naam = (string) dkm_field( 'reviewer', $review->ID, get_the_title( $review ) );
 				?>
 				<article class="rvp__ph">
@@ -73,7 +76,8 @@ $cijfers = array(
 									height="<?php echo esc_attr( (string) $image['height'] ); ?>"
 								<?php endif; ?>
 								alt="<?php echo esc_attr( $image['alt'] ?: sprintf( /* translators: %s is a customer name. */ __( 'WhatsApp-gesprek met %s', 'dkm' ), $naam ) ); ?>"
-								loading="lazy"
+								loading="<?php echo $vroeg ? 'eager' : 'lazy'; ?>"
+								fetchpriority="<?php echo $vroeg ? 'high' : 'low'; ?>"
 								decoding="async">
 						</div>
 

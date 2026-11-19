@@ -163,8 +163,30 @@
 }
 
 .tg--sale {
-	background: var(--red);
+	/* The same red as the bar at the top of every page, so a reduced watch
+	   and the campaign that reduced it clearly belong together. */
+	background: linear-gradient(100deg, var(--red2) 0%, var(--red) 55%, var(--red2) 100%);
 	color: var(--on-dark);
+	box-shadow: 0 6px 16px -8px rgba(190, 20, 32, 0.75);
+}
+
+/* Bottom right of the photograph, where it does not sit on the watch. */
+
+.pc__sale {
+	position: absolute;
+	right: 8px;
+	bottom: 8px;
+	z-index: 3;
+	font-size: 9px;
+	padding: 5px 9px;
+	letter-spacing: 0.1em;
+}
+
+/* On a card that shows more than one photo the badge steps up, so it does
+   not sit on the line that counts the photos. */
+
+.pc__img:has(.shots__bar) .pc__sale {
+	bottom: 26px;
 }
 
 /* ---- marks: green tick, orange dash, red cross ---- */

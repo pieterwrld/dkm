@@ -44,17 +44,17 @@ $meer  = count( $fotos ) > 1;
 			<div class="pc__tags">
 				<?php
 				echo dkm_tier_badge( $tier ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-				if ( $product->is_on_sale() ) :
-					$percent = dkm_sale_percentage( $product );
-					?>
-					<span class="tg tg--sale">
-						<?php echo $percent ? esc_html( '-' . $percent . '%' ) : esc_html__( 'Sale', 'dkm' ); ?>
-					</span>
-				<?php endif; ?>
+				?>
 				<?php if ( ! $product->is_in_stock() ) : ?>
 					<span class="tg"><?php esc_html_e( 'Uitverkocht', 'dkm' ); ?></span>
 				<?php endif; ?>
 			</div>
+
+			<?php if ( $product->is_on_sale() ) : ?>
+				<span class="tg tg--sale pc__sale">
+					<?php echo esc_html( dkm_sale_badge( (int) dkm_sale_percentage( $product ) ) ); ?>
+				</span>
+			<?php endif; ?>
 
 			<?php if ( $fotos ) : ?>
 				<span class="shots" data-dkm-shots>
