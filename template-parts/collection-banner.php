@@ -21,7 +21,12 @@ $acf_id   = $term instanceof WP_Term ? 'term_' . $term->term_id : 0;
 $eyebrow = $acf_id ? (string) dkm_field( 'banner_eyebrow', $acf_id, $fallback['eyebrow'] ) : $fallback['eyebrow'];
 $title   = $acf_id ? (string) dkm_field( 'banner_title', $acf_id, $fallback['title'] ) : $fallback['title'];
 
-$image_id = $acf_id ? (int) dkm_field( 'banner_image', $acf_id, 0 ) : 0;
+// The picture set for this level on the editing screen leads, so the banner
+// shows the same watch as the bars on the home page.
+$image_id = $slug ? (int) dkm_opt( 'tier_' . $slug . '_row', 0 ) : 0;
+if ( ! $image_id && $acf_id ) {
+	$image_id = (int) dkm_field( 'banner_image', $acf_id, 0 );
+}
 if ( ! $image_id && $term instanceof WP_Term ) {
 	$image_id = (int) get_term_meta( $term->term_id, 'thumbnail_id', true );
 }

@@ -29,7 +29,7 @@ defined( 'ABSPATH' ) || exit;
 				if ( ! $term || is_wp_error( $term ) ) {
 					continue;
 				}
-				$image = dkm_product_cat_image( $term, 'dkm-card' );
+				$image = dkm_tier_image( $slug, 'row', $term, 'dkm-card', '(max-width:900px) 32vw, 260px' );
 				?>
 				<a class="qrow rv" href="<?php echo esc_url( (string) get_term_link( $term ) ); ?>" style="<?php echo esc_attr( dkm_tier_vars( $tier ) ); ?>">
 					<span class="qbar qshort">

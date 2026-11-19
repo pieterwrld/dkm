@@ -43,11 +43,9 @@ $matrix = dkm_matrix();
 						<?php endif; ?>
 
 						<?php
-						if ( $term && ! is_wp_error( $term ) ) {
-							$image = dkm_product_cat_image( $term, 'dkm-wide' );
-							if ( $image ) {
-								echo '<span class="qc__phw">' . $image . '</span>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-							}
+						$image = dkm_tier_image( $slug, 'pick', $term && ! is_wp_error( $term ) ? $term : null, 'dkm-wide', '(max-width:900px) 86vw, 420px' );
+						if ( $image ) {
+							echo '<span class="qc__phw">' . $image . '</span>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 						}
 						?>
 

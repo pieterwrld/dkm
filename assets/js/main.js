@@ -415,16 +415,66 @@
 	   Counting numbers
 	   ==================================================================== */
 
-	// The numbers used to count up from zero every time they came into view,
-	// which meant that for a second the page claimed eighteen reviews. They
-	// are written out as they are.
+	// Each number runs up once, the first time its block comes into view, and
+	// lands on the figure the page was built with. It used to restart on every
+	// pass, so for a second the page claimed eighteen reviews.
 	$$('[data-dkm-count]').forEach(function (el) {
 		var target = parseFloat(el.getAttribute('data-dkm-count'));
 		var suffix = el.getAttribute('data-dkm-suffix') || '';
 		if (isNaN(target)) {
 			return;
 		}
-		el.textContent = target.toLocaleString('nl-NL') + suffix;
+
+		var write = function (value) {
+			el.textContent = Math.round(value).toLocaleString('nl-NL') + suffix;
+		};
+
+		write(target);
+
+		if (reduced || typeof IntersectionObserver === 'undefined') {
+			return;
+		}
+
+		var done = false;
+
+		var run = function () {
+			if (done) {
+				return;
+			}
+			done = true;
+
+			var span = 1500;
+			var start = 0;
+
+			var step = function (now) {
+				if (!start) {
+					start = now;
+				}
+				var part = Math.min(1, (now - start) / span);
+				// Quick at first, then easing into the final figure.
+				var eased = 1 - Math.pow(1 - part, 3);
+				if (part < 1) {
+					write(target * eased);
+					window.requestAnimationFrame(step);
+					return;
+				}
+				write(target);
+			};
+
+			window.requestAnimationFrame(step);
+		};
+
+		var watcher = new IntersectionObserver(function (entries) {
+			entries.forEach(function (entry) {
+				if (!entry.isIntersecting) {
+					return;
+				}
+				watcher.disconnect();
+				run();
+			});
+		}, { threshold: 0.4 });
+
+		watcher.observe(el);
 	});
 	/* ====================================================================
 	   Carousels

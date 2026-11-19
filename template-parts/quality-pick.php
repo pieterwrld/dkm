@@ -32,7 +32,7 @@ $spec_labels = array(
 			foreach ( $tiers as $slug => $tier ) :
 				$term     = get_term_by( 'slug', $slug, 'product_cat' );
 				$archive  = ( $term && ! is_wp_error( $term ) ) ? (string) get_term_link( $term ) : dkm_shop_url();
-				$image    = ( $term && ! is_wp_error( $term ) ) ? dkm_product_cat_image( $term, 'dkm-card' ) : '';
+				$image    = dkm_tier_image( $slug, 'pick', $term && ! is_wp_error( $term ) ? $term : null, 'dkm-card', '(max-width:900px) 46vw, 360px' );
 				$modal_id = 'dkm-tier-' . $tier['key'];
 				?>
 				<button type="button"

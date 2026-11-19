@@ -95,6 +95,45 @@ function dkm_mega_cards(): array {
 }
 
 /**
+ * The picture set for one quality level on the editing screen.
+ *
+ * Two are kept per level: the one in the wide bars, which is also the
+ * category's own picture and so the banner on its page, and the one on the
+ * choose-your-quality cards. Falls back to the category's picture.
+ *
+ * @param string       $slug  Level slug, which is also the category slug.
+ * @param string       $veld  Either 'row' or 'pick'.
+ * @param WP_Term|null $term  The category, when it is already at hand.
+ * @param string       $size  Image size.
+ * @param string       $sizes Value for the sizes attribute.
+ * @return string Ready to echo img markup, or an empty string.
+ */
+function dkm_tier_image( string $slug, string $veld, ?WP_Term $term = null, string $size = 'dkm-card', string $sizes = '' ): string {
+	$eigen = function_exists( 'dkm_opt' ) ? (int) dkm_opt( 'tier_' . $slug . '_' . $veld, 0 ) : 0;
+
+	if ( $eigen ) {
+		$attr = array(
+			'loading' => 'lazy',
+			'alt'     => $term ? $term->name : '',
+		);
+		if ( '' !== $sizes ) {
+			$attr['sizes'] = $sizes;
+		}
+
+		$html = wp_get_attachment_image( $eigen, $size, false, $attr );
+		if ( $html ) {
+			return $html;
+		}
+	}
+
+	if ( ! $term || is_wp_error( $term ) ) {
+		return '';
+	}
+
+	return dkm_product_cat_image( $term, $size );
+}
+
+/**
  * The image for a product category: its own thumbnail when the client has set
  * one, otherwise the newest product in it, so the menu is never empty.
  *

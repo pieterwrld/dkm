@@ -27,19 +27,7 @@ if ( ! $tiers ) {
 		}
 		// Its own picture, set per level, so this row shows other watches than
 		// the bars higher up the page. Falls back to the category's own.
-		$eigen = (int) dkm_opt( 'tier_' . $slug . '_pick', 0 );
-		$image = $eigen
-			? wp_get_attachment_image(
-				$eigen,
-				'dkm-card',
-				false,
-				array(
-					'alt'     => '',
-					'loading' => 'lazy',
-					'sizes'   => '(max-width:900px) 46vw, 360px',
-				)
-			)
-			: dkm_product_cat_image( $term, 'dkm-card' );
+		$image = dkm_tier_image( $slug, 'pick', $term, 'dkm-card', '(max-width:900px) 46vw, 360px' );
 		?>
 		<a class="qcard<?php echo $current === $slug ? ' is-on' : ''; ?>"
 			href="<?php echo esc_url( (string) get_term_link( $term ) ); ?>"

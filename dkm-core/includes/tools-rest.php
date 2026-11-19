@@ -51,6 +51,24 @@ function dkm_tools_routes(): void {
 	);
 
 
+
+	register_rest_route(
+		'dkm/v1',
+		'/inhoud',
+		array(
+			array(
+				'methods'             => WP_REST_Server::READABLE,
+				'callback'            => 'dkm_inhoud_lees',
+				'permission_callback' => 'dkm_tools_may_run',
+			),
+			array(
+				'methods'             => WP_REST_Server::CREATABLE,
+				'callback'            => 'dkm_inhoud_zet',
+				'permission_callback' => 'dkm_tools_may_run',
+			),
+		)
+	);
+
 	register_rest_route(
 		'dkm/v1',
 		'/thema/instellingen',
@@ -279,4 +297,84 @@ function dkm_thema_zet( WP_REST_Request $request ) {
 			'nu' => dkm_thema_lees()->get_data(),
 		)
 	);
+}
+
+
+/**
+ * Everything the editing screen holds, as it stands.
+ */
+function dkm_inhoud_lees(): WP_REST_Response {
+	return new WP_REST_Response( function_exists( 'dkm_settings_all' ) ? dkm_settings_all() : array() );
+}
+
+/**
+ * Writes the fields that were sent, leaving the rest alone.
+ *
+ * Only names the editing screen knows are accepted, so this cannot be used to
+ * put arbitrary values in the option.
+ *
+ * @param WP_REST_Request $request The request.
+ */
+function dkm_inhoud_zet( WP_REST_Request $request ) {
+	if ( ! function_exists( 'dkm_settings_defaults' ) ) {
+		return new WP_Error( 'dkm_geen_scherm', __( 'Het beheerscherm is niet geladen.', 'dkm' ), array( 'status' => 500 ) );
+	}
+
+	$toegestaan = array_keys( dkm_settings_defaults() );
+	$gegeven    = (array) $request->get_json_params();
+	$onbekend   = array_diff( array_keys( $gegeven ), $toegestaan );
+
+	if ( $onbekend ) {
+		return new WP_Error(
+			'dkm_onbekend_veld',
+			sprintf(
+				/* translators: %s is a list of field names. */
+				__( 'Deze velden bestaan niet: %s', 'dkm' ),
+				implode( ', ', $onbekend )
+			),
+			array( 'status' => 400 )
+		);
+	}
+
+	$bewaard = get_option( DKM_SETTINGS_OPTION, array() );
+	$bewaard = is_array( $bewaard ) ? $bewaard : array();
+
+	foreach ( $gegeven as $naam => $waarde ) {
+		if ( is_array( $waarde ) ) {
+			$rijen = array();
+			foreach ( $waarde as $rij ) {
+				if ( ! is_array( $rij ) ) {
+					continue;
+				}
+				$rijen[] = array_map( 'sanitize_text_field', array_map( 'strval', $rij ) );
+			}
+			$bewaard[ $naam ] = $rijen;
+			continue;
+		}
+
+		if ( is_bool( $waarde ) ) {
+			$bewaard[ $naam ] = $waarde;
+			continue;
+		}
+
+		$bewaard[ $naam ] = sanitize_text_field( (string) $waarde );
+	}
+
+	update_option( DKM_SETTINGS_OPTION, $bewaard );
+
+	// A level's picture is also the category's picture in the shop.
+	if ( function_exists( 'dkm_tiers_base' ) ) {
+		foreach ( array_keys( dkm_tiers_base() ) as $slug ) {
+			$foto = (int) ( $bewaard[ 'tier_' . $slug . '_row' ] ?? 0 );
+			if ( ! $foto ) {
+				continue;
+			}
+			$term = get_term_by( 'slug', $slug, 'product_cat' );
+			if ( $term && ! is_wp_error( $term ) ) {
+				update_term_meta( $term->term_id, 'thumbnail_id', $foto );
+			}
+		}
+	}
+
+	return new WP_REST_Response( array( 'ok' => true, 'nu' => dkm_settings_all() ) );
 }

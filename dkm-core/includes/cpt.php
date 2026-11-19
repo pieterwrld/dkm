@@ -111,7 +111,7 @@ function dkm_get_ugc( int $limit = 10 ): array {
  * How much of a WhatsApp screenshot is interface rather than conversation.
  */
 const DKM_REVIEW_CROP_TOP    = 0.11;
-const DKM_REVIEW_CROP_BOTTOM = 0.06;
+const DKM_REVIEW_CROP_BOTTOM = 0.09;
 
 add_action( 'added_post_meta', 'dkm_maybe_crop_review', 10, 3 );
 add_action( 'updated_post_meta', 'dkm_maybe_crop_review', 10, 3 );
@@ -153,6 +153,18 @@ function dkm_crop_review_image( int $attachment_id ): string {
 	$file = get_attached_file( $attachment_id );
 	if ( ! $file || ! file_exists( $file ) ) {
 		return (string) wp_get_attachment_image_url( $attachment_id, 'full' );
+	}
+
+	// A picture that was already trimmed before it was uploaded keeps its own
+	// framing: cropping it a second time would eat into the conversation.
+	if ( 0 === strpos( wp_basename( $file ), 'dkm-chat-' ) ) {
+		$klaar = (string) wp_get_attachment_image_url( $attachment_id, 'full' );
+		$maat  = wp_getimagesize( $file );
+		update_post_meta( $attachment_id, '_dkm_cropped_url', $klaar );
+		update_post_meta( $attachment_id, '_dkm_cropped_w', (int) ( $maat[0] ?? 0 ) );
+		update_post_meta( $attachment_id, '_dkm_cropped_h', (int) ( $maat[1] ?? 0 ) );
+
+		return $klaar;
 	}
 
 	$editor = wp_get_image_editor( $file );

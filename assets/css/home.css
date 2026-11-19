@@ -843,190 +843,6 @@
 	font-weight: 800;
 }
 
-/* ---- reviews ---- */
-
-.rv-stats {
-	display: grid;
-	grid-template-columns: repeat(3, 1fr);
-	gap: 12px;
-	margin-bottom: 30px;
-}
-
-.rv-s {
-	background: var(--bg);
-	border: 1px solid var(--line);
-	border-radius: 16px;
-	padding: 20px;
-	text-align: center;
-}
-
-.rv-s b {
-	display: block;
-	font-size: clamp(1.7rem, 3.2vw, 2.5rem);
-	font-weight: 800;
-	letter-spacing: -0.05em;
-	font-variant-numeric: tabular-nums;
-}
-
-.rv-s span {
-	font-size: 11.5px;
-	color: var(--ink2);
-}
-
-@media (max-width: 680px) {
-	.rv-stats {
-		grid-template-columns: 1fr;
-	}
-}
-
-.rvgrid {
-	display: grid;
-	grid-template-columns: repeat(4, 1fr);
-	gap: clamp(9px, 1.3vw, 16px);
-}
-
-@media (max-width: 1000px) {
-	.rvgrid {
-		grid-template-columns: repeat(3, 1fr);
-	}
-}
-
-@media (max-width: 760px) {
-	.rvgrid {
-		grid-template-columns: repeat(2, 1fr);
-	}
-}
-
-.rvc {
-	border: 1px solid var(--line);
-	border-radius: 16px;
-	overflow: hidden;
-	background: var(--bg);
-	display: flex;
-	flex-direction: column;
-	min-width: 0;
-	transition: 0.35s var(--e);
-}
-
-.rvc:hover {
-	border-color: var(--ch2);
-	box-shadow: var(--sh-card-sm);
-	transform: translateY(-2px);
-}
-
-.rvc__h {
-	display: flex;
-	align-items: center;
-	gap: 9px;
-	padding: 9px 11px;
-	border-bottom: 1px solid var(--line);
-	background: var(--bg);
-}
-
-.rvc__av {
-	width: 30px;
-	height: 30px;
-	border-radius: 50%;
-	background: var(--ink);
-	color: var(--on-dark);
-	display: grid;
-	place-items: center;
-	font-size: 10px;
-	font-weight: 900;
-	letter-spacing: 0.02em;
-	flex: 0 0 auto;
-}
-
-.rvc__who {
-	min-width: 0;
-}
-
-.rvc__who b {
-	font-size: 12px;
-	font-weight: 800;
-	display: block;
-	letter-spacing: -0.02em;
-	line-height: 1.2;
-	overflow: hidden;
-	text-overflow: ellipsis;
-	white-space: nowrap;
-}
-
-.rvc__who span {
-	font-size: 9.5px;
-	color: var(--green);
-	font-weight: 700;
-	letter-spacing: 0.08em;
-	text-transform: uppercase;
-}
-
-.rvc__wa {
-	margin-left: auto;
-	color: var(--wa);
-	flex: 0 0 auto;
-}
-
-.rvc__wa .ico {
-	font-size: 18px;
-}
-
-.rvc__s {
-	height: clamp(230px, 30vw, 300px);
-	overflow-y: auto;
-	overflow-x: hidden;
-	background: var(--wa-chat-bg);
-	scrollbar-width: thin;
-}
-
-.rvc__s::-webkit-scrollbar {
-	width: 4px;
-}
-
-.rvc__s::-webkit-scrollbar-thumb {
-	background: rgba(255, 255, 255, 0.22);
-	border-radius: 4px;
-}
-
-.rvc__s img {
-	width: 100%;
-	height: auto;
-	display: block;
-}
-
-.rvc__f {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	gap: 8px;
-	padding: 9px 11px;
-	border-top: 1px solid var(--line);
-	background: var(--bg);
-	margin-top: auto;
-}
-
-.rvc__f .st {
-	color: var(--ch1);
-	font-size: 11px;
-	letter-spacing: 1.5px;
-}
-
-.rvc__vf {
-	display: inline-flex;
-	align-items: center;
-	gap: 4px;
-	font-size: 9.5px;
-	font-weight: 800;
-	letter-spacing: 0.08em;
-	text-transform: uppercase;
-	color: var(--ink3);
-}
-
-.rvc__vf .ico {
-	font-size: 12px;
-	color: var(--green);
-	stroke-width: 3;
-}
-
 /* ---- anatomy ---- */
 
 .ana {
@@ -1423,74 +1239,6 @@
 }
 
 
-/* ---- The conversations, two at a time ---- */
-
-.rvgrid {
-	/* Was a grid of four short cards, and the chats were cut off halfway. Two
-	   tall cards at a time now, and the rest slides in from the side. */
-	display: flex;
-	grid-template-columns: none;
-	gap: clamp(10px, 1.4vw, 18px);
-	overflow-x: auto;
-	scroll-snap-type: x mandatory;
-	scroll-behavior: smooth;
-	scrollbar-width: none;
-	padding-bottom: 4px;
-	-webkit-overflow-scrolling: touch;
-}
-
-.rvgrid::-webkit-scrollbar {
-	display: none;
-}
-
-.rvgrid {
-	align-items: start;
-}
-
-.rvgrid > .rvc {
-	flex: 0 0 calc((100% - clamp(10px, 1.4vw, 18px)) / 2);
-	scroll-snap-align: start;
-	min-width: 0;
-	align-self: start;
-}
-
-.rvc__s {
-	flex: 0 0 auto;
-}
-
-.rvc__s {
-	/* The height follows the screenshot itself. A fixed height left a black
-	   band under every conversation, because the pictures are shorter than
-	   the box they sat in. */
-	height: auto;
-	overflow: visible;
-}
-
-.rvc__s img {
-	display: block;
-	width: 100%;
-	height: auto;
-}
-
-.rvnav {
-	display: flex;
-	justify-content: center;
-	gap: 10px;
-	margin-top: clamp(14px, 2vw, 22px);
-}
-
-@media (max-width: 560px) {
-	.rvgrid > .rvc {
-		flex-basis: calc((100% - clamp(10px, 1.4vw, 18px)) / 2);
-	}
-
-	.rvc__s {
-		/* The screenshot sets the height here too. */
-		height: auto;
-	}
-}
-
-
 /* ---- The two buttons on a clip ---- */
 
 .ugc__hit {
@@ -1539,68 +1287,248 @@
 	color: var(--ch3);
 }
 
+/* ---- Reviews: the numbers and two handsets ---- */
 
-/* ---- The conversation cards, as handsets ---- */
+.rvn {
+	display: grid;
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+	gap: clamp(6px, 1.6vw, 14px);
+	margin-bottom: clamp(18px, 3vw, 32px);
+}
 
-.rvc {
-	position: relative;
-	/* The dark band around the screen, the rounded corners and the slight
-	   gloss of a phone held up to the camera. */
-	border: 0;
-	border-radius: 30px;
-	padding: 9px;
-	background: linear-gradient(160deg, #2b2b30 0%, #0e0e11 46%, #26262b 100%);
+.rvn__i {
+	min-width: 0;
+	text-align: center;
+	padding: clamp(10px, 2vw, 18px) clamp(4px, 1.2vw, 14px);
+	border: 1px solid var(--line);
+	border-radius: 14px;
+	background:
+		linear-gradient(180deg, rgba(255, 255, 255, 0.9), rgba(246, 238, 223, 0.42));
+}
+
+.rvn__i b {
+	display: block;
+	font-size: clamp(1.15rem, 4.6vw, 2.05rem);
+	line-height: 1.04;
+	font-weight: 800;
+	letter-spacing: -0.045em;
+	font-variant-numeric: tabular-nums;
+}
+
+.rvn__i span {
+	display: block;
+	margin-top: 4px;
+	font-size: clamp(9px, 2.3vw, 12px);
+	line-height: 1.25;
+	color: var(--ink2);
+	letter-spacing: 0.01em;
+}
+
+/* The row of handsets. Two fit the width at every size, the rest slide in. */
+
+.rvp {
+	--rvgap: clamp(8px, 2.3vw, 20px);
+	--rvmax: 100%;
+	display: flex;
+	align-items: start;
+	gap: var(--rvgap);
+	max-width: var(--rvmax);
+	margin-inline: auto;
+	overflow-x: auto;
+	overflow-y: hidden;
+	scroll-snap-type: x mandatory;
+	scroll-behavior: smooth;
+	scrollbar-width: none;
+	-webkit-overflow-scrolling: touch;
+	padding-bottom: 2px;
+}
+
+.rvp::-webkit-scrollbar {
+	display: none;
+}
+
+@media (min-width: 700px) {
+	.rvp {
+		--rvmax: 640px;
+	}
+}
+
+.rvp__ph {
+	flex: 0 0 calc((100% - var(--rvgap)) / 2);
+	min-width: 0;
+	scroll-snap-align: start;
+	padding: clamp(4px, 1.1vw, 8px);
+	border-radius: clamp(21px, 5.4vw, 40px);
+	background: linear-gradient(145deg, #9b988f 0%, #4b4945 20%, #232225 52%, #56534e 82%, #a5a19a 100%);
 	box-shadow:
-		0 18px 44px -22px rgba(0, 0, 0, 0.6),
-		inset 0 0 0 1px rgba(255, 255, 255, 0.09);
-	overflow: visible;
+		0 20px 46px -24px rgba(0, 0, 0, 0.62),
+		inset 0 0 0 1px rgba(255, 255, 255, 0.12);
 }
 
-.rvc > .rvc__h,
-.rvc > .rvc__s,
-.rvc > .rvc__f {
-	background: var(--bg);
+.rvp__scr {
+	container-type: inline-size;
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	aspect-ratio: 9 / 19.5;
+	border-radius: clamp(17px, 4.4vw, 33px);
+	overflow: hidden;
+	background: #0b141a;
 }
 
-.rvc > .rvc__h {
-	border-radius: 22px 22px 0 0;
-	padding-top: 18px;
-}
+/* The island sits on the glass, above the contact header. */
 
-.rvc > .rvc__f {
-	border-radius: 0 0 22px 22px;
-}
-
-.rvc__notch {
+.rvp__isl {
 	position: absolute;
-	top: 15px;
+	top: 4cqw;
 	left: 50%;
 	transform: translateX(-50%);
-	width: 34%;
-	max-width: 76px;
-	height: 11px;
+	width: 33cqw;
+	aspect-ratio: 3.4 / 1;
 	border-radius: 999px;
-	background: #0b0b0d;
+	background: #000;
 	z-index: 3;
+	pointer-events: none;
 }
 
-@media (max-width: 560px) {
-	.rvc {
-		border-radius: 24px;
-		padding: 6px;
-	}
+.rvp__wa {
+	flex: 0 0 auto;
+	position: relative;
+	z-index: 2;
+	display: flex;
+	align-items: center;
+	gap: 7px;
+	gap: 3cqw;
+	padding: 24px 7px 7px;
+	padding: 15cqw 4.4cqw 4cqw;
+	background: #1f2c34;
+	color: #e9edef;
+}
 
-	.rvc > .rvc__h {
-		border-radius: 18px 18px 0 0;
-		padding-top: 15px;
-	}
+.rvp__back {
+	flex: 0 0 auto;
+	display: inline-flex;
+	color: #c3cdd3;
+}
 
-	.rvc > .rvc__f {
-		border-radius: 0 0 18px 18px;
-	}
+.rvp__back .ico {
+	font-size: 12px;
+	font-size: 7.2cqw;
+	stroke-width: 2.4;
+}
 
-	.rvc__notch {
-		top: 11px;
-		height: 9px;
+.rvp__av {
+	flex: 0 0 auto;
+	display: grid;
+	place-items: center;
+	width: 18px;
+	width: 11cqw;
+	height: 18px;
+	height: 11cqw;
+	border-radius: 50%;
+	background: #0a0a0c;
+	color: #e7c98f;
+	font-size: 7px;
+	font-size: 4.2cqw;
+	font-weight: 900;
+	letter-spacing: 0.02em;
+}
+
+.rvp__naam {
+	flex: 1 1 auto;
+	min-width: 0;
+	font-size: 10px;
+	font-size: 6.2cqw;
+	font-weight: 600;
+	letter-spacing: -0.01em;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.rvp__act {
+	flex: 0 0 auto;
+	display: inline-flex;
+	align-items: center;
+	gap: 7px;
+	gap: 4.4cqw;
+	color: #c3cdd3;
+}
+
+.rvp__act .ico {
+	font-size: 12px;
+	font-size: 7cqw;
+	stroke-width: 1.9;
+}
+
+/* Only the conversation scrolls; the header stays where it is. */
+
+.rvp__chat {
+	flex: 1 1 auto;
+	min-height: 0;
+	overflow-y: auto;
+	overflow-x: hidden;
+	overscroll-behavior: contain;
+	-webkit-overflow-scrolling: touch;
+	background: #0b141a;
+	scrollbar-width: none;
+}
+
+.rvp__chat::-webkit-scrollbar {
+	width: 0;
+	height: 0;
+}
+
+.rvp__chat:focus-visible {
+	outline: 2px solid var(--ch2);
+	outline-offset: -2px;
+}
+
+.rvp__chat img {
+	display: block;
+	width: 100%;
+	height: auto;
+}
+
+/* The line you would type in, so the screen is a whole WhatsApp window
+   instead of a picture with empty ground beneath it. */
+
+.rvp__bar {
+	flex: 0 0 auto;
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	gap: 3.4cqw;
+	padding: 6px 7px 9px;
+	padding: 3.6cqw 4.4cqw 5.4cqw;
+	background: #0b141a;
+	color: #8696a0;
+}
+
+.rvp__veld {
+	flex: 1 1 auto;
+	height: 14px;
+	height: 8.4cqw;
+	border-radius: 999px;
+	background: #1f2c34;
+}
+
+.rvp__bar .ico {
+	font-size: 11px;
+	font-size: 6.6cqw;
+	stroke-width: 2;
+	flex: 0 0 auto;
+}
+
+.rvnav {
+	display: flex;
+	justify-content: center;
+	gap: 10px;
+	margin-top: clamp(14px, 2vw, 22px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.rvp {
+		scroll-behavior: auto;
 	}
 }
